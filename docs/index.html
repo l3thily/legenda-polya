@@ -257,6 +257,16 @@ table.t{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
 .cer-list li:nth-child(-n+3) .num{color:var(--amber)}
 .cer .go{justify-content:center}
 @media (prefers-reduced-motion:no-preference){.cer-list li{animation:rise .4s ease-out both;animation-delay:calc(var(--i)*35ms)}}
+/* multiplayer */
+.roster{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.roster li{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.roster li.me{border-color:var(--amber)}
+.roster li div{display:grid;min-width:0}
+.roster li span{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.roster li .num{font-family:var(--disp);font-weight:900;font-size:28px;color:var(--amber)}
+.rdy{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:6px;padding:3px 8px;background:var(--line);white-space:nowrap}
+.rdy.on{background:var(--grass);color:#04170c}
+.btn[disabled]{opacity:.5;pointer-events:none}
 /* rare events, modal */
 .decide.egg{border-color:#FFD58A;background:linear-gradient(135deg,rgba(255,213,138,.16),transparent 55%),var(--card);box-shadow:0 0 0 1px rgba(255,213,138,.35),0 20px 50px -20px rgba(255,180,63,.35)}
 .modal{position:fixed;inset:0;z-index:50;background:rgba(3,8,13,.86);display:grid;place-items:center;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
@@ -1209,6 +1219,7 @@ function doRetire(why){
   if(!S)S=G.seasons[0]||null;
   G.P.legacy=computeLegacy();
   checkAch();
+  setTimeout(()=>mpProgress(true),0);
   if(G.seasons[0])G.seasons[0].news.push(why==='age'?'Последний сезон в карьере.':why==='form'?'Форма уже не та — пора заканчивать.':why==='ban'?'Пожизненная дисквалификация за договорной матч.':'Вы объявили о завершении карьеры.');
   save();
 }
@@ -1216,7 +1227,7 @@ function doRetire(why){
 /* ================= season driver ================= */
 function beginSeason(){UI.confirmRetire=false;UI.err=null;RUN=seasonGen();stepSeason()}
 function stepSeason(inp){
-  try{const r=RUN.next(inp);if(r.done){RUN=null;MATCH=null}else MATCH=r.value}
+  try{const r=RUN.next(inp);if(r.done){RUN=null;MATCH=null;mpProgress()}else MATCH=r.value}
   catch(err){console.error(err);RUN=null;MATCH=null;if(SAVED)G=migrate(JSON.parse(SAVED));UI.err='В симуляции сезона что-то сломалось. Сезон откатился к началу, попробуйте сыграть его ещё раз.'}
   render();
   const el=document.querySelector(MATCH?'.bigm':'.hero');if(el)el.scrollIntoView({block:'start'});
@@ -1849,9 +1860,127 @@ function applyFx(fx){
   if(fx.log)G.summer.push(fx.log);
 }
 
+/* ================= multiplayer rooms ================= */
+const API='https://legenda-polya.88-218-121-40.sslip.io/api';
+const MP_KEY='legenda-polya-room';
+const MP={sess:null,room:null,err:null,busy:false,lastStatus:null,tick:0,pushT:null};
+try{MP.sess=JSON.parse(localStorage.getItem(MP_KEY)||'null')}catch(e){MP.sess=null}
+function mpSave(){try{MP.sess?localStorage.setItem(MP_KEY,JSON.stringify(MP.sess)):localStorage.removeItem(MP_KEY)}catch(e){}}
+async function api(path,body){
+  let r;
+  try{r=await fetch(API+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store'})}
+  catch(e){throw new Error('Нет связи с сервером комнат. Мультиплеер работает на сайте l3thily.github.io/legenda-polya')}
+  let d={};try{d=await r.json()}catch(e){}
+  if(!r.ok){const er=new Error(d.error||('Ошибка сервера '+r.status));er.status=r.status;throw er}
+  return d;
+}
+const mpAuth=()=>({pid:MP.sess.pid,token:MP.sess.token});
+const mpMe=()=>MP.room&&MP.sess?MP.room.players.find(p=>p.id===MP.sess.pid):null;
+function mpSetup(){const f=UI.form;return {nat:f.nat,nat2:f.nat2||'',pos:f.pos,lg:f.lg,club:f.club,num:String(f.num||'')}}
+async function mpRun(fn){if(MP.busy)return;MP.busy=true;MP.err=null;try{await fn()}catch(e){MP.err=e.message;if(e.status===404||e.status===403){MP.sess=null;MP.room=null;mpSave()}}MP.busy=false;render()}
+function mpCreate(){return mpRun(async()=>{const d=await api('/rooms',{name:UI.form.name,rus:UI.form.rus});MP.sess={code:d.code,pid:d.pid,token:d.token};mpSave();MP.room=await api(`/rooms/${d.code}/update`,{...mpAuth(),setup:mpSetup()})})}
+function mpJoin(){return mpRun(async()=>{const code=String(UI.mpCode||'').trim().toUpperCase();if(!code)throw new Error('Введите код комнаты');const d=await api(`/rooms/${code}/join`,{name:UI.form.name});MP.sess={code:d.code,pid:d.pid,token:d.token};mpSave();MP.room=await api(`/rooms/${d.code}/update`,{...mpAuth(),setup:mpSetup()})})}
+function mpReady(){return mpRun(async()=>{const me=mpMe();MP.room=await api(`/rooms/${MP.sess.code}/update`,{...mpAuth(),name:UI.form.name,setup:mpSetup(),ready:!(me&&me.ready)})})}
+function mpStartNow(){return mpRun(async()=>{MP.room=await api(`/rooms/${MP.sess.code}/start`,mpAuth())})}
+function mpLeave(){return mpRun(async()=>{try{await api(`/rooms/${MP.sess.code}/leave`,mpAuth())}catch(e){}if(G&&G.room&&G.room.code===MP.sess.code){G.room=null;save()}MP.sess=null;MP.room=null;mpSave()})}
+function mpHostRus(v){return mpRun(async()=>{MP.room=await api(`/rooms/${MP.sess.code}/update`,{...mpAuth(),rus:v})})}
+function mpPushSetupSoon(){if(!MP.sess||!MP.room||MP.room.status!=='lobby')return;clearTimeout(MP.pushT);MP.pushT=setTimeout(()=>{api(`/rooms/${MP.sess.code}/update`,{...mpAuth(),name:UI.form.name,setup:mpSetup()}).then(r=>{MP.room=r;mpRenderLive()}).catch(()=>{})},500)}
+async function mpPoll(){
+  if(!MP.sess||MP.busy)return;
+  try{MP.room=await api('/rooms/'+MP.sess.code);MP.err=null}
+  catch(e){MP.err=e.message;if(e.status===404){MP.sess=null;MP.room=null;mpSave();render();return}}
+  const st=MP.room&&MP.room.status;
+  if(st!==MP.lastStatus){MP.lastStatus=st;if(UI.tab==='multi')render()}
+  if(st==='started'&&(!G||!G.P)&&UI.tab==='multi'){mpBegin();return}
+  mpRenderLive();
+}
+setInterval(()=>{MP.tick++;if(!MP.sess)return;if(UI.tab==='multi'||(UI.tab==='career'&&G&&G.room&&MP.tick%6===0))mpPoll()},2500);
+function mpBegin(){
+  if(!MP.room||MP.room.status!=='started')return;
+  UI.form.rus=MP.room.rus;UI.roomSeed=MP.room.seed;
+  startCareer();
+  UI.roomSeed=null;
+  G.room={code:MP.sess.code,pid:MP.sess.pid};save();
+  UI.tab='career';mpProgress(true);render();window.scrollTo(0,0);
+}
+function mpProgress(force){
+  if(!G||!G.room||!MP.sess||MP.sess.code!==G.room.code)return;
+  const P=G.P,s=G.seasons[0],gk=P.pos==='GK';
+  if(!force&&s&&G.room.posted===s.label&&G.phase!=='retired')return;
+  const prog={season:s?s.label:'старт',age:P.age,club:C(P.clubId).name,pos:POS[P.pos].s,nat:N(P.nat).name,ovr:Math.round(P.ovr),g:P.tot.g+P.ig,a:P.tot.a,tro:P.trophies.length,bdo:P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,gk,best:P.bdoBest,rep:Math.round(P.rep),retired:G.phase==='retired',tier:G.phase==='retired'?legacyTier():null};
+  const feed=[];
+  if(s){
+    (s.summer||[]).filter(x=>/^(Переход|Аренда в)/.test(x)).forEach(x=>feed.push(x));
+    s.trophies.forEach(t=>feed.push('трофей: '+t));
+    s.awards.filter(a=>/Золотой мяч|Копа|Яшина|Золотая бутса|Камбэк|Национальный|Хет-трик/.test(a)).forEach(a=>feed.push('награда: '+a));
+    (s.records||[]).filter(r=>r.startsWith('Рекорд')).forEach(r=>feed.push(r));
+  }else feed.push(`начинает карьеру: ${POS[P.pos].n.toLowerCase()}, «${C(P.clubId).name}», ${N(P.nat).name}`);
+  if(G.phase==='retired')feed.push(`завершил карьеру — ${legacyTier()}`);
+  if(s)G.room.posted=s.label;save();
+  api(`/rooms/${G.room.code}/progress`,{...mpAuth(),progress:prog,feed:feed.slice(0,8)}).then(r=>{MP.room=r;mpRenderLive()}).catch(()=>{});
+}
+function mpLiveHtml(){
+  const r=MP.room;if(!r)return MP.err?`<p class="err">${esc(MP.err)}</p>`:'<p class="muted">Загружаю комнату…</p>';
+  const me=mpMe(),lobby=r.status==='lobby';
+  if(!lobby){const score=p=>p.progress?p.progress.tro*3+p.progress.bdo*20+p.progress.g*.05:-1;r.players.sort((a,b)=>score(b)-score(a))}
+  const rows=r.players.map(p=>{
+    const you=p.id===MP.sess.pid,host=p.id===r.host,s=p.setup||{},g=p.progress;
+    const right=lobby?`<span class="rdy ${p.ready?'on':''}">${p.ready?'готов':'ждём'}</span>`:g?`<span class="num">${g.ovr}</span>`:'<span class="dim">ещё не начал</span>';
+    const sub=lobby?[s.pos&&POS[s.pos]?POS[s.pos].s:'',s.club,s.nat].filter(Boolean).join(' · '):g?`${g.retired?`завершил · ${g.tier}`:`${g.season} · ${g.age} лет`} · ${g.club} · ${g.g} ${g.gk?'г.':'голов'}, ${g.a} пас. · трофеев ${g.tro} · ${g.gk?'Яшин':'ЗМ'} ${g.bdo}`:'';
+    return `<li class="${you?'me':''}"><div><b>${esc(p.name)}${you?' (вы)':''}${host?' <span class="tag">хост</span>':''}</b><span>${esc(sub)}</span></div>${right}</li>`}).join('');
+  const sorted=lobby?'':`<p class="small dim">Сортировка по вкладу: трофеи, Золотые мячи, голы.</p>`;
+  const feed=r.feed.length?`<p class="eyebrow" style="margin:14px 0 6px">Лента комнаты</p><ul class="lines">${r.feed.slice(-14).reverse().map(f=>`<li>${esc(f.text)}</li>`).join('')}</ul>`:'';
+  const ready=lobby&&me?`<div class="go"><button class="btn ${me.ready?'':'primary'}" data-a="mpReady">${me.ready?'Не готов':'Готов'}</button>${r.host===MP.sess.pid?`<button class="btn ghost" data-a="mpStart">Начать сейчас</button>`:''}<span class="small muted">${r.players.length<2?'Игра стартует, когда в комнате двое и все готовы.':'Игра стартует, когда все нажмут «Готов».'}</span></div>`:'';
+  return `<ul class="roster">${rows}</ul>${sorted}${ready}${MP.err?`<p class="err">${esc(MP.err)}</p>`:''}${feed}`;
+}
+function mpRenderLive(){const el=document.getElementById('roomLive');if(el)el.innerHTML=mpLiveHtml()}
+function viewMulti(){
+  const f=UI.form;
+  if(!MP.sess)return `<section class="mp">
+    <p class="eyebrow">Мультиплеер</p><h1 class="disp hero-t" style="font-size:clamp(46px,8vw,86px)">Одна комната,<br><em>один мир</em></h1>
+    <p class="lead">Создай комнату и скинь код друзьям. Каждый настраивает своего игрока и жмёт «Готов». Когда готовы все, карьеры стартуют в одном и том же мире. В комнате видно, кто куда перешёл, кто что выиграл и у кого больше Золотых мячей.</p>
+    ${MP.err?`<p class="err">${esc(MP.err)}</p>`:''}
+    <div class="grid2" style="margin-top:22px">
+      <div class="panel"><div class="sec-h"><h2>Создать</h2></div>
+        <div class="field"><label for="m-name">Ваше имя в комнате</label><input id="m-name" maxlength="24" value="${esc(f.name)}"></div>
+        <div class="field" style="margin-top:10px"><label for="m-rus">Россия в международном футболе</label><select id="m-rus">${[['random','Отстранена, может вернуться'],['off','Отстранена навсегда'],['on','Допущена']].map(([v,l])=>`<option value="${v}" ${f.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>
+        <div class="go"><button class="btn primary" data-a="mpCreate" ${MP.busy?'disabled':''}>Создать комнату</button></div></div>
+      <div class="panel"><div class="sec-h"><h2>Войти</h2></div>
+        <div class="field"><label for="m-name2">Ваше имя в комнате</label><input id="m-name2" maxlength="24" value="${esc(f.name)}"></div>
+        <div class="field" style="margin-top:10px"><label for="m-code">Код комнаты</label><input id="m-code" maxlength="5" autocapitalize="characters" autocomplete="off" value="${esc(UI.mpCode||'')}" placeholder="например, K7QX2"></div>
+        <div class="go"><button class="btn primary" data-a="mpJoin" ${MP.busy?'disabled':''}>Войти</button></div></div>
+    </div>
+  </section>`;
+  const r=MP.room,lobby=!r||r.status==='lobby',mine=G&&G.room&&G.room.code===MP.sess.code;
+  const lg=S_LEAGUES.find(l=>l.id===f.lg),nats=S_NATS.slice().sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+  const setup=lobby?`<div class="panel"><div class="sec-h"><h2>Ваш игрок</h2></div><div class="form" style="margin-top:0">
+      <div class="row2 namerow"><div class="field"><label for="m-name">Имя игрока</label><input id="m-name" maxlength="24" value="${esc(f.name)}"></div><div class="field"><label for="m-num">Номер</label><input id="m-num" type="number" min="1" max="99" value="${esc(f.num)}"></div></div>
+      <div class="row2"><div class="field"><label for="m-nat">Сборная</label><select id="m-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''}>${esc(n.name)}</option>`).join('')}</select></div>
+        <div class="field"><label for="m-nat2">Второе гражданство</label><select id="m-nat2"><option value="" ${!f.nat2?'selected':''}>нет</option>${nats.filter(n=>n.name!==f.nat).map(n=>`<option ${n.name===f.nat2?'selected':''}>${esc(n.name)}</option>`).join('')}</select></div></div>
+      <div class="field"><label for="m-pos">Позиция</label><select id="m-pos">${Object.entries(POS).map(([k,p])=>`<option value="${k}" ${k===f.pos?'selected':''}>${p.n}</option>`).join('')}</select></div>
+      <div class="row2"><div class="field"><label for="m-lg">Лига</label><select id="m-lg">${S_LEAGUES.map(l=>`<option value="${l.id}" ${l.id===f.lg?'selected':''}>${esc(l.name)} · ${COUNTRIES[l.cc][0]}</option>`).join('')}</select></div>
+        <div class="field"><label for="m-club">Клуб (сила)</label><select id="m-club">${lg.clubs.map(c=>`<option value="${esc(c.name)}" ${c.name===f.club?'selected':''}>${esc(c.name)} · ${c.str}</option>`).join('')}</select></div></div>
+      ${r&&r.host===MP.sess.pid?`<div class="field"><label for="m-rus">Россия в международном футболе (решает хост)</label><select id="m-rus">${[['random','Отстранена, может вернуться'],['off','Отстранена навсегда'],['on','Допущена']].map(([v,l])=>`<option value="${v}" ${r.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>`:''}
+      ${G&&G.P&&!mine?'<p class="small muted">Внимание: при старте игры в комнате текущая одиночная карьера будет заменена.</p>':''}
+    </div></div>`:'';
+  const startedBlock=!lobby?(mine?`<div class="go"><button class="btn primary" data-a="tab" data-v="career">К своей карьере</button></div>`
+    :`<div class="panel"><p>Игра в комнате уже идёт${G&&G.P?'. Ваша текущая одиночная карьера будет заменена.':'.'} Настройки игрока возьмутся из формы одиночной игры: «${esc(f.name)}», ${POS[f.pos].n.toLowerCase()}, «${esc(f.club)}».</p><div class="go"><button class="btn primary" data-a="mpBegin">Начать карьеру в комнате</button></div></div>`):'';
+  return `<section class="mp">
+    <div class="sec-h"><div><p class="eyebrow">Комната · ${lobby?'лобби':'игра идёт'}</p><h1 class="disp" style="font-size:clamp(48px,9vw,90px);color:var(--amber)">${esc(MP.sess.code)}</h1></div>
+      <div class="go" style="margin:0"><button class="btn" data-a="mpCopy">Скопировать код</button><button class="btn ghost" data-a="mpLeave">Выйти</button></div></div>
+    <div class="grid2"><div class="panel"><div class="sec-h"><h2>Игроки</h2><span class="small muted">${r?r.players.length:0} из 8</span></div><div id="roomLive">${mpLiveHtml()}</div></div>${setup}</div>
+    ${startedBlock}
+  </section>`;
+}
+function roomPanel(){
+  if(!G||!G.room)return '';
+  if(!MP.sess||MP.sess.code!==G.room.code)return `<section class="panel"><div class="sec-h"><h2>Комната ${esc(G.room.code)}</h2></div><p class="muted small">Связь с комнатой потеряна на этом устройстве.</p></section>`;
+  return `<section class="panel"><div class="sec-h"><h2>Комната ${esc(G.room.code)}</h2><button class="btn ghost" data-a="tab" data-v="multi">Открыть лобби</button></div><div id="roomLive">${mpLiveHtml()}</div></section>`;
+}
+
 /* ================= start ================= */
 function startCareer(){
-  const f=UI.form,code=normCode(f.code)||genCode();
+  const f=UI.form,code=UI.roomSeed||genCode();
   RW=mkRng(hashStr('world|'+code+'|'+f.rus));RPR=mkRng(hashStr('player|'+code+'|'+Math.random()));
   G=buildWorld(f.rus);G.code=code;
   const lg=LG(f.lg),club=lg.ids.map(C).find(c=>c.name===f.club)||C(lg.ids[0]);
@@ -1878,7 +2007,7 @@ function playerCard(o){
     <div class="fc-meta"><span>${esc(o.club)}</span><span>${esc(o.nat)}</span><span>${esc(o.posFull)}</span></div></div>`;
 }
 function topbar(){
-  const tabs=G&&G.P?[['career',G.phase==='retired'?'Итоги':'Карьера'],['tables','Таблицы'],['world','Мир']].map(([k,l])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l}</button>`).join(''):'';
+  const tabs=(G&&G.P?[['career',G.phase==='retired'?'Итоги':'Карьера'],['tables','Таблицы'],['world','Мир'],['multi','Мультиплеер']]:[['career','Новая карьера'],['multi','Мультиплеер']]).map(([k,l])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l}</button>`).join('');
   const nb=G&&G.P?(UI.confirmNew?`<span class="confirm"><span class="small muted">Удалить карьеру?</span><button class="btn warn" data-a="newYes">Да</button><button class="btn ghost" data-a="newNo">Нет</button></span>`:`<button class="btn ghost" data-a="new">Новая карьера</button>`):'';
   return `<header class="top"><div class="wrap topin"><div class="brand"><i></i>Легенда поля</div><nav class="tabs">${tabs}</nav>${nb}</div></header>`;
 }
@@ -1905,8 +2034,8 @@ function viewSetup(){
           <div class="field"><label for="f-lg">Лига</label><select id="f-lg">${S_LEAGUES.map(l=>`<option value="${l.id}" ${l.id===f.lg?'selected':''}>${esc(l.name)} · ${COUNTRIES[l.cc][0]}</option>`).join('')}</select></div>
           <div class="field"><label for="f-club">Клуб (сила)</label><select id="f-club">${lg.clubs.map(c=>`<option value="${esc(c.name)}" ${c.name===f.club?'selected':''}>${esc(c.name)} · ${c.str}</option>`).join('')}</select></div>
         </div>
-        <div class="field"><label for="f-code">Код мира</label><input id="f-code" value="${esc(f.code)}" maxlength="24" autocomplete="off" autocapitalize="characters"><span class="small dim">Одинаковый код — одинаковый мир: те же результаты, трансферы звёзд и события у клубов. Скинь код друзьям и сравните, у кого карьера круче.</span></div>
         <div class="field"><label for="f-rus">Россия в международном футболе</label><select id="f-rus">${[['random','Отстранена, но может вернуться (~10% в год)'],['off','Отстранена навсегда'],['on','Допущена с первого сезона']].map(([v,l])=>`<option value="${v}" ${f.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>
+        <p class="small muted" style="margin:0">Каждая новая карьера — новый случайный мир. Играть с друзьями в одном мире — вкладка «Мультиплеер».</p>
         <div class="go"><button class="btn primary" type="submit">Начать карьеру</button><span class="small muted">Сила сборной «${esc(f.nat)}»: ${nat?nat.str:'—'} · ${nat?CONF_RU[nat.conf]:''}</span></div>
       </form>
     </div>
@@ -1994,6 +2123,7 @@ function viewCareer(){
       <div class="act">${UI.err?`<p class="err">${esc(UI.err)}</p>`:''}${action}</div>
     </div></section>
     <section>${totals()}</section>
+    ${roomPanel()}
     <section class="grid2"><div class="panel"><div class="sec-h"><h2>Атрибуты</h2><span class="small muted">рейтинг ${Math.round(P.ovr)}</span></div>${attrPanel()}</div><div class="panel"><div class="sec-h"><h2>Отношения</h2><span class="small muted">${esc(club.name)}</span></div>${relPanel()}</div></section>
     <section class="panel"><div class="sec-h"><h2>Рекорды и вехи</h2></div>${recordsPanel()}</section>
     <section class="panel"><div class="sec-h"><h2>Черты игрока</h2><span class="small muted">${P.perks.length} из ${PERKS.length}</span></div>${perkPanel()}</section>
@@ -2062,7 +2192,8 @@ function viewWorld(){
 function render(){
   const app=document.getElementById('app');
   let body;
-  if(!G||!G.P)body=viewSetup();
+  if(UI.tab==='multi')body=viewMulti();
+  else if(!G||!G.P)body=viewSetup();
   else if(UI.tab==='tables')body=viewTables();
   else if(UI.tab==='world')body=viewWorld();
   else body=viewCareer();
@@ -2086,13 +2217,22 @@ document.addEventListener('click',e=>{
   else if(a==='share'){openShare()}
   else if(a==='shareClose'){UI.share=null;render()}
   else if(a==='shareNative'){const f=new File([UI.share.blob],'legenda.png',{type:'image/png'});navigator.share({files:[f],title:'Легенда поля'}).catch(()=>{})}
+  else if(a==='mpCreate'){mpCreate()}
+  else if(a==='mpJoin'){mpJoin()}
+  else if(a==='mpReady'){mpReady()}
+  else if(a==='mpStart'){mpStartNow()}
+  else if(a==='mpLeave'){mpLeave()}
+  else if(a==='mpBegin'){mpBegin()}
+  else if(a==='mpCopy'){const t=MP.sess?MP.sess.code:'';try{navigator.clipboard.writeText(t).then(()=>{b.textContent='Скопировано'},()=>{b.textContent=t})}catch(err){b.textContent=t}}
   else if(a==='retYes'){UI.confirmRetire=false;doRetire('choice');render();window.scrollTo(0,0)}
 });
 document.addEventListener('input',e=>{
   const id=e.target.id,f=UI.form;
   if(id==='f-name'){f.name=e.target.value;updPrev()}
-  else if(id==='f-code'){f.code=e.target.value}
   else if(id==='f-num'){f.num=e.target.value;updPrev()}
+  else if(id==='m-name'||id==='m-name2'){f.name=e.target.value;mpPushSetupSoon()}
+  else if(id==='m-num'){f.num=e.target.value;mpPushSetupSoon()}
+  else if(id==='m-code'){UI.mpCode=e.target.value.toUpperCase()}
 });
 document.addEventListener('change',e=>{
   const id=e.target.id,f=UI.form;
@@ -2104,6 +2244,12 @@ document.addEventListener('change',e=>{
   else if(id==='f-nat2'){f.nat2=e.target.value}
   else if(id==='tblLg'){UI.tblLg=e.target.value;render()}
   else if(id==='focus'&&G&&G.P){G.P.focus=e.target.value;save()}
+  else if(id==='m-nat'){f.nat=e.target.value;if(f.nat2===f.nat)f.nat2='';mpPushSetupSoon();render()}
+  else if(id==='m-nat2'){f.nat2=e.target.value;mpPushSetupSoon()}
+  else if(id==='m-pos'){f.pos=e.target.value;f.num=NUM_BY_POS[f.pos];mpPushSetupSoon();render()}
+  else if(id==='m-lg'){f.lg=e.target.value;f.club=S_LEAGUES.find(l=>l.id===f.lg).clubs[0].name;mpPushSetupSoon();render()}
+  else if(id==='m-club'){f.club=e.target.value;mpPushSetupSoon()}
+  else if(id==='m-rus'){if(MP.sess&&MP.room&&MP.room.host===MP.sess.pid)mpHostRus(e.target.value);else f.rus=e.target.value}
 });
 document.addEventListener('submit',e=>{if(e.target.id==='setupForm'){e.preventDefault();startCareer()}});
 function updPrev(){const f=UI.form,el=document.getElementById('cardPrev');if(el)el.innerHTML=playerCard({ovr:'??',pos:POS[f.pos].s,age:17,num:f.num,name:f.name||'Игрок',club:f.club,nat:f.nat,posFull:POS[f.pos].n})}

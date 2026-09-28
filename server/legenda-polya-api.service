@@ -1,0 +1,19 @@
+[Unit]
+Description=Legenda polya — room server for multiplayer lobby (127.0.0.1:8095)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/legenda-polya-api/server.py
+Environment=PORT=8095 DATA=/var/lib/legenda-polya/rooms.json
+DynamicUser=yes
+StateDirectory=legenda-polya
+Restart=always
+RestartSec=3
+MemoryMax=80M
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
