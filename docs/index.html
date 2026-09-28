@@ -480,8 +480,8 @@ function buildWorld(rusMode){const russia=rusMode==='on';
 
 /* ================= match engine ================= */
 function isMine(T){return T.kind==='c'?T.id===G.P.clubId:(TR.called&&T.id===G.P.nat)}
-function roleOf(ovr,str){const d=ovr-str;return d>=4?4:d>=-1?3:d>=-6?2:d>=-11?1:0}
-function natRole(ovr,str){const d=ovr-str;return d>=2?4:d>=-1?3:d>=-4?2:1}
+function roleOf(ovr,str){const d=ovr-str;return d>=2?4:d>=-6?3:d>=-11?2:d>=-16?1:0}
+function natRole(ovr,str){const d=ovr-str;return d>=2?4:d>=-5?3:d>=-9?2:1}
 
 function trackDecide(T,m){
   const P=G.P,nat=T.kind==='n';
@@ -776,7 +776,7 @@ function* seasonGen(){
      role:roleOf(P.ovr+P.roleMod+(P.captain===club.id?2:0)+(P.rel.coach-50)/20,club.str),uclG:0,wcG:0,euroG:0,hat:0,bigG:0,finG:0,lastRt:6,lgA:0,lastG:0,records:[],derby:{w:0,d:0,l:0,g:0},club:blank(),intl:blank(),oly:blank(),lgGoals:0,tg:0,tapps:0,trs:0,keyN:0,moments:[],
      comps:[],trophies:[],awards:[],tourn:[],log:{},news:[],inj:[],summer:G.summer.slice(),ovrBefore:Math.round(P.ovr),natName:nat.name,intlRet:P.intlRetired};
   G.summer=[];
-  const called=!P.intlRetired&&!P.skipNT&&P.age>=18&&P.ovr>=nat.str-7;
+  const called=!P.intlRetired&&!P.skipNT&&P.age>=18&&P.ovr>=nat.str-10;
   TR={tm:0,role:S.role,called,nrole:natRole(P.ovr+(P.ntCaptain?2:0)+(hasPerk('patriot')?2:0),nat.str)};
   S.captain=P.captain===club.id;
   S.called=called;S.natRole=called?TR.nrole:null;
@@ -1006,10 +1006,11 @@ function endSeasonPlayer(){
     if(S.inj.some(n=>n>=12))pd-=1;
     if(P.growMod>0)pd+=.3;
     pd*=a<=21?1:a<=24?.7:.4;
+    if(pd>0)pd*=P.pot>=92?.25:P.pot>=88?.55:1;
     pd=clamp(pd,-2.5,3);
   }else pd=-Math.max(0,P.pot-P.ovr)*.35;
   const potOld=P.pot;
-  P.pot=clamp(r1(P.pot+pd),Math.round(P.ovr),99);
+  P.pot=clamp(r1(P.pot+pd),Math.round(P.ovr),Math.max(95,Math.round(P.ovr)));
   P.potTrend=Math.round(P.pot)-Math.round(potOld);
   if(a<=25&&P.potTrend>=1)S.news.push(`Скауты повысили оценку вашего потенциала (+${P.potTrend}).`);
   else if(a<=25&&P.potTrend<=-1)S.news.push(`Скауты понизили оценку вашего потенциала (${P.potTrend}).`);
@@ -1094,7 +1095,7 @@ function makeOffer(c,free,mult=1){
 }
 function genOffers(n,free){
   const P=G.P,young=P.age<=21,target=young?Math.max(P.ovr,(P.ovr+P.pot)/2-4):P.ovr;
-  let pool=G.clubs.filter(c=>c.id!==P.clubId&&P.ovr>=c.str-(young?12:6)&&c.str<=target+6&&allowedClub(c.id));
+  let pool=G.clubs.filter(c=>c.id!==P.clubId&&P.ovr>=c.str-(young?14:9)&&c.str<=target+8&&allowedClub(c.id));
   if(pool.length<n)pool=G.clubs.filter(c=>c.id!==P.clubId).sort((a,b)=>Math.abs(a.str-P.ovr)-Math.abs(b.str-P.ovr)).slice(0,20);
   const out=[];
   for(let i=0;i<n&&pool.length;i++){const c=wpickP(pool,c=>Math.exp(-Math.abs(c.str-(target+1))/3.5)*Math.pow(LG(c.lg).wealth,.35));pool.splice(pool.indexOf(c),1);out.push(makeOffer(c,free))}
@@ -1122,7 +1123,7 @@ function genDecisions(){
     if(n){const offers=genOffers(n,false);const block=Math.min(.7,(role>=3&&P.contract>=2?(P.wantOut?.15:.3):0)+(P.captain===club.id?.25:0));offers.forEach(o=>o.block=block);
       D.push({club:true,title:'Трансферные предложения',body:`${n===1?'Один клуб готов':'Несколько клубов готовы'} заплатить за вас. ${ctx} Контракт ещё на ${yrs(P.contract)}.`,opts:[...offers.map(o=>offerOpt(o)),{label:'Остаться',sub:`В «${club.name}»`,detail:'Отказать всем',act:{t:'none'}}]})}
     if(P.age<=21&&role<=1){
-      const pool=G.clubs.filter(c=>c.id!==club.id&&roleOf(P.ovr,c.str)>=2&&c.str>=P.ovr-5&&allowedClub(c.id));const opts=[];
+      const pool=G.clubs.filter(c=>c.id!==club.id&&roleOf(P.ovr,c.str)>=3&&c.str>=P.ovr-5&&allowedClub(c.id));const opts=[];
       for(let i=0;i<2&&pool.length;i++){const c=wpickP(pool,c=>Math.exp(-Math.abs(c.str-(P.ovr+3))/3));pool.splice(pool.indexOf(c),1);opts.push(offerOpt({club:c.id,loan:true,fee:0,wage:P.wage,years:1}))}
       if(opts.length)D.push({club:true,title:'Аренда',body:`В «${club.name}» вы почти не играете. Клуб предлагает отправить вас в аренду на сезон, чтобы набраться опыта. ${ctx}`,opts:[...opts,{label:'Остаться',sub:'Бороться за место в составе',detail:'Мало игрового времени — медленнее рост',act:{t:'none'}}]});
     }
@@ -1520,7 +1521,7 @@ function dualDecision(){
   const P=G.P;if(P.nat2==null)return null;
   if(P.tournApps>0){P.nat2=null;return null}
   const a=N(P.nat),b=N(P.nat2);
-  if(P.age<18||(P.ovr<a.str-7&&P.ovr<b.str-7))return null;
+  if(P.age<18||(P.ovr<a.str-10&&P.ovr<b.str-10))return null;
   return {club:false,title:'Две сборные хотят вас',body:`У вас двойное гражданство, и вызов прислали обе федерации: ${a.name} и ${b.name}. Как только сыграете на официальном турнире, выбор станет окончательным.`,
     opts:[{label:a.name,sub:`Сила ${Math.round(a.str)} · ${CONF_RU[a.conf]}`,detail:'Играть за эту сборную',act:{t:'fx',natSet:a.id,nat2Clear:1,log:`Вы выбрали сборную: ${a.name}.`}},
           {label:b.name,sub:`Сила ${Math.round(b.str)} · ${CONF_RU[b.conf]}`,detail:'Играть за эту сборную',act:{t:'fx',natSet:b.id,nat2Clear:1,log:`Вы выбрали сборную: ${b.name}.`}}]};
