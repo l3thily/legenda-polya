@@ -72,6 +72,7 @@ def public(room):
                      "year": p.get("year"), "readyYear": p.get("readyYear")} for p in room["players"].values()],
         "feed": room["feed"][-60:],
         "awards": {y: a for y, a in sorted(room.get("awards", {}).items())[-3:]},
+        "matches": dict(list(room.get("matches", {}).items())[-150:]),
     }
 
 
@@ -228,6 +229,20 @@ class Handler(BaseHTTPRequestHandler):
                 if len(room["awards"]) > 6:
                     for old in sorted(room["awards"])[:-6]:
                         del room["awards"][old]
+            elif action == "match":
+                # head-to-head barrier and canonical results of finals that involve room players
+                key = clip(data.get("key"), 160)
+                if not key:
+                    return self.reply(400, {"error": "нужен ключ матча"})
+                mt = room.setdefault("matches", {}).setdefault(key, {"ready": [], "res": None})
+                if data.get("ready") and me["id"] not in mt["ready"]:
+                    mt["ready"].append(me["id"])
+                res = data.get("res")
+                if isinstance(res, dict) and mt["res"] is None:
+                    mt["res"] = {k: res.get(k) for k in ("ga", "gb", "et", "pens")}
+                if len(room["matches"]) > 400:
+                    for old in list(room["matches"])[:-300]:
+                        del room["matches"][old]
             elif action == "leave":
                 del room["players"][me["id"]]
                 if not room["players"]:
