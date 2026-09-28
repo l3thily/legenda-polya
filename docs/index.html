@@ -243,6 +243,7 @@ table.t{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
 .jb.me{background:var(--amber)}.jb.them{background:var(--sky)}
 .jury-r em{font-style:normal;font-size:12px;color:var(--muted)}
 /* ceremony */
+.kopa{display:grid;gap:8px;justify-items:center;width:100%}
 .cer{border:1.5px solid var(--amber);border-radius:22px;padding:26px;background:radial-gradient(90% 70% at 50% 0%,rgba(255,180,63,.2),transparent 65%),var(--card);display:grid;gap:14px;text-align:center}
 .cer-win span{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber)}
 .cer-win h1{font-size:clamp(46px,9vw,96px);color:var(--amber2)}
@@ -625,6 +626,7 @@ function* koSingle(A,B,st,reached,o){
     addLog(o.log,`${st} — ${op.name} ${s}${ET(r)} · ${w===me?(st==='Финал'?'победа':'проход'):'вылет'}`);
     if(pre)momentLine(pre,o,st,op,s,r,ga0);
     if(st==='Финал')finalArc(w===me,o.log);
+    {const dg0=myGA()[0]-ga0[0];if(st==='Финал'&&dg0>=3){award('Хет-трик в финале');S.news.push(`Хет-трик в финале: ${o.log}. Такое помнят десятилетиями.`)}}
     if(pre||pk){
       const [g,a]=myGA(),dg=g-ga0[0],da=a-ga0[1],won=w===me;
       const lines=[];
@@ -774,7 +776,7 @@ function* seasonGen(){
   const blank=()=>({apps:0,starts:0,g:0,a:0,cs:0,rs:0});
   S={label:`${y}/${String(Y).slice(2)}`,year:y,age:P.age,clubId:club.id,clubName:club.name,clubStr:Math.round(club.str),lgId:lg.id,lgName:lg.name,loan:P.loanFrom!=null,
      role:roleOf(P.ovr+P.roleMod+(P.captain===club.id?2:0)+(P.rel.coach-50)/20,club.str),uclG:0,wcG:0,euroG:0,hat:0,bigG:0,finG:0,lastRt:6,lgA:0,lastG:0,records:[],derby:{w:0,d:0,l:0,g:0},club:blank(),intl:blank(),oly:blank(),lgGoals:0,tg:0,tapps:0,trs:0,keyN:0,moments:[],
-     comps:[],trophies:[],awards:[],tourn:[],log:{},news:[],inj:[],summer:G.summer.slice(),ovrBefore:Math.round(P.ovr),natName:nat.name,intlRet:P.intlRetired};
+     comps:[],trophies:[],awards:[],tourn:[],anom:[],log:{},news:[],inj:[],summer:G.summer.slice(),ovrBefore:Math.round(P.ovr),natName:nat.name,intlRet:P.intlRetired};
   G.summer=[];
   const called=!P.intlRetired&&!P.skipNT&&P.age>=18&&P.ovr>=nat.str-10;
   TR={tm:0,role:S.role,called,nrole:natRole(P.ovr+(P.ntCaptain?2:0)+(hasPerk('patriot')?2:0),nat.str)};
@@ -797,6 +799,7 @@ function* seasonGen(){
   S.lgPos=myPos;S.lgN=myT.length;
   S.comps.push({n:lg.name,st:`${myPos}-е место`,win:myPos===1});
   if(myPos===1)trophy(lg.name);
+  {const expRank=lg.ids.slice().sort((a,b)=>C(b).str-C(a).str).indexOf(club.id)+1;if(myPos===1&&expRank>=5&&lg.tier===1)S.anom.push({t:'miracle',club:club.name,exp:expRank})}
   S.table=myT.map(r=>[C(r.id).name,r.p,r.w,r.d,r.l,r.gf,r.ga,r.pts,r.id===club.id?1:0]);
   // domestic cups
   for(const cc of [...new Set(G.leagues.map(l=>l.cc))]){
@@ -853,7 +856,7 @@ function* seasonGen(){
   S.ovrAfter=Math.round(P.ovr);S.value=marketValue();
   G.seasons.unshift(S);
   G.year++;
-  G.ceremony=!!(S.bdo&&(S.bdo.place<=30||(P.pos==='GK'&&S.bdo.gkPlace<=5)));
+  G.ceremony=!!(S.bdo&&(S.bdo.place<=30||(P.pos==='GK'&&S.bdo.gkPlace<=5)||(S.bdo.kopaPlace&&S.bdo.kopaPlace<=5)));
   if(retire){doRetire(retire)}else{G.pending=genDecisions();G.pendTotal=G.pending.length}
   checkAch();
   save();
@@ -895,7 +898,12 @@ function* nationYear(Y,SB,ch){
     ch.nat.push(`${t.full}: ${r.w.name}`);
     r.w.str+=1;
     Object.entries(r.reached).forEach(([id,st])=>{const b={'Победитель':t.bon[0],'Финал':t.bon[1],'1/2 финала':t.bon[2]}[st];if(b)addB2(SB.n,+id,b);if(['Чемпионат мира','Чемпионат Европы','Копа Америка'].includes(t.n))SB.nd[+id]=Math.max(SB.nd[+id]||0,DEPTH[st]||0)});
+    const seeds=t.teams.slice().sort((a,b)=>b.str-a.str);
+    Object.entries(r.reached).forEach(([id,s2])=>{const d=DEPTH[s2]||0,si=seeds.findIndex(x=>x.id===+id);if(d>=2&&si>=seeds.length/2&&seeds.length>=8)ch.nat.push(`Сенсация: ${N(+id).name} — ${s2==='Победитель'?'чемпион':s2==='Финал'?'финалист':'полуфиналист'} (${t.full})`)});
     const st=r.reached[nat.id];
+    if(st&&TR.called&&S.tapps>0&&seeds.length>=8){const si=seeds.findIndex(x=>x.id===nat.id),d=DEPTH[st]||0;
+      if(d>=2&&si>=seeds.length/2){S.anom.push({t:'natSens',n:t.full,st,nat:nat.name});S.news.push(`Сенсация: ${nat.name} — ${st==='Победитель'?'чемпион':st==='Финал'?'финалист':'полуфиналист'} турнира «${t.full}».`);if(d>=3)award('Национальный герой')}
+      else if(si<3&&st==='Групповой этап'){S.anom.push({t:'natFlop',n:t.full,nat:nat.name});S.news.push(`Провал: ${nat.name}, один из фаворитов, вылетела из группы на турнире «${t.full}».`)}}
     if(st||t.confs.includes(nat.conf)){
       S.tourn.push({n:t.full,st:st||'не прошла отбор',called:TR.called,win:st==='Победитель',major:['Чемпионат мира','Чемпионат Европы','Копа Америка'].includes(t.n)});
       if(st==='Победитель'&&TR.called)trophy(t.n);
@@ -931,16 +939,19 @@ function* olympics(Y,SB,ch){
 }
 
 const POSB={GK:-3,CB:-2.5,LB:-2.5,RB:-2.5,CDM:-1.5,CM:-.8,CAM:0,LW:0,RW:0,ST:0};
-const JURY=[['star','Класс игрока'],['form','Форма'],['out','Статистика'],['team','Клубные трофеи'],['nat','Сборная'],['big','Большие матчи'],['media','Имя и награды']];
+const JURY=[['star','Класс игрока'],['form','Форма'],['out','Статистика'],['league','Уровень лиги'],['team','Клубные трофеи'],['nat','Сборная'],['big','Большие матчи'],['media','Имя и награды']];
 /* the same formula for everyone: class + form + position-aware output + club & national results + decisive games + reputation */
 function juryScore(c,noise){
   const grp=POS[c.pos].grp;
   let out=grp==='ATT'?(c.g+.6*c.a)*.25:grp==='MID'?(1.2*c.g+.9*c.a)*.25:grp==='DEF'?(1.5*c.g+c.a)*.25+c.cs*.12:c.cs*.2+(c.avg-6.8)*6;
   out=clamp(out,-3,16)+(c.apps<25?-(25-c.apps)*.5:0);
-  const p={star:.9*(c.ovr-80)+POSB[c.pos],form:clamp((c.avg-7)*8,-6,8),out,team:c.team,nat:c.nat,big:c.big*1.5+c.fin*2,media:c.rep*.06+(c.gb?4:0)};
+  const lf=c.lf==null?1:c.lf,fm=clamp((c.avg-7)*8,-6,8);
+  const p={star:.9*(c.ovr-80)+POSB[c.pos],form:fm>0?fm*lf:fm,out:out>0?out*lf:out,league:-(1-lf)*14,team:c.team,nat:c.nat,big:c.big*1.5+c.fin*2,media:c.rep*.06+(c.gb?4:0)};
   Object.keys(p).forEach(k=>p[k]=r1(p[k]));
   return {p,sc:Object.values(p).reduce((x,y)=>x+y,0)+(noise==null?gauss():noise)*1.5};
 }
+/* how visible a league is to the jury: top-5 = 1, weak leagues are much harder to get noticed from */
+function leagueFactor(lgId){const l=LG(lgId);if(TOP5.includes(lgId))return 1;if(l.tier===2)return .55;if(UEFA_CC.includes(l.cc)){const r=coefRank().findIndex(x=>x.cc===l.cc);return r>=0&&r<8?.82:.7}if(lgId==='BRA1'||lgId==='ARG1')return .75;return .62}
 function rivalSeason(r,Y,SB){
   const c=C(r.club),pz=POS[r.pos],q=clamp(1+(r.ovr-c.str)*.035,.45,2.1),def=pz.grp==='GK'||pz.grp==='DEF';
   let apps=clamp(Math.round(36+(SB.cd[r.club]!=null?8:0)+gauss()*4),18,58);if(R()<.12)apps=Math.round(apps*.55);
@@ -962,9 +973,9 @@ function doAwards(SB,Y,ch,myT){
   if(myBoot>0&&myBoot>=bootTop)award('Золотая бутса');
   const gbRival=myBoot>=bootTop?null:rs.find(x=>bootPts(C(x.r.club).lg,x.s.lg)===bootTop);
   const natPts=TR.called?(SB.n[P.nat]||0)*(S.tapps?1:.4):0;
-  const mj=juryScore({ovr:P.ovr,pos:P.pos,apps:c.apps,avg:avg||6,g:c.g+S.intl.g,a:c.a+S.intl.a,cs:c.cs,team:SB.c[P.clubId]||0,nat:natPts,big:S.bigG,fin:S.finG,rep:P.rep,gb:S.awards.includes('Золотая бутса')},gaussP());
-  const me={name:P.name,club:P.clubId,me:true,pos:P.pos,age:P.age,sc:mj.sc,p:mj.p,g:c.g+S.intl.g,a:c.a+S.intl.a};
-  const rv=rs.map(({r,s})=>{const j=juryScore({ovr:r.ovr,pos:r.pos,apps:s.apps,avg:s.avg,g:s.g,a:s.a,cs:s.cs,team:SB.c[r.club]||0,nat:SB.n[r.nat]||0,big:s.big,fin:s.fin,rep:s.rep,gb:gbRival&&gbRival.r===r});return {name:r.name,club:r.club,pos:r.pos,age:Y-r.by,sc:j.sc,p:j.p,g:s.g,a:s.a}});
+  const mj=juryScore({ovr:P.ovr,pos:P.pos,apps:c.apps,avg:avg||6,g:c.g+S.intl.g,a:c.a+S.intl.a,cs:c.cs,team:SB.c[P.clubId]||0,nat:natPts,big:S.bigG,fin:S.finG,rep:P.rep,gb:S.awards.includes('Золотая бутса'),lf:leagueFactor(S.lgId)},gaussP());
+  const me={name:P.name,club:P.clubId,me:true,pos:P.pos,age:P.age,ovr:P.ovr,sc:mj.sc,p:mj.p,g:c.g+S.intl.g,a:c.a+S.intl.a};
+  const rv=rs.map(({r,s})=>{const j=juryScore({ovr:r.ovr,pos:r.pos,apps:s.apps,avg:s.avg,g:s.g,a:s.a,cs:s.cs,team:SB.c[r.club]||0,nat:SB.n[r.nat]||0,big:s.big,fin:s.fin,rep:s.rep,gb:gbRival&&gbRival.r===r,lf:leagueFactor(C(r.club).lg)});return {name:r.name,club:r.club,pos:r.pos,age:Y-r.by,ovr:r.ovr,sc:j.sc,p:j.p,g:s.g,a:s.a}});
   const all=rv.concat(me).sort((a,b)=>b.sc-a.sc),place=all.indexOf(me)+1;
   const pack=x=>({n:x.name,c:C(x.club).name,me:!!x.me,g:x.g,a:x.a,sc:r1(x.sc)});
   S.bdo={place,top:all.slice(0,3).map(pack),list:all.slice(0,30).map(pack),mine:mj.p,win:all[0].p,winName:all[0].me?P.name:all[0].name,myScore:r1(me.sc),cmp:(()=>{const o=all[0].me?all[1]:all[0];return {n:o.name,p:o.p,sc:r1(o.sc)}})(),boot:myBoot>=bootTop?P.name:gbRival?gbRival.r.name:null};
@@ -973,9 +984,20 @@ function doAwards(SB,Y,ch,myT){
   if(P.pos==='GK'){const gks=all.filter(x=>x.pos==='GK');const gp=gks.indexOf(me)+1,o=gks[0].me?gks[1]:gks[0];S.bdo.gkPlace=gp;S.bdo.gkList=gks.slice(0,10).map(pack);S.bdo.gkCmp=o?{n:o.name,p:o.p,sc:r1(o.sc)}:null}
   if(place===1)award('Золотой мяч');
   if(place<=11)award('Символическая сборная FIFPro');
-  if(P.age<=21){const yg=all.filter(x=>x.age<=21);if(yg[0]===me)award('Трофей Копа')}
+  {
+    const young=rv.filter(x=>x.age<=21);
+    const topc=G.clubs.slice().sort((a,b)=>b.str-a.str).slice(0,40);
+    for(let k=young.length;k<10;k++){const age=ri(18,21),r={name:`${pick(FN)} ${pick(LN)}`,club:pick(topc).id,pos:pick(['ST','LW','RW','CAM','CM','CB','LB','RB','CDM','GK']),ovr:ri(72,80),nat:-1,by:Y-age};const s2=rivalSeason(r,Y,SB),j=juryScore({ovr:r.ovr,pos:r.pos,apps:s2.apps,avg:s2.avg,g:s2.g,a:s2.a,cs:s2.cs,team:SB.c[r.club]||0,nat:0,big:s2.big,fin:s2.fin,rep:30,lf:leagueFactor(C(r.club).lg)});young.push({name:r.name,club:r.club,pos:r.pos,age,ovr:r.ovr,sc:j.sc,p:j.p,g:s2.g,a:s2.a})}
+    const ks=(x,n)=>x.p.form*1.3+x.p.out*1.3+x.p.league+x.p.team*.4+x.p.nat*.4+x.p.big+(x.ovr-78)*.6+(21-x.age)*.8+n*1.5;
+    const field=young.map(x=>({...x,k:ks(x,gauss())}));
+    if(P.age<=21)field.push({...me,k:ks(me,gaussP())});
+    field.sort((a,b)=>b.k-a.k);
+    const kp=field.findIndex(x=>x.me)+1;
+    S.bdo.kopaList=field.slice(0,5).map(x=>({n:x.name,c:C(x.club).name,me:!!x.me,age:x.age,g:x.g,a:x.a}));S.bdo.kopaPlace=kp||null;
+    if(kp===1)award('Трофей Копа');
+  }
   if(P.pos==='GK'){const gk=all.filter(x=>x.pos==='GK');if(gk[0]===me)award('Трофей Яшина')}
-  {const yk=all.find(x=>x.age<=21&&!x.me),gk=all.find(x=>x.pos==='GK');S.bdo.kopa=S.awards.includes('Трофей Копа')?P.name:yk?yk.name:null;S.bdo.yashin=gk?(gk.me?P.name:gk.name):null}
+  {const gk=all.find(x=>x.pos==='GK');S.bdo.kopa=S.bdo.kopaList[0].n;S.bdo.yashin=gk?(gk.me?P.name:gk.name):null}
   const thr=Math.round(clamp(15+(lg.ids.length-16)*.5+(TOP5.includes(lg.id)?4:0)+gaussP()*3.5,10,36));
   if(S.lgGoals>=thr&&S.lgGoals>=8)award(`Лучший бомбардир · ${lg.name}`);
   if(c.apps>=20&&(avg>=7.55||(avg>=7.35&&S.lgPos===1)))award(`Игрок сезона · ${lg.name}`);
@@ -991,7 +1013,7 @@ function endSeasonPlayer(){
   const P=G.P,c=S.club,avg=c.apps?c.rs/c.apps:6.3,ratio=TR.tm?c.apps/TR.tm:0,a=P.age;
   S.teamMatches=TR.tm;
   let g=a<=19?2.5+RP()*3:a<=21?2+RP()*2.8:a<=23?1+RP()*2.4:a<=26?.2+RP()*1.6:a<=29?-.6+RP()*1.3:a<=31?-1.6+RP()*1.5:a<=33?-2.6+RP()*1.6:-3.6-RP()*1.4;
-  if(g>0){g*=.35+.9*Math.min(1,ratio/.6);g*=clamp((P.pot-P.ovr)/7,.1,1.3);g+=(S.clubStr-72)*.02;if(avg>=7.3)g+=.5;if(P.fight)g+=.4;g+=P.growMod}
+  if(g>0){g*=.35+.9*Math.min(1,ratio/.6);g*=clamp((P.pot-P.ovr)/7,.1,1.3);g+=(S.clubStr-72)*.02;if(avg>=7.3)g+=.5;if(P.fight)g+=.4;g+=P.growMod;g*=.88}
   else{if(avg>=7.3)g+=.4;if(ratio>.5&&a<=31)g+=.2;g+=Math.min(0,P.growMod)*.5;if(P.diet)g*=.7}
   if(S.inj.some(n=>n>=12)){g-=.8;S.news.push('Тяжёлая травма замедлила прогресс.')}
   if(g>0)g+=(morale()-50)/60;
@@ -1063,6 +1085,7 @@ function promote(tables,a,b,k){
   const A=LG(a),B=LG(b),down=tables[a].slice(-k).map(r=>r.id),up=tables[b].slice(0,k).map(r=>r.id);
   A.ids=A.ids.filter(i=>!down.includes(i)).concat(up);B.ids=B.ids.filter(i=>!up.includes(i)).concat(down);
   down.forEach(i=>{C(i).lg=b;C(i).str-=1.5});up.forEach(i=>{C(i).lg=a;C(i).str+=1.5});
+  if(down.includes(S.clubId)&&S.role>=3)S.anom.push({t:'relegated',club:S.clubName});
   if(down.includes(S.clubId))S.news.push(`«${S.clubName}» вылетел из лиги «${A.name}».`);
   if(up.includes(S.clubId))S.promoted=true;if(up.includes(S.clubId))S.news.push(`«${S.clubName}» выходит в «${A.name}»!`);
 }
@@ -1133,6 +1156,8 @@ function genDecisions(){
   if(P.age>=29&&P.ovr>=77&&club.lg!=='KSA1'&&RP()<.3){const c=pickP(LG('KSA1').ids.map(C).sort((a,b)=>b.str-a.str).slice(0,6));const of=makeOffer(c,P.contract<=0,2.3);of.years=riP(2,3);D.push({club:true,title:'Предложение из Саудовской Аравии',body:`«${c.name}» предлагает контракт, от которого трудно отказаться.`,opts:[offerOpt(of),{label:'Отказаться',sub:'Остаться в Европе',detail:'Спортивные амбиции важнее',act:{t:'none'}}]})}
   if(P.age>=32&&P.ovr>=68&&club.lg!=='USA1'&&RP()<.35){const c=pickP(LG('USA1').ids.map(C).sort((a,b)=>b.str-a.str).slice(0,10));const of=makeOffer(c,P.contract<=0,1.4);of.years=2;D.push({club:true,title:'Зовут в MLS',body:`«${c.name}» хочет сделать вас лицом команды.`,opts:[offerOpt(of),{label:'Отказаться',sub:'Остаться',detail:'',act:{t:'none'}}]})}
   if(P.age>=31&&P.firstClub!==P.clubId&&RP()<.25){const c=C(P.firstClub);const of=makeOffer(c,P.contract<=0);of.fee=r1(of.fee*.6);of.years=2;D.push({club:true,title:'Родной клуб зовёт домой',body:`«${c.name}», где вы начинали, хочет вернуть вас.`,opts:[offerOpt(of),{label:'Не сейчас',sub:'Остаться',detail:'',act:{t:'none'}}]})}
+  // reactions to what happened last season
+  D.push(...anomalyDecisions());
   // transfer saga and rare easter eggs
   {const sg=sagaDecision(club);if(sg)D.push(sg)}
   D.push(...genEggs());
@@ -1403,6 +1428,9 @@ const ACHS=[
   ['eggs','Коллекционер','Поймать 3 редких события за одну карьеру',()=>(G.P.eggs||[]).length>=3],
   ['dark','Тёмная сторона','Получить пожизненную дисквалификацию',()=>G.P.retired&&G.P.retired.why==='ban'],
   ['fee','Дороже Неймара','Стать самым дорогим игроком в истории',()=>(G.P.maxFee||0)>222],
+  ['kopa','Золотой мальчик','Выиграть Трофей Копа',()=>S.awards.includes('Трофей Копа')],
+  ['natHero','Национальный герой','Дойти до финала турнира со сборной-аутсайдером',()=>S.awards.includes('Национальный герой')],
+  ['finalHat','Хет-трик в финале','Забить три гола в финале',()=>S.awards.includes('Хет-трик в финале')],
   ['oneClub','Один клуб','Провести всю карьеру (10+ сезонов) в одном клубе',()=>G.phase==='retired'&&G.seasons.length>=10&&new Set(G.seasons.map(s=>s.clubId)).size===1]
 ];
 function checkAch(){
@@ -1438,11 +1466,11 @@ function computeLegacy(){
 /* ================= Ballon d'Or ceremony ================= */
 function juryBlock(b){
   if(!b||!b.mine||!b.cmp)return '';
-  const mx=Math.max(4,...JURY.map(([k])=>Math.max(Math.abs(b.mine[k]),Math.abs(b.cmp.p[k]))));
+  const mx=Math.max(4,...JURY.map(([k])=>Math.max(Math.abs(b.mine[k]||0),Math.abs(b.cmp.p[k]||0))));
   const bar=(v,cls)=>`<span class="jb ${cls}" style="width:${Math.max(2,Math.abs(v)/mx*100).toFixed(0)}%;${v<0?'opacity:.45':''}"></span>`;
   return `<div class="jury"><div class="jury-h"><span></span><b>Вы · ${b.myScore}</b><b>${esc(b.cmp.n)} · ${b.cmp.sc}</b></div>
-    ${JURY.map(([k,n])=>`<div class="jury-r"><span>${n}</span><div>${bar(b.mine[k],'me')}<em class="num">${b.mine[k]}</em></div><div>${bar(b.cmp.p[k],'them')}<em class="num">${b.cmp.p[k]}</em></div></div>`).join('')}
-    <p class="small dim" style="margin:6px 0 0">Класс — рейтинг и позиция. Форма — средняя оценка. Статистика — голы, передачи и сухие матчи с учётом позиции. Клубные трофеи — лига, кубки, еврокубки. Большие матчи — голы в плей-офф ЛЧ, ЧМ, Евро, Копа и в финалах. Имя и награды — репутация и Золотая бутса. Плюс немного субъективности жюри.</p></div>`;
+    ${JURY.filter(([k])=>b.mine[k]!=null).map(([k,n])=>`<div class="jury-r"><span>${n}</span><div>${bar(b.mine[k],'me')}<em class="num">${b.mine[k]}</em></div><div>${bar(b.cmp.p[k]||0,'them')}<em class="num">${b.cmp.p[k]||0}</em></div></div>`).join('')}
+    <p class="small dim" style="margin:6px 0 0">Класс — рейтинг и позиция. Форма — средняя оценка. Уровень лиги — из слабых лиг жюри замечает хуже, форма и статистика там весят меньше. Статистика — голы, передачи и сухие матчи с учётом позиции. Клубные трофеи — лига, кубки, еврокубки. Большие матчи — голы в плей-офф ЛЧ, ЧМ, Евро, Копа и в финалах. Имя и награды — репутация и Золотая бутса. Плюс немного субъективности жюри.</p></div>`;
 }
 function ceremonyView(){
   const s=G.seasons[0],b0=s.bdo,gk=G.P.pos==='GK'&&b0.gkList;
@@ -1454,6 +1482,7 @@ function ceremonyView(){
     <div class="cer-win"><span>Обладатель</span><h1 class="disp">${esc(w.n)}</h1><p>${esc(w.c)}</p></div>
     <p class="cer-you">${gk?(b.place===1?'Это вы. Лучший вратарь планеты.':`Вы ${b.place}-й среди вратарей.`):b.place===1?'Это вы. Лучший футболист планеты.':b.place<=3?`Вы на подиуме: ${b.place}-е место.`:b.place<=30?`Ваше место — ${b.place}-е.`:'Вы не вошли в топ-30.'}</p>
     ${gk?`<p class="small muted">Золотой мяч: <b>${esc(b0.list[0].n)}</b> (${esc(b0.list[0].c)}). Ваше место в общем голосовании — ${b0.place<=30?b0.place+'-е':'вне топ-30'}.</p>`:''}
+    ${b0.kopaList&&b0.kopaPlace?`<div class="kopa"><p class="eyebrow">Трофей Копа · лучший игрок до 21 года</p><ol class="cer-list">${b0.kopaList.map((x,i)=>`<li class="${x.me?'me':''}"><span class="num">${i+1}</span><b>${esc(x.n)}</b><em>${esc(x.c)} · ${x.age} лет</em></li>`).join('')}</ol><p class="small muted">${b0.kopaPlace===1?'Трофей Копа — ваш!':`Ваше место — ${b0.kopaPlace}-е.`}</p></div>`:''}
     ${!gk&&(b.kopa||b.yashin)?`<p class="small muted">${b.kopa?`Трофей Копа (до 21): <b>${esc(b.kopa)}</b>. `:''}${b.yashin?`Трофей Яшина: <b>${esc(b.yashin)}</b>.`:''}</p>`:''}
     ${b.boot?`<p class="small muted">Золотая бутса: <b>${esc(b.boot)}</b>.</p>`:''}
     ${juryBlock(b)}
@@ -1514,6 +1543,31 @@ function sagaDecision(club){
     if(tops.length){const t=pickP(tops);P.saga={club:t.id,y:G.year};G.summer.push(`«${t.name}» внимательно следит за вами: скауты на каждом матче. Пресса ждёт трансферную сагу.`)}
   }
   return null;
+}
+
+/* ================= reactions to unusual seasons ================= */
+function anomalyDecisions(){
+  const P=G.P,last=G.seasons[0],out=[];if(!last||!last.anom)return out;
+  const seen=new Set();
+  for(const a of last.anom){if(seen.has(a.t)||out.length>=2)continue;seen.add(a.t);
+    if(a.t==='natSens')out.push({ev:true,club:false,title:'Сенсация турнира',body:`${a.nat} на турнире «${a.n}»: ${a.st==='Победитель'?'чемпион':a.st==='Финал'?'финал':'полуфинал'}. В это никто не верил. Страна сходит с ума, в аэропорту вас встречали тысячи людей.`,opts:[
+      {label:'Разделить успех с командой',sub:'Мы сделали это вместе',detail:'Раздевалка и репутация растут',act:{t:'fx',team:10,rep:3,log:'Вы посвятили успех команде.'}},
+      {label:'Стать лицом успеха',sub:'Интервью, реклама, обложки',detail:'Репутация и деньги, но партнёры косятся',act:{t:'fx',rep:6,money:1,team:-6,log:'Вы стали главным лицом сенсации.'}},
+      ...(P.age>=29?[{label:'Уйти из сборной на пике',sub:'Лучшего момента не будет',detail:'Больше сил на клуб, карьера длиннее',act:{t:'fx',intlRetire:1,retire:.6,rep:2,log:'Вы ушли из сборной на пике.'}}]:[])]});
+    if(a.t==='natFlop')out.push({ev:true,club:false,title:'Провал на турнире',body:`${a.nat} вылетела из группы на турнире «${a.n}», хотя считалась фаворитом. Пресса ищет виноватых.`,opts:[
+      {label:'Взять вину на себя',sub:'Я лидер — я отвечаю',detail:'Уважение растёт',act:{t:'fx',rep:2,log:'Вы взяли вину за провал на себя.'}},
+      {label:'Обвинить тренера',sub:'Тактика была ужасной',detail:'Тренера уволят, но осадок останется',act:{t:'fx',rep:-3,log:'После ваших слов тренера сборной уволили.'}},
+      ...(P.age>=28&&!P.intlRetired?[{label:'Завершить карьеру в сборной',sub:'Хватит',detail:'Больше сил на клуб',act:{t:'fx',intlRetire:1,retire:.6,log:'Вы ушли из сборной после провала.'}}]:[])]});
+    if(a.t==='miracle'&&last.clubId===P.clubId)out.push({ev:true,club:true,title:'Чудо-сезон',body:`«${a.club}» стал чемпионом, хотя перед сезоном был лишь ${a.exp}-м по силе. О вас снимают фильм, а гранды уже звонят.`,opts:[
+      {label:'Подписать новый контракт',sub:'Остаться героем',detail:'+2 года, зарплата +20%, фанаты вас боготворят',act:{t:'fx',contractAdd:2,wageMul:1.2,fans:14,log:'Вы продлили контракт с чемпионом.'}},
+      {label:'Воспользоваться моментом',sub:'Цена сейчас максимальная',detail:'Больше предложений следующим летом',act:{t:'fx',wantOut:1,rep:2,fans:-6,log:'Вы решили продать себя подороже.'}},
+      {label:'Ничего не менять',sub:'Просто играть',detail:'',act:{t:'fx',log:'Вы остались без громких заявлений.'}}]});
+    if(a.t==='relegated'&&last.clubId===P.clubId&&P.contract>0)out.push({ev:true,club:true,title:'Клуб вылетел',body:`«${a.club}» вылетел, хотя вы были в основе. В контракте есть пункт о вылете.`,opts:[
+      {label:'Остаться и вернуть клуб',sub:'Вместе падали — вместе поднимемся',detail:'Фанаты не забудут',act:{t:'fx',fans:25,team:8,rep:2,log:'Вы остались, чтобы вернуть клуб наверх.'}},
+      {label:'Активировать пункт о вылете',sub:'Уйти бесплатно',detail:'Сразу станете свободным агентом',act:{t:'fx',fans:-10,freeNow:1,log:'Вы воспользовались пунктом о вылете.'}},
+      {label:'Попросить трансфер',sub:'Клуб получит деньги',detail:'Больше предложений следующим летом',act:{t:'fx',wantOut:1,log:'Вы попросили трансфер после вылета.'}}]});
+  }
+  return out;
 }
 
 /* ================= dual nationality ================= */
@@ -1788,6 +1842,7 @@ function applyFx(fx){
   if(fx.qMod)P.qMod=fx.qMod;
   if(fx.skipNT)P.skipNT=1;
   if(fx.fixed)P.fixed=true;
+  if(fx.intlRetire)P.intlRetired=true;
   if(fx.natSet!=null)P.nat=fx.natSet;
   if(fx.nat2Clear)P.nat2=null;
   if(fx.freeNow){P.contract=0;G.pending.splice(1,0,freeAgentDecision());G.pendTotal++}
@@ -1801,7 +1856,7 @@ function startCareer(){
   G=buildWorld(f.rus);G.code=code;
   const lg=LG(f.lg),club=lg.ids.map(C).find(c=>c.name===f.club)||C(lg.ids[0]);
   const nat=natByName(f.nat);
-  const ovr=riP(55,61),pot=Math.round(clamp(82+gaussP()*5.5,70,96));
+  const ovr=riP(55,61),pot=Math.round(clamp(80+gaussP()*5.5,70,95));
   G.P={name:f.name.trim()||'Безымянный',nat:nat.id,natOrig:nat.id,pos:f.pos,age:17,ovr,pot,potOff:riP(-2,2),
     retireAge:r1(clamp(34.3+gaussP()*1.6+(f.pos==='GK'?2.5:0)+(f.pos==='CB'?.5:0),31,41)),
     clubId:club.id,firstClub:club.id,loanFrom:null,contract:3,wage:0,inj:0,caps:0,ig:0,tournApps:0,intlRetired:false,wantOut:false,fight:false,natOff:{},cy:{},earn:0,
