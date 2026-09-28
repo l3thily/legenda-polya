@@ -18,7 +18,7 @@ HOST, PORT = "127.0.0.1", int(os.environ.get("PORT", "8095"))
 DATA = os.environ.get("DATA", "/var/lib/legenda-polya/rooms.json")
 ORIGINS = {"https://l3thily.github.io", "https://legenda-polya.88-218-121-40.sslip.io"}
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED = 500, 8, 16_000, 120
+MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED = 500, 8, 60_000, 120
 ROOM_TTL = 30 * 24 * 3600
 RUS_MODES = {"random", "off", "on"}
 
@@ -68,8 +68,10 @@ def public(room):
     return {
         "code": room["code"], "status": room["status"], "seed": room.get("seed"), "rus": room["rus"],
         "host": room["host"], "started": room.get("started"),
-        "players": [{k: p[k] for k in ("id", "name", "ready", "setup", "progress")} for p in room["players"].values()],
+        "players": [{**{k: p[k] for k in ("id", "name", "ready", "setup", "progress")},
+                     "year": p.get("year"), "readyYear": p.get("readyYear")} for p in room["players"].values()],
         "feed": room["feed"][-60:],
+        "awards": {y: a for y, a in sorted(room.get("awards", {}).items())[-3:]},
     }
 
 
@@ -171,6 +173,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(404, {"error": "Комната не найдена"})
             action = parts[3]
             if action == "join":
+                if room["status"] == "started" and any((p.get("progress") or {}).get("season") not in (None, "старт") for p in room["players"].values()):
+                    return self.reply(409, {"error": "Игра уже идёт: войти можно только до первого сыгранного сезона"})
                 if len(room["players"]) >= MAX_PLAYERS:
                     return self.reply(409, {"error": "В комнате уже 8 игроков"})
                 pid, token = add_player(room, data.get("name"))
@@ -199,9 +203,31 @@ class Handler(BaseHTTPRequestHandler):
                 prog = data.get("progress")
                 if isinstance(prog, dict) and len(json.dumps(prog)) < 4000:
                     me["progress"] = prog
+                    if isinstance(prog.get("year"), int):
+                        me["year"] = prog["year"]
                 for line in (data.get("feed") or [])[:8]:
                     room["feed"].append({"t": now, "pid": me["id"], "text": f"{me['name']}: {clip(line, 200)}"})
                 room["feed"] = room["feed"][-MAX_FEED:]
+            elif action == "season":
+                # "I want to play season <year>": clients start it once every active teammate is ready or ahead
+                year = data.get("year")
+                if not isinstance(year, int):
+                    return self.reply(400, {"error": "нужен год сезона"})
+                me["readyYear"] = year
+                me["year"] = year
+            elif action == "awards":
+                # one jury per room: the first submitter's star list is canonical, every player adds own score
+                year = data.get("year")
+                sub = data.get("me")
+                if not isinstance(year, int) or not isinstance(sub, dict):
+                    return self.reply(400, {"error": "нужны год и результат"})
+                aw = room.setdefault("awards", {}).setdefault(str(year), {"canon": None, "subs": {}})
+                if aw["canon"] is None and isinstance(data.get("canon"), dict):
+                    aw["canon"] = data["canon"]
+                aw["subs"][me["id"]] = sub
+                if len(room["awards"]) > 6:
+                    for old in sorted(room["awards"])[:-6]:
+                        del room["awards"][old]
             elif action == "leave":
                 del room["players"][me["id"]]
                 if not room["players"]:

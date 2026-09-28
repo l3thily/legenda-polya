@@ -237,6 +237,7 @@ table.t{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
 .cer-list li b{font-weight:600}
 .cer-list li em{font-style:normal;color:var(--muted);font-size:13px}
 .cer-list li.me{background:rgba(255,180,63,.16);outline:1px solid var(--amber)}
+.cer-list li.mate{outline:1px solid var(--sky)}
 .cer-list li:nth-child(-n+3) .num{color:var(--amber)}
 .cer .go{justify-content:center}
 @media (prefers-reduced-motion:no-preference){.cer-list li{animation:rise .4s ease-out both;animation-delay:calc(var(--i)*35ms)}}
@@ -828,7 +829,7 @@ function* seasonGen(){
   // national teams
   yield* nationYear(Y,SB,ch);
   // awards
-  doAwards(SB,Y,ch,myT);
+  yield* doAwards(SB,Y,ch,myT);
   // player update
   const retire=endSeasonPlayer();
   // world update
@@ -955,38 +956,57 @@ function rivalSeason(r,Y,SB){
   const big=poisson(bigN*tg*(pz.g+.5*pz.a)*q),fin=(SB.cd[r.club]===3||SB.nd[r.nat]===3)?poisson(tg*pz.g*q):0;
   return {apps,g,a,cs,avg,big,fin,lg:Math.round(g*.72),rep:clamp(40+(r.ovr-78)*4,20,98)};
 }
-function doAwards(SB,Y,ch,myT){
+/* one vote for the whole room: in a room the star list comes from the first player to submit, and every player's own score joins it */
+function* doAwards(SB,Y,ch,myT){
   const P=G.P,c=S.club,lg=LG(S.lgId),avg=c.apps?c.rs/c.apps:0;
-  // Golden Boot among everyone in European leagues
+  const room=!!(G.room&&MP.sess&&MP.sess.code===G.room.code);
   const bootPts=(lgId,goals)=>{const l=LG(lgId);return UEFA_CC.includes(l.cc)&&l.tier===1?goals*(TOP5.includes(lgId)?2:1.5):0};
   const rs=G.rivals.map(r=>({r,s:rivalSeason(r,Y,SB)}));
   const bootBase=2*clamp(24+gauss()*3,18,34);
-  const bootTop=Math.max(bootBase,...rs.map(x=>bootPts(C(x.r.club).lg,x.s.lg)));
+  const rb=rs.map(x=>({n:x.r.name,pts:bootPts(C(x.r.club).lg,x.s.lg)})).sort((a,b)=>b.pts-a.pts)[0];
+  let bootTop=Math.max(bootBase,rb?rb.pts:0),bootName=rb&&rb.pts>=bootBase?rb.n:null;
   const myBoot=bootPts(S.lgId,S.lgGoals);
-  if(myBoot>0&&myBoot>=bootTop)award('Золотая бутса');
-  const gbRival=myBoot>=bootTop?null:rs.find(x=>bootPts(C(x.r.club).lg,x.s.lg)===bootTop);
+  const soloBoot=!room&&myBoot>0&&myBoot>=bootTop;
+  if(soloBoot)award('Золотая бутса');
   const natPts=TR.called?(SB.n[P.nat]||0)*(S.tapps?1:.4):0;
-  const mj=juryScore({ovr:P.ovr,pos:P.pos,apps:c.apps,avg:avg||6,g:c.g+S.intl.g,a:c.a+S.intl.a,cs:c.cs,team:SB.c[P.clubId]||0,nat:natPts,big:S.bigG,fin:S.finG,rep:P.rep,gb:S.awards.includes('Золотая бутса'),lf:leagueFactor(S.lgId)},gaussP());
+  const mj=juryScore({ovr:P.ovr,pos:P.pos,apps:c.apps,avg:avg||6,g:c.g+S.intl.g,a:c.a+S.intl.a,cs:c.cs,team:SB.c[P.clubId]||0,nat:natPts,big:S.bigG,fin:S.finG,rep:P.rep,gb:soloBoot,lf:leagueFactor(S.lgId)},gaussP());
   const me={name:P.name,club:P.clubId,me:true,pos:P.pos,age:P.age,ovr:P.ovr,sc:mj.sc,p:mj.p,g:c.g+S.intl.g,a:c.a+S.intl.a};
-  const rv=rs.map(({r,s})=>{const j=juryScore({ovr:r.ovr,pos:r.pos,apps:s.apps,avg:s.avg,g:s.g,a:s.a,cs:s.cs,team:SB.c[r.club]||0,nat:SB.n[r.nat]||0,big:s.big,fin:s.fin,rep:s.rep,gb:gbRival&&gbRival.r===r,lf:leagueFactor(C(r.club).lg)});return {name:r.name,club:r.club,pos:r.pos,age:Y-r.by,ovr:r.ovr,sc:j.sc,p:j.p,g:s.g,a:s.a}});
-  const all=rv.concat(me).sort((a,b)=>b.sc-a.sc),place=all.indexOf(me)+1;
-  const pack=x=>({n:x.name,c:C(x.club).name,me:!!x.me,g:x.g,a:x.a,sc:r1(x.sc)});
-  S.bdo={place,top:all.slice(0,3).map(pack),list:all.slice(0,30).map(pack),mine:mj.p,win:all[0].p,winName:all[0].me?P.name:all[0].name,myScore:r1(me.sc),cmp:(()=>{const o=all[0].me?all[1]:all[0];return {n:o.name,p:o.p,sc:r1(o.sc)}})(),boot:myBoot>=bootTop?P.name:gbRival?gbRival.r.name:null};
+  const gbRival=soloBoot?null:bootName;
+  let rivals=rs.map(({r,s})=>{const j=juryScore({ovr:r.ovr,pos:r.pos,apps:s.apps,avg:s.avg,g:s.g,a:s.a,cs:s.cs,team:SB.c[r.club]||0,nat:SB.n[r.nat]||0,big:s.big,fin:s.fin,rep:s.rep,gb:gbRival===r.name,lf:leagueFactor(C(r.club).lg)});return {name:r.name,club:r.club,pos:r.pos,age:Y-r.by,ovr:r.ovr,sc:j.sc,p:j.p,g:s.g,a:s.a}});
+  // Kopa field: young stars and prospects
+  const ks=(x,n)=>x.p.form*1.3+x.p.out*1.3+(x.p.league||0)+x.p.team*.4+x.p.nat*.4+x.p.big+(x.ovr-78)*.6+(21-x.age)*.8+n*1.5;
+  let kopa;
+  {
+    const young=rivals.filter(x=>x.age<=21);
+    const topc=G.clubs.slice().sort((a,b)=>b.str-a.str).slice(0,40);
+    for(let k=young.length;k<10;k++){const age=ri(18,21),r={name:`${pick(FN)} ${pick(LN)}`,club:pick(topc).id,pos:pick(['ST','LW','RW','CAM','CM','CB','LB','RB','CDM','GK']),ovr:ri(72,80),nat:-1,by:Y-age};const s2=rivalSeason(r,Y,SB),j=juryScore({ovr:r.ovr,pos:r.pos,apps:s2.apps,avg:s2.avg,g:s2.g,a:s2.a,cs:s2.cs,team:SB.c[r.club]||0,nat:0,big:s2.big,fin:s2.fin,rep:30,lf:leagueFactor(C(r.club).lg)});young.push({name:r.name,club:r.club,pos:r.pos,age,ovr:r.ovr,sc:j.sc,p:j.p,g:s2.g,a:s2.a})}
+    kopa=young.map(x=>({name:x.name,club:x.club,age:x.age,g:x.g,a:x.a,k:ks(x,gauss())}));
+  }
+  const myK=P.age<=21?ks(me,gaussP()):null;
+  let others=[];
+  if(room){
+    const sub={name:P.name,club:P.clubId,pos:P.pos,age:P.age,ovr:r1(P.ovr),sc:me.sc,p:mj.p,g:me.g,a:me.a,k:myK,boot:myBoot};
+    const canon={rivals:rivals.map(x=>({...x,sc:r1(x.sc)})),kopa:kopa.map(x=>({...x,k:r1(x.k)})),boot:{pts:bootTop,name:bootName}};
+    const res=yield {kind:'sync',year:G.year,sub,canon,comp:'Золотой мяч',st:S.label,title:'Жюри подводит итоги'};
+    if(res&&res.canon){rivals=res.canon.rivals;kopa=res.canon.kopa;bootTop=res.canon.boot.pts;bootName=res.canon.boot.name}
+    if(res&&res.subs)others=Object.entries(res.subs).filter(([pid])=>pid!==MP.sess.pid).map(([pid,x])=>({...x,room:true,pid}));
+    const bc=[{name:P.name,pts:myBoot,me:true},...others.map(o=>({name:o.name,pts:o.boot||0}))].sort((a,b)=>b.pts-a.pts);
+    if(bc[0].pts>0&&bc[0].pts>=bootTop){bootName=bc[0].name;if(bc[0].me)award('Золотая бутса')}
+  }else if(soloBoot)bootName=P.name;
+  const all=rivals.concat(others,[me]).sort((a,b)=>b.sc-a.sc),place=all.indexOf(me)+1;
+  const pack=x=>({n:x.name,c:C(x.club).name,me:!!x.me,room:!!x.room,g:x.g,a:x.a,sc:r1(x.sc)});
+  S.bdo={place,top:all.slice(0,3).map(pack),list:all.slice(0,30).map(pack),mine:mj.p,win:all[0].p,winName:all[0].me?P.name:all[0].name,myScore:r1(me.sc),cmp:(()=>{const o=all[0].me?all[1]:all[0];return {n:o.name,p:o.p,sc:r1(o.sc)}})(),boot:bootName};
   ch.bdo=all[0].me?P.name:all[0].name;
   feudLine(all,me);
   if(P.pos==='GK'){const gks=all.filter(x=>x.pos==='GK');const gp=gks.indexOf(me)+1,o=gks[0].me?gks[1]:gks[0];S.bdo.gkPlace=gp;S.bdo.gkList=gks.slice(0,10).map(pack);S.bdo.gkCmp=o?{n:o.name,p:o.p,sc:r1(o.sc)}:null}
   if(place===1)award('Золотой мяч');
   if(place<=11)award('Символическая сборная FIFPro');
   {
-    const young=rv.filter(x=>x.age<=21);
-    const topc=G.clubs.slice().sort((a,b)=>b.str-a.str).slice(0,40);
-    for(let k=young.length;k<10;k++){const age=ri(18,21),r={name:`${pick(FN)} ${pick(LN)}`,club:pick(topc).id,pos:pick(['ST','LW','RW','CAM','CM','CB','LB','RB','CDM','GK']),ovr:ri(72,80),nat:-1,by:Y-age};const s2=rivalSeason(r,Y,SB),j=juryScore({ovr:r.ovr,pos:r.pos,apps:s2.apps,avg:s2.avg,g:s2.g,a:s2.a,cs:s2.cs,team:SB.c[r.club]||0,nat:0,big:s2.big,fin:s2.fin,rep:30,lf:leagueFactor(C(r.club).lg)});young.push({name:r.name,club:r.club,pos:r.pos,age,ovr:r.ovr,sc:j.sc,p:j.p,g:s2.g,a:s2.a})}
-    const ks=(x,n)=>x.p.form*1.3+x.p.out*1.3+x.p.league+x.p.team*.4+x.p.nat*.4+x.p.big+(x.ovr-78)*.6+(21-x.age)*.8+n*1.5;
-    const field=young.map(x=>({...x,k:ks(x,gauss())}));
-    if(P.age<=21)field.push({...me,k:ks(me,gaussP())});
+    const field=kopa.concat(others.filter(o=>o.k!=null).map(o=>({name:o.name,club:o.club,age:o.age,g:o.g,a:o.a,k:o.k,room:true})));
+    if(myK!=null)field.push({name:P.name,club:P.clubId,age:P.age,g:me.g,a:me.a,k:myK,me:true});
     field.sort((a,b)=>b.k-a.k);
     const kp=field.findIndex(x=>x.me)+1;
-    S.bdo.kopaList=field.slice(0,5).map(x=>({n:x.name,c:C(x.club).name,me:!!x.me,age:x.age,g:x.g,a:x.a}));S.bdo.kopaPlace=kp||null;
+    S.bdo.kopaList=field.slice(0,5).map(x=>({n:x.name,c:C(x.club).name,me:!!x.me,room:!!x.room,age:x.age,g:x.g,a:x.a}));S.bdo.kopaPlace=kp||null;
     if(kp===1)award('Трофей Копа');
   }
   if(P.pos==='GK'){const gk=all.filter(x=>x.pos==='GK');if(gk[0]===me)award('Трофей Яшина')}
@@ -1210,7 +1230,7 @@ function doRetire(why){
 /* ================= season driver ================= */
 function beginSeason(){UI.confirmRetire=false;UI.err=null;RUN=seasonGen();stepSeason()}
 function stepSeason(inp){
-  try{const r=RUN.next(inp);if(r.done){RUN=null;MATCH=null;mpProgress()}else MATCH=r.value}
+  try{const r=RUN.next(inp);if(r.done){RUN=null;MATCH=null;mpProgress()}else{MATCH=r.value;if(MATCH.kind==='sync')setTimeout(()=>mpAwardsSync(MATCH),0)}}
   catch(err){console.error(err);RUN=null;MATCH=null;if(SAVED)G=migrate(JSON.parse(SAVED));UI.err='В симуляции сезона что-то сломалось. Сезон откатился к началу, попробуйте сыграть его ещё раз.'}
   render();
   const el=document.querySelector(MATCH?'.bigm':'.hero');if(el)el.scrollIntoView({block:'start'});
@@ -1469,14 +1489,14 @@ function juryBlock(b){
 function ceremonyView(){
   const s=G.seasons[0],b0=s.bdo,gk=G.P.pos==='GK'&&b0.gkList;
   const b=gk?{...b0,place:b0.gkPlace,list:b0.gkList,cmp:b0.gkCmp}:b0,list=b.list||[];
-  const rows=list.map((x,i)=>`<li class="${x.me?'me':''}" style="--i:${list.length-i}"><span class="num">${i+1}</span><b>${esc(x.n)}</b><em>${esc(x.c)}${x.g!=null&&!gk?` · ${x.g}+${x.a}`:''}${x.sc!=null?` · <span class="num">${x.sc}</span>`:''}</em></li>`).join('');
+  const rows=list.map((x,i)=>`<li class="${x.me?'me':x.room?'mate':''}" style="--i:${list.length-i}"><span class="num">${i+1}</span><b>${esc(x.n)}${x.room?' <span class="tag">комната</span>':''}</b><em>${esc(x.c)}${x.g!=null&&!gk?` · ${x.g}+${x.a}`:''}${x.sc!=null?` · <span class="num">${x.sc}</span>`:''}</em></li>`).join('');
   const w=list[0];
   return `<section class="cer">
     <p class="eyebrow">Париж · церемония «Золотого мяча» ${s.year+1}${gk?' · Трофей Яшина':''}</p>
     <div class="cer-win"><span>Обладатель</span><h1 class="disp">${esc(w.n)}</h1><p>${esc(w.c)}</p></div>
     <p class="cer-you">${gk?(b.place===1?'Это вы. Лучший вратарь планеты.':`Вы ${b.place}-й среди вратарей.`):b.place===1?'Это вы. Лучший футболист планеты.':b.place<=3?`Вы на подиуме: ${b.place}-е место.`:b.place<=30?`Ваше место — ${b.place}-е.`:'Вы не вошли в топ-30.'}</p>
     ${gk?`<p class="small muted">Золотой мяч: <b>${esc(b0.list[0].n)}</b> (${esc(b0.list[0].c)}). Ваше место в общем голосовании — ${b0.place<=30?b0.place+'-е':'вне топ-30'}.</p>`:''}
-    ${b0.kopaList&&b0.kopaPlace?`<div class="kopa"><p class="eyebrow">Трофей Копа · лучший игрок до 21 года</p><ol class="cer-list">${b0.kopaList.map((x,i)=>`<li class="${x.me?'me':''}"><span class="num">${i+1}</span><b>${esc(x.n)}</b><em>${esc(x.c)} · ${x.age} лет</em></li>`).join('')}</ol><p class="small muted">${b0.kopaPlace===1?'Трофей Копа — ваш!':`Ваше место — ${b0.kopaPlace}-е.`}</p></div>`:''}
+    ${b0.kopaList&&b0.kopaPlace?`<div class="kopa"><p class="eyebrow">Трофей Копа · лучший игрок до 21 года</p><ol class="cer-list">${b0.kopaList.map((x,i)=>`<li class="${x.me?'me':x.room?'mate':''}"><span class="num">${i+1}</span><b>${esc(x.n)}${x.room?' <span class="tag">комната</span>':''}</b><em>${esc(x.c)} · ${x.age} лет</em></li>`).join('')}</ol><p class="small muted">${b0.kopaPlace===1?'Трофей Копа — ваш!':`Ваше место — ${b0.kopaPlace}-е.`}</p></div>`:''}
     ${!gk&&(b.kopa||b.yashin)?`<p class="small muted">${b.kopa?`Трофей Копа (до 21): <b>${esc(b.kopa)}</b>. `:''}${b.yashin?`Трофей Яшина: <b>${esc(b.yashin)}</b>.`:''}</p>`:''}
     ${b.boot?`<p class="small muted">Золотая бутса: <b>${esc(b.boot)}</b>.</p>`:''}
     ${juryBlock(b)}
@@ -1890,7 +1910,7 @@ function mpProgress(force){
   if(!G||!G.room||!MP.sess||MP.sess.code!==G.room.code)return;
   const P=G.P,s=G.seasons[0],gk=P.pos==='GK';
   if(!force&&s&&G.room.posted===s.label&&G.phase!=='retired')return;
-  const prog={season:s?s.label:'старт',age:P.age,club:C(P.clubId).name,pos:POS[P.pos].s,nat:N(P.nat).name,ovr:Math.round(P.ovr),g:P.tot.g+P.ig,a:P.tot.a,tro:P.trophies.length,bdo:P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,gk,best:P.bdoBest,rep:Math.round(P.rep),retired:G.phase==='retired',tier:G.phase==='retired'?legacyTier():null};
+  const prog={year:G.year,season:s?s.label:'старт',age:P.age,club:C(P.clubId).name,pos:POS[P.pos].s,nat:N(P.nat).name,ovr:Math.round(P.ovr),g:P.tot.g+P.ig,a:P.tot.a,tro:P.trophies.length,bdo:P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,gk,best:P.bdoBest,rep:Math.round(P.rep),retired:G.phase==='retired',tier:G.phase==='retired'?legacyTier():null};
   const feed=[];
   if(s){
     (s.summer||[]).filter(x=>/^(Переход|Аренда в)/.test(x)).forEach(x=>feed.push(x));
@@ -1953,6 +1973,47 @@ function viewMulti(){
       <div class="go" style="margin:0"><button class="btn" data-a="mpCopy">Скопировать код</button><button class="btn ghost" data-a="mpLeave">Выйти</button></div></div>
     <div class="grid2"><div class="panel"><div class="sec-h"><h2>Игроки</h2><span class="small muted">${r?r.players.length:0} из 8</span></div><div id="roomLive">${mpLiveHtml()}</div></div>${setup}</div>
     ${startedBlock}
+  </section>`;
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const mpActive=()=>MP.room?MP.room.players.filter(p=>p.progress&&!p.progress.retired):[];
+const inRoom=()=>!!(G&&G.room&&MP.sess&&MP.sess.code===G.room.code);
+/* the next season starts only when every active teammate has pressed "play" for it (or is already ahead) */
+function mpSeasonGo(){
+  const Y=G.year;UI.wait={t:'start',year:Y,since:Date.now(),names:[]};render();
+  api(`/rooms/${G.room.code}/season`,{...mpAuth(),year:Y}).then(r=>{MP.room=r;mpWaitLoop()}).catch(()=>{UI.wait=null;beginSeason()});
+}
+async function mpWaitLoop(){
+  while(UI.wait&&UI.wait.t==='start'&&G&&G.room){
+    const Y=UI.wait.year,block=mpActive().filter(p=>p.id!==MP.sess.pid&&typeof p.year==='number'&&(p.year<Y||(p.year===Y&&p.readyYear!==Y)));
+    UI.wait.names=block.map(p=>p.name+(p.year<Y?` (ещё в сезоне ${p.year}/${String(p.year+1).slice(2)})`:''));
+    if(!block.length||UI.wait.skip){UI.wait=null;beginSeason();return}
+    render();await sleep(2000);
+    try{MP.room=await api('/rooms/'+G.room.code)}catch(e){}
+  }
+}
+/* after the matches: send my jury score, wait for teammates playing the same season, then finish the vote */
+async function mpAwardsSync(m){
+  if(m.started)return;m.started=true;m.since=Date.now();
+  try{MP.room=await api(`/rooms/${G.room.code}/awards`,{...mpAuth(),year:m.year,me:m.sub,canon:m.canon})}
+  catch(e){stepSeason(null);return}
+  while(true){
+    const aw=MP.room.awards&&MP.room.awards[String(m.year)];
+    const wait=mpActive().filter(p=>p.id!==MP.sess.pid&&p.year===m.year&&!(aw&&aw.subs[p.id]));
+    m.names=wait.map(p=>p.name);
+    if(!wait.length||m.skip){stepSeason(aw?{canon:aw.canon,subs:aw.subs}:null);return}
+    if(MATCH===m)render();
+    await sleep(2000);
+    try{MP.room=await api('/rooms/'+G.room.code)}catch(e){}
+  }
+}
+function waitView(w,awards){
+  const long=Date.now()-(w.since||Date.now())>45000,names=w.names||[];
+  return `<section class="decide bigm" aria-live="polite"><div class="d-top"><span class="eyebrow">Комната ${esc(G.room.code)} · ${awards?'голосование за Золотой мяч':'сезон '+G.year+'/'+String(G.year+1).slice(2)}</span></div>
+    <h2>${awards?'Жюри ждёт итоги остальных':'Ждём остальных игроков'}</h2>
+    <p>${awards?'Золотой мяч, Копа, Яшин и Золотая бутса считаются по одному голосованию на всю комнату. Как только остальные доиграют этот сезон, объявим результаты.':'Сезон начнётся, когда все в комнате нажмут «Сыграть сезон».'}</p>
+    ${names.length?`<ul class="summer">${names.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:'<p class="muted small">Проверяю…</p>'}
+    ${long?`<div class="go"><button class="btn ghost" data-a="mpSkip">Играть без них</button><span class="small muted">Если кто-то ушёл надолго.</span></div>`:''}
   </section>`;
 }
 function roomPanel(){
@@ -2086,7 +2147,7 @@ function viewCareer(){
   if(G.ceremony)return ceremonyView();
   if(G.phase==='retired')return viewHall()+feed();
   const y=G.year,label=`${y}/${String(y+1).slice(2)}`;
-  const action=RUN&&MATCH?matchView():G.pending.length?decisionView():`<div class="go"><button class="btn primary" data-a="play">Сыграть сезон ${label}</button>${UI.confirmRetire?`<span class="confirm"><span class="small muted">Завершить карьеру сейчас?</span><button class="btn warn" data-a="retYes">Да</button><button class="btn ghost" data-a="retNo">Нет</button></span>`:(P.age>=30?`<button class="btn ghost" data-a="ret">Завершить карьеру</button>`:'')}</div>${G.summer.length?`<ul class="summer">${G.summer.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`;
+  const action=UI.wait?waitView(UI.wait,false):RUN&&MATCH&&MATCH.kind==='sync'?waitView(MATCH,true):RUN&&MATCH?matchView():G.pending.length?decisionView():`<div class="go"><button class="btn primary" data-a="play">Сыграть сезон ${label}</button>${UI.confirmRetire?`<span class="confirm"><span class="small muted">Завершить карьеру сейчас?</span><button class="btn warn" data-a="retYes">Да</button><button class="btn ghost" data-a="retNo">Нет</button></span>`:(P.age>=30?`<button class="btn ghost" data-a="ret">Завершить карьеру</button>`:'')}</div>${G.summer.length?`<ul class="summer">${G.summer.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`;
   const natLine=P.intlRetired?'завершил карьеру в сборной':`${esc(nat.name)} · сила ${Math.round(nat.str)}`;
   return `<section class="hero">${card}
     <div class="status"><p class="eyebrow">${POS[P.pos].n} · ${esc(nat.name)}</p><h1 class="disp">${esc(P.name)}</h1>
@@ -2188,7 +2249,8 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b)return;
   const a=b.dataset.a;
   if(a==='tab'){UI.tab=b.dataset.v;render();window.scrollTo(0,0)}
-  else if(a==='play'){beginSeason()}
+  else if(a==='play'){if(inRoom())mpSeasonGo();else beginSeason()}
+  else if(a==='mpSkip'){if(UI.wait)UI.wait.skip=true;else if(MATCH&&MATCH.kind==='sync')MATCH.skip=true}
   else if(a==='mopt'){stepSeason(+b.dataset.i)}
   else if(a==='opt'){chooseOpt(+b.dataset.i)}
   else if(a==='new'){UI.confirmNew=true;render()}
