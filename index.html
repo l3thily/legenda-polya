@@ -515,7 +515,7 @@ function trackRecord(d,gf,ga,opp,comp,cn,stage){
   let rt=6.45+res*.35+g*.95+a*.55+(def&&ga===0?.55:0)-(def?ga*.14:0)+(P.ovr-opp)*.014+gaussP()*.45;
   if(!d.starter)rt=6.4+(rt-6.4)*.6;
   rt=clamp(rt,4.5,10);
-  S.lastRt=rt;b.apps++;if(d.starter)b.starts++;b.g+=g;b.a+=a;if(ga===0&&d.starter)b.cs++;b.rs+=rt;
+  S.lastRt=rt;b.apps++;if(d.starter)b.starts++;b.g+=g;b.a+=a;if(ga===0&&d.starter)b.cs++;b.rs+=rt;b.gc=(b.gc||0)+ga;
   if(comp==='L'){S.lgGoals+=g;S.lgA+=a}
   if(comp==='T'){S.tg+=g;S.tapps++;S.trs+=rt;P.tournApps++}
   if(d.pain&&RP()<(hasPerk('iron')?.25:.4)){const n=riP(3,10);P.inj+=n;S.inj.push(n)}
@@ -1120,7 +1120,7 @@ function endSeasonPlayer(){
   P.potTrend=Math.round(P.pot)-Math.round(potOld);
   if(a<=25&&P.potTrend>=1)S.news.push(`Скауты повысили оценку вашего потенциала (+${P.potTrend}).`);
   else if(a<=25&&P.potTrend<=-1)S.news.push(`Скауты понизили оценку вашего потенциала (${P.potTrend}).`);
-  P.tot.apps+=c.apps;P.tot.g+=c.g;P.tot.a+=c.a;P.tot.cs+=c.cs;P.tot.rs+=c.rs;
+  P.tot.apps+=c.apps;P.tot.g+=c.g;P.tot.a+=c.a;P.tot.cs+=c.cs;P.tot.rs+=c.rs;P.tot.gc=(P.tot.gc||0)+(c.gc||0);
   P.caps+=S.intl.apps;P.ig+=S.intl.g;
   relSeason(avg,ratio,S.derby);
   P.best.uclS=Math.max(P.best.uclS||0,S.uclG);P.best['lgA_'+S.lgId]=Math.max(P.best['lgA_'+S.lgId]||0,S.lgA);P.best['lg_'+S.lgId]=Math.max(P.best['lg_'+S.lgId]||0,S.lgGoals);
@@ -1406,7 +1406,7 @@ function buildRecords(){
   Object.entries(NAT_REC).forEach(([c,[v,h]])=>r['nat_'+c]={n:`Бомбардир сборной: ${c}`,v,h,kind:'career',mine:false});
   return r;
 }
-const MILESTONES=[['g',[50,100,200,300,400,500,700,900],'гол в карьере'],['apps',[100,250,500,750,1000],'матч в карьере'],['caps',[50,100,150],'матч за сборную'],['ig',[25,50,100],'гол за сборную'],['hat',[1,10,25],'хет-трик'],['as',[50,100,200,300],'передача в карьере']];
+const MILESTONES=[['g',[50,100,200,300,400,500,700,900],'гол в карьере'],['apps',[100,250,500,750,1000],'матч в карьере'],['caps',[50,100,150],'матч за сборную'],['ig',[25,50,100],'гол за сборную'],['hat',[1,10,25],'хет-трик'],['as',[50,100,200,300],'передача в карьере'],['cs',[50,100,200,300,400],'сухой матч']];
 function myRecValues(){
   const P=G.P,st=P.st,v={fee:P.maxFee||0,goals:P.tot.g+P.ig,ucl:st.ucl,wc:st.wc,euro:st.euro,bdo:P.awards.filter(a=>a.n==='Золотой мяч').length};
   Object.keys(CLUB_REC).forEach(c=>v['club_'+c]=st.clubG[c]||0);
@@ -1422,16 +1422,17 @@ function checkRecords(){
     if(r.mine){if(v>r.v){r.v=v;r.yr=S.label}return}
     if(v>r.v){S.records.push(`Рекорд: ${r.n} — ${v} (прежний: ${r.h}, ${r.v})`);P.recs.push({n:r.n,v,prev:r.h,y:S.label});r.v=v;r.h=P.name;r.mine=true;r.yr=S.label;P.rep=clamp(P.rep+3,0,100)}
   });
-  const cur={g:P.tot.g+P.ig,apps:P.tot.apps+P.caps,caps:P.caps,ig:P.ig,hat:st.hat,as:P.tot.a};
+  const cur={cs:P.pos==='GK'?P.tot.cs:0,g:P.tot.g+P.ig,apps:P.tot.apps+P.caps,caps:P.caps,ig:P.ig,hat:st.hat,as:P.tot.a};
   MILESTONES.forEach(([k,list,word])=>list.forEach(t=>{const key=k+t;if(cur[k]>=t&&!P.ms.includes(key)){P.ms.push(key);S.records.push(`Веха: ${t}-й ${word}`)}}));
 }
 function recordsPanel(){
   const P=G.P,rec=G.rec,vals=myRecValues(),best=P.best||{};
   const lgs=new Set(G.seasons.map(s=>s.lgId));lgs.add(C(P.clubId).lg);
   const clubs=new Set(G.seasons.map(s=>s.clubName));clubs.add(C(P.clubId).name);
-  const keys=['goals','ucl','uclS','wc','euro','bdo','fee',...[...lgs].flatMap(l=>['lg_'+l,'lgA_'+l]).filter(k=>rec[k]),...[...clubs].map(c=>'club_'+c).filter(k=>rec[k]),'nat_'+N(P.nat).name].filter(k=>rec[k]);
+  const keys=P.pos==='GK'?['bdo','fee']:['goals','ucl','uclS','wc','euro','bdo','fee',...[...lgs].flatMap(l=>['lg_'+l,'lgA_'+l]).filter(k=>rec[k]),...[...clubs].map(c=>'club_'+c).filter(k=>rec[k]),'nat_'+N(P.nat).name];
+  const keysOk=keys.filter(k=>rec[k]);
   const mine={...vals,uclS:best.uclS||0};[...lgs].forEach(l=>{mine['lg_'+l]=best['lg_'+l]||0;mine['lgA_'+l]=best['lgA_'+l]||0});
-  const rows=keys.map(k=>{const r=rec[k],v=mine[k]||0,pc=Math.min(100,v/Math.max(1,r.v)*100);
+  const rows=keysOk.map(k=>{const r=rec[k],v=mine[k]||0,pc=Math.min(100,v/Math.max(1,r.v)*100);
     return `<div class="rec-row ${r.mine?'mine':''}"><div><b>${esc(r.n)}</b><span>${r.mine?`рекорд ваш · ${r.v}`:`${esc(r.h)} · ${r.v}`}</span></div><span class="trk"><i style="width:${pc.toFixed(1)}%"></i></span><span class="num">${v}</span></div>`}).join('');
   const ms=P.ms.length?`<div class="cabinet" style="margin-top:14px">${P.ms.map(k=>{const m=MILESTONES.find(x=>k.startsWith(x[0])&&x[1].includes(+k.slice(x[0].length)));return m?`<span class="aw">${k.slice(m[0].length)} · ${m[2]}</span>`:''}).join('')}</div>`:'';
   return `<div class="recs">${rows}</div>${ms}<p class="small dim" style="margin:10px 0 0">Реальные рекорды приблизительные, на 2026 год. Справа — ваш результат (для сезонных — лучший сезон).</p>`;
@@ -1442,7 +1443,8 @@ function attrPanel(){
   const P=G.P,w=AW[P.pos];
   const bars=ATTR.map((k,i)=>{const v=Math.round(P.at[k]);return `<div class="at-row ${w[i]>=.3?'key':''}"><span>${attrName(k)}</span><span class="trk"><i style="width:${v}%"></i></span><b class="num">${v}</b></div>`}).join('');
   const opts=[['bal','Сбалансированно'],...ATTR.map(k=>[k,attrName(k)])].map(([v,l])=>`<option value="${v}" ${(P.focus||'bal')===v?'selected':''}>${l}</option>`).join('');
-  return `<div class="attrs">${bars}</div><div class="selrow" style="margin:14px 0 0"><label class="small muted" for="focus">Фокус тренировок</label><select id="focus">${opts}</select></div><p class="small dim" style="margin:6px 0 0">Яркие полосы — главные атрибуты для позиции «${POS[P.pos].n.toLowerCase()}». Фокус ускоряет рост выбранного атрибута за счёт остальных. После 28 первой уходит скорость, пас стареет медленнее всего.</p>`;
+  const ar=archetype();
+  return `<p style="margin:0 0 12px"><b>${ar[0]}</b> <span class="muted">· ${ar[1]}</span></p><div class="attrs">${bars}</div><div class="selrow" style="margin:14px 0 0"><label class="small muted" for="focus">Фокус тренировок</label><select id="focus">${opts}</select></div><p class="small dim" style="margin:6px 0 0">Яркие полосы — главные атрибуты для позиции «${POS[P.pos].n.toLowerCase()}». Фокус ускоряет рост выбранного атрибута за счёт остальных. После 28 первой уходит скорость, пас стареет медленнее всего.</p>`;
 }
 function relPanel(){
   const r=G.P.rel,m=morale();
@@ -1757,7 +1759,7 @@ async function careerImage(){
   txt(String(peak),130,y+290,`900 150px ${D}`,'#FFB43F');txt('пиковый рейтинг',330,y+230,`600 34px ${B}`,'#8FA5B9');
   txt(`${P.ovrHist[0].ovr} → ${peak}`,330,y+285,`700 40px ${M}`,'#E6EDF3');
   y+=400;
-  const cells=[[P.tot.apps+P.caps,'матчей'],[P.tot.g+P.ig,'голов'],[P.tot.a,'передач'],[P.trophies.length,'трофеев'],[big,gk?'трофеев Яшина':'золотых мячей'],[`${P.caps}/${P.ig}`,'сборная, матчи/голы']];
+  const cells=[[P.tot.apps+P.caps,'матчей'],...(gk?[[P.tot.cs,'сухих матчей'],[P.tot.gc||0,'пропущено']]:[[P.tot.g+P.ig,'голов'],[P.tot.a,'передач']]),[P.trophies.length,'трофеев'],[big,gk?'трофеев Яшина':'золотых мячей'],[`${P.caps}/${P.ig}`,'сборная, матчи/голы']];
   cells.forEach(([v,l],i)=>{const cx=90+(i%3)*300,cy=y+Math.floor(i/3)*170;txt(String(v),cx,cy+90,`900 96px ${D}`,i>=3&&i<5?'#FFB43F':'#E6EDF3');txt(l,cx,cy+130,`600 26px ${B}`,'#8FA5B9')});
   y+=380;
   txt('ТРОФЕИ',90,y,`900 44px ${D}`,'#FFB43F');y+=20;
@@ -1985,7 +1987,7 @@ function mpProgress(force){
   if(!G||!G.room||!MP.sess||MP.sess.code!==G.room.code)return;
   const P=G.P,s=G.seasons[0],gk=P.pos==='GK';
   if(!force&&s&&G.room.posted===s.label&&G.phase!=='retired')return;
-  const prog={year:G.year,season:s?s.label:'старт',age:P.age,club:C(P.clubId).name,pos:POS[P.pos].s,nat:N(P.nat).name,ovr:Math.round(P.ovr),g:P.tot.g+P.ig,a:P.tot.a,tro:P.trophies.length,bdo:P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,gk,best:P.bdoBest,rep:Math.round(P.rep),retired:G.phase==='retired',tier:G.phase==='retired'?legacyTier():null,tierNow:legacyTier(),score:r1(legacyScore()),clubId:P.clubId,natId:P.nat,intlOff:!!P.intlRetired,apps:P.tot.apps+P.caps,peak:Math.max(...P.ovrHist.map(h=>h.ovr)),caps:P.caps,ig:P.ig,recs:P.recs.length,places:P.roomPlaces||{},h2h:P.h2h||{},trTop:groupCount(P.trophies).slice(0,4).map(([n,k])=>k>1?`${n} ×${k}`:n),
+  const prog={year:G.year,season:s?s.label:'старт',age:P.age,club:C(P.clubId).name,pos:POS[P.pos].s,nat:N(P.nat).name,ovr:Math.round(P.ovr),g:P.tot.g+P.ig,a:P.tot.a,tro:P.trophies.length,bdo:P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,gk,best:P.bdoBest,rep:Math.round(P.rep),cs:P.tot.cs,retired:G.phase==='retired',tier:G.phase==='retired'?legacyTier():null,tierNow:legacyTier(),score:r1(legacyScore()),clubId:P.clubId,natId:P.nat,intlOff:!!P.intlRetired,apps:P.tot.apps+P.caps,peak:Math.max(...P.ovrHist.map(h=>h.ovr)),caps:P.caps,ig:P.ig,recs:P.recs.length,places:P.roomPlaces||{},h2h:P.h2h||{},trTop:groupCount(P.trophies).slice(0,4).map(([n,k])=>k>1?`${n} ×${k}`:n),
     ovrF:r1(P.ovr),posK:P.pos,tfx:r1(teamExtra()),wfx:(P.wfx||[]).slice(-6),
     roleNext:roleOf(P.ovr+P.roleMod+(P.captain===P.clubId?2:0)+(P.rel.coach-50)/20,C(P.clubId).str),
     nroleNext:natRole(P.ovr+(P.ntCaptain?2:0)+(hasPerk('patriot')?2:0),N(P.nat).str),
@@ -2008,7 +2010,7 @@ function mpLiveHtml(){
   const rows=r.players.map(p=>{
     const you=p.id===MP.sess.pid,host=p.id===r.host,s=p.setup||{},g=p.progress;
     const right=lobby?`<span class="rdy ${p.ready?'on':''}">${p.ready?'готов':'ждём'}</span>`:g?`<span class="num">${g.ovr}</span>`:'<span class="dim">ещё не начал</span>';
-    const sub=lobby?[s.pos&&POS[s.pos]?POS[s.pos].s:'',s.club,s.nat].filter(Boolean).join(' · '):g?`${g.retired?`завершил · ${g.tier}`:`${g.season} · ${g.age} лет`} · ${g.club} · ${g.g} ${g.gk?'г.':'голов'}, ${g.a} пас. · трофеев ${g.tro} · ${g.gk?'Яшин':'ЗМ'} ${g.bdo}`:'';
+    const sub=lobby?[s.pos&&POS[s.pos]?POS[s.pos].s:'',s.club,s.nat].filter(Boolean).join(' · '):g?`${g.retired?`завершил · ${g.tier}`:`${g.season} · ${g.age} лет`} · ${g.club} · ${g.gk?`${g.cs||0} сухих`:`${g.g} голов, ${g.a} пас.`} · трофеев ${g.tro} · ${g.gk?'Яшин':'ЗМ'} ${g.bdo}`:'';
     return `<li class="${you?'me':''}"><div><b>${esc(p.name)}${you?' (вы)':''}${host?' <span class="tag">хост</span>':''}</b><span>${esc(sub)}</span></div>${right}</li>`}).join('');
   const sorted=lobby?'':`<p class="small dim">Сортировка по вкладу: трофеи, Золотые мячи, голы.</p>`;
   const feed=r.feed.length?`<p class="eyebrow" style="margin:14px 0 6px">Лента комнаты</p><ul class="lines">${r.feed.slice(-14).reverse().map(f=>`<li>${esc(f.text)}</li>`).join('')}</ul>`:'';
@@ -2142,7 +2144,7 @@ function h2hData(a,b){
     ['Лучшее место в Золотом мяче',A.best||99,B.best||99,-1],
     ['Пик рейтинга',A.peak||A.ovr,B.peak||B.ovr,1],
     ['Матчи',A.apps||0,B.apps||0,1],
-    ['Голы',A.g,B.g,1],
+    ...(gk?[['Сухие матчи',A.cs||0,B.cs||0,1]]:[['Голы',A.g,B.g,1]]),
     ['Передачи',A.a,B.a,1],
     ['Матчи за сборную',A.caps||0,B.caps||0,1],
   ];
@@ -2161,7 +2163,7 @@ function roomSummary(){
   const ps=MP.room.players.filter(p=>p.progress);if(ps.length<2)return '';
   const done=ps.every(p=>p.progress.retired),ranked=ps.slice().sort((a,b)=>(b.progress.score||0)-(a.progress.score||0));
   const me=ps.find(p=>p.id===MP.sess.pid);
-  const table=`<div class="tw"><table class="t small"><thead><tr><th>#</th><th>Игрок</th><th>Статус</th><th>Очки</th><th>Трофеи</th><th>ЗМ</th><th>Голы</th></tr></thead><tbody>${ranked.map((p,i)=>{const g=p.progress;return `<tr class="${p.id===MP.sess.pid?'me':''}"><td>${i+1}</td><td>${esc(p.name)}<br><span class="dim small">${esc(g.tier||g.tierNow||'')}</span></td><td style="font-family:var(--body)">${g.retired?'завершил':'играет, '+esc(g.season)}</td><td>${g.score!=null?g.score:'—'}</td><td>${g.tro}</td><td>${g.bdo}</td><td>${g.g}</td></tr>`}).join('')}</tbody></table></div>`;
+  const table=`<div class="tw"><table class="t small"><thead><tr><th>#</th><th>Игрок</th><th>Статус</th><th>Очки</th><th>Трофеи</th><th>ЗМ/Яшин</th><th>Голы/сухие</th></tr></thead><tbody>${ranked.map((p,i)=>{const g=p.progress;return `<tr class="${p.id===MP.sess.pid?'me':''}"><td>${i+1}</td><td>${esc(p.name)}<br><span class="dim small">${esc(g.tier||g.tierNow||'')}</span></td><td style="font-family:var(--body)">${g.retired?'завершил':'играет, '+esc(g.season)}</td><td>${g.score!=null?g.score:'—'}</td><td>${g.tro}</td><td>${g.bdo}</td><td>${g.gk?(g.cs||0)+' с/м':g.g}</td></tr>`}).join('')}</tbody></table></div>`;
   const banner=done?`<div class="cer-win" style="text-align:center"><span>Победитель комнаты</span><h1 class="disp" style="font-size:clamp(40px,7vw,72px)">${esc(ranked[0].name)}</h1><p>${esc(ranked[0].progress.tier||'')}</p></div>`:`<p class="small muted">Итог комнаты объявим, когда все завершат карьеры. Сейчас лидер — ${esc(ranked[0].name)}.</p>`;
   const cards=me?ps.filter(p=>p.id!==me.id).map(p=>h2hCard(me,p)).join(''):'';
   return `<section class="panel"><div class="sec-h"><h2>Итоги комнаты ${esc(MP.sess.code)}</h2></div>${banner}${table}${cards?`<div class="sec-h" style="margin-top:18px"><h2>Head to head</h2></div><div class="h2h-grid">${cards}</div>`:''}</section>`;
@@ -2252,7 +2254,7 @@ function seasonCard(s,i){
   const table=`<div class="tw"><table class="t small"><thead><tr><th>#</th><th>Клуб</th><th>И</th><th>В</th><th>Н</th><th>П</th><th>Мячи</th><th>О</th></tr></thead><tbody>${s.table.map((r,k)=>`<tr class="${r[8]?'me':''}"><td>${k+1}</td><td>${esc(r[0])}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}:${r[6]}</td><td>${r[7]}</td></tr>`).join('')}</tbody></table></div>`;
   return `<article class="season ${i===0?'latest':''}">
     <header class="s-head"><div class="s-year">${s.label}</div><div class="s-club"><b>${esc(s.clubName)}${s.loan?'<span class="tag">аренда</span>':''}</b><span>${esc(s.lgName)} · ${s.age} лет · ${ROLE[s.role]}</span></div><div class="s-ovr">${s.ovrAfter}<small class="${d>=0?'up':'down'}">${d>=0?'+':''}${d}</small></div></header>
-    <div class="kpis">${kpi(c.apps,'матчи')}${kpi(c.g,'голы')}${kpi(c.a,'пасы')}${def?kpi(c.cs,'сухие'):''}${kpi(avg,'ср. оценка')}${kpi(fmtM(s.value).replace('€',''),'стоимость, €')}</div>
+    <div class="kpis">${kpi(c.apps,'матчи')}${G.P.pos==='GK'?kpi(c.cs,'сухие')+kpi(c.gc!=null?c.gc:'—','пропущено')+kpi(c.gc!=null&&c.apps?(c.gc/c.apps).toFixed(2):'—','пропущено за матч'):kpi(c.g,'голы')+kpi(c.a,'пасы')+(def?kpi(c.cs,'сухие'):'')}${kpi(avg,'ср. оценка')}${kpi(fmtM(s.value).replace('€',''),'стоимость, €')}</div>
     <div class="chips">${chips(s)}</div>
     ${s.trophies.length||s.awards.length?`<div class="cabinet">${s.trophies.map(t=>`<span class="tro">${esc(t)}</span>`).join('')}${s.awards.map(a=>`<span class="aw">${esc(a)}</span>`).join('')}</div>`:''}
     ${recs}${moms}
@@ -2283,7 +2285,7 @@ function chart(){
 }
 function totals(){
   const P=G.P,gk=P.pos==='GK',bdo=P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,avg=P.tot.apps?(P.tot.rs/P.tot.apps).toFixed(2):'—';
-  return `<div class="totals"><div><b>${P.tot.apps}</b><span>матчей</span></div><div><b>${P.tot.g}</b><span>голов</span></div><div><b>${P.tot.a}</b><span>передач</span></div><div><b>${avg}</b><span>ср. оценка</span></div><div class="gold"><b>${P.trophies.length}</b><span>трофеев</span></div><div class="gold"><b>${bdo}</b><span>${gk?'трофеев Яшина':'золотых мячей'}</span></div><div><b>${P.caps}/${P.ig}</b><span>сборная: матчи/голы</span></div></div>`;
+  return `<div class="totals"><div><b>${P.tot.apps}</b><span>матчей</span></div>${gk?`<div><b>${P.tot.cs}</b><span>сухих матчей</span></div><div><b>${P.tot.gc||0}</b><span>пропущено</span></div>`:`<div><b>${P.tot.g}</b><span>голов</span></div><div><b>${P.tot.a}</b><span>передач</span></div>`}<div><b>${avg}</b><span>ср. оценка</span></div><div class="gold"><b>${P.trophies.length}</b><span>трофеев</span></div><div class="gold"><b>${bdo}</b><span>${gk?'трофеев Яшина':'золотых мячей'}</span></div><div><b>${P.caps}/${P.ig}</b><span>сборная: матчи/голы</span></div></div>`;
 }
 function decisionView(){
   const d=G.pending[0],total=G.pendTotal,idx=total-G.pending.length+1;
@@ -2329,7 +2331,25 @@ function feed(){
   if(!G.seasons.length)return `<section><div class="sec-h"><h2>Сезоны</h2></div><p class="muted">Здесь появится история карьеры — сезон за сезоном.</p></section>`;
   return `<section><div class="sec-h"><h2>Сезоны</h2><span class="small muted">новые сверху</span></div><div class="feed">${G.seasons.map(seasonCard).join('')}</div></section>`;
 }
-const LEGENDS=[['Криштиану Роналду',950],['Лионель Месси',890],['Пеле',757],['Роберт Левандовски',700],['Ромарио',700],['Златан Ибрагимович',573],['Карим Бензема',480],['Олег Блохин',430]];
+const LEGENDS_BY={
+  ATT:['Нападающие',[['g','Голы',[['Криштиану Роналду',950],['Лионель Месси',890],['Пеле',757],['Роберт Левандовски',700],['Златан Ибрагимович',573],['Карим Бензема',480]]],['a','Передачи',[['Лионель Месси',380],['Неймар',270],['Криштиану Роналду',260],['Тьерри Анри',250]]]]],
+  MID:['Полузащитники',[['a','Передачи',[['Кевин Де Брёйне',300],['Месут Озил',280],['Хави',240],['Андрес Иньеста',200],['Лука Модрич',170]]],['g','Голы',[['Фрэнк Лэмпард',300],['Стивен Джеррард',220],['Зинедин Зидан',155],['Лука Модрич',130],['Хави',100]]]]],
+  DEF:['Защитники',[['apps','Матчи',[['Паоло Мальдини',1028],['Серхио Рамос',1000],['Фабио Каннаваро',900],['Карлес Пуйоль',700],['Вирджил ван Дейк',650]]],['g','Голы',[['Рональд Куман',250],['Серхио Рамос',140],['Вирджил ван Дейк',70],['Паоло Мальдини',40]]]]],
+  GK:['Вратари',[['apps','Матчи',[['Джанлуиджи Буффон',1150],['Икер Касильяс',1000],['Мануэль Нойер',900],['Петр Чех',900],['Лев Яшин',800]]],['cs','Сухие матчи',[['Джанлуиджи Буффон',500],['Икер Касильяс',450],['Мануэль Нойер',450],['Петр Чех',400]]]]]
+};
+const ARCH={
+  ATT:[['Взрывной форвард','тип Мбаппе',{pac:1,sho:1}],['Таран','тип Холанда',{phy:1,sho:1}],['Форвард-плеймейкер','тип Кейна',{pas:1,sho:.8}],['Дриблёр','тип Винисиуса',{pac:1,pas:.8}]],
+  MID:[['Плеймейкер','тип Де Брёйне',{pas:1,sho:.7}],['Разрушитель','тип Родри',{def:1,pas:.7,phy:.5}],['Box-to-box','тип Беллингема',{phy:.8,sho:.7,pas:.6}],['Дирижёр','тип Модрича',{pas:1,pac:.6}]],
+  DEF:[['Лидер обороны','тип ван Дейка',{def:1,phy:1}],['Быстрый защитник','тип Салиба',{pac:1,def:1}],['Атакующий фулбек','тип Хакими',{pac:1,pas:.8}],['Защитник-плеймейкер','тип Бастони',{pas:1,def:.8}]],
+  GK:[['Кошка на линии','тип Куртуа',{pac:1,def:.8}],['Вратарь-свипер','тип Нойера',{sho:1,pas:1}],['Надёжный','тип Облака',{def:1,phy:.8}]]
+};
+function archetype(){const P=G.P,list=ARCH[POS[P.pos].grp],avg=ATTR.reduce((s,k)=>s+P.at[k],0)/5;let best=list[0],bs=-1e9;list.forEach(a=>{let sc=0,w=0;for(const k in a[2]){sc+=(P.at[k]-avg)*a[2][k];w+=a[2][k]}sc/=w;if(sc>bs){bs=sc;best=a}});return best}
+function legendsBlock(){
+  const P=G.P,[title,metrics]=LEGENDS_BY[POS[P.pos].grp],val={g:P.tot.g+P.ig,a:P.tot.a,apps:P.tot.apps+P.caps,cs:P.tot.cs};
+  return `<div><div class="sec-h"><h2>Среди легенд</h2><span class="small muted">${title.toLowerCase()} · у легенд цифры приблизительные</span></div>${metrics.map(([k,label,list])=>{
+    const rows=list.map(([n,v])=>[n,v,false]).concat([[P.name,val[k],true]]).sort((a,b)=>b[1]-a[1]),mx=Math.max(...rows.map(r=>r[1]),1);
+    return `<p class="eyebrow" style="margin:12px 0 6px">${label}</p><div style="display:grid;gap:8px">${rows.map(l=>`<div class="legend-row ${l[2]?'me':''}"><span>${esc(l[0])}</span><span class="trk"><i style="width:${(l[1]/mx*100).toFixed(1)}%"></i></span><span class="num" style="text-align:right">${l[2]?'':'≈'}${l[1]}</span></div>`).join('')}</div>`}).join('')}</div>`;
+}
 function viewHall(){
   const P=G.P,bdo=P.awards.filter(a=>a.n==='Золотой мяч').length,cnt=n=>P.trophies.filter(t=>t.n===n).length;
   const peak=Math.max(...P.ovrHist.map(h=>h.ovr));
@@ -2337,17 +2357,15 @@ function viewHall(){
   const score=bdo*30+cnt('Лига чемпионов')*8+cnt('Чемпионат мира')*15+(cnt('Чемпионат Европы')+cnt('Копа Америка'))*8+lt*3+P.tot.g*.05+Math.max(0,peak-80)*2+(P.bdoBest&&P.bdoBest<=3?5:0)+P.awards.length*.8;
   const tier=legacyTier();void score;
   const byClub=new Map();G.seasons.slice().reverse().forEach(s=>{const k=s.clubName,v=byClub.get(k)||{n:k,s:0,apps:0,g:0,a:0,t:0,from:s.label,to:s.label};v.s++;v.apps+=s.club.apps;v.g+=s.club.g;v.a+=s.club.a;v.t+=s.trophies.length;v.to=s.label;byClub.set(k,v)});
-  const legends=LEGENDS.concat([[P.name,P.tot.g+P.ig,true]]).sort((a,b)=>b[1]-a[1]).slice(0,9);if(!legends.some(l=>l[2]))legends.push([P.name,P.tot.g+P.ig,true]);
-  const mx=Math.max(...legends.map(l=>l[1]));
   const ret=P.retired||{};
   return `<section class="hof">
-    <div><p class="eyebrow">Карьера завершена · ${ret.age||P.age} лет · ${POS[P.pos].n}</p><h1 class="disp">${esc(P.name)}</h1><p class="tier">${tier}</p>
+    <div><p class="eyebrow">Карьера завершена · ${ret.age||P.age} лет · ${POS[P.pos].n}</p><h1 class="disp">${esc(P.name)}</h1><p class="tier">${tier}</p><p class="muted" style="margin:4px 0 0">${archetype()[0]} · ${archetype()[1]}</p>
       <p class="muted">Лучший рейтинг — ${peak}. Лучшее место в гонке за Золотой мяч — ${P.bdoBest?P.bdoBest+'-е':'нет'}. Заработано за карьеру — ${fmtM(P.earn/1e6)}. Репутация — ${Math.round(P.rep)} (${repLabel(P.rep)}).</p></div>
     ${totals()}
     <div class="grid2"><div><div class="sec-h"><h2>Трофеи</h2></div>${cabinet()}</div><div><div class="sec-h"><h2>Рейтинг</h2></div>${chart()}</div></div>
     <div class="grid2">
       <div><div class="sec-h"><h2>Клубы</h2></div><div class="tw"><table class="t small"><thead><tr><th></th><th>Клуб</th><th>Сезоны</th><th>Матчи</th><th>Голы</th><th>Пасы</th><th>Трофеи</th></tr></thead><tbody>${[...byClub.values()].map((v,k)=>`<tr><td>${k+1}</td><td>${esc(v.n)} <span class="dim small">${v.from}–${v.to}</span></td><td>${v.s}</td><td>${v.apps}</td><td>${v.g}</td><td>${v.a}</td><td>${v.t}</td></tr>`).join('')}</tbody></table></div></div>
-      <div><div class="sec-h"><h2>Среди бомбардиров</h2><span class="small muted">все голы за карьеру, у легенд ≈</span></div><div style="display:grid;gap:8px">${legends.map(l=>`<div class="legend-row ${l[2]?'me':''}"><span>${esc(l[0])}</span><span class="trk"><i style="width:${(l[1]/mx*100).toFixed(1)}%"></i></span><span class="num" style="text-align:right">${l[1]}</span></div>`).join('')}</div></div>
+      ${legendsBlock()}
     </div>
     ${(P.legacy||[]).length?`<div><div class="sec-h"><h2>Наследие в клубах</h2></div><div class="perks">${P.legacy.map(l=>`<div class="perk on"><b>${esc(l.club)}</b><span>${l.s} ${plural(l.s,'сезон','сезона','сезонов')}, ${l.g} ${plural(l.g,'гол','гола','голов')}, ${l.t} ${plural(l.t,'трофей','трофея','трофеев')}</span>${l.h.map(h=>`<em class="${h.startsWith('Персона')?'neg':''}">${esc(h)}</em>`).join('')}</div>`).join('')}</div></div>`:''}
     ${G.room?(MP.room?roomSummary():'<p class="muted small">Загружаю итоги комнаты…</p>'):''}
