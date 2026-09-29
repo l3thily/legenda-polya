@@ -2533,6 +2533,7 @@ function coachApplyTeam(){
     S.fx.c[c.id]=coachFx();S.style={k:'c',id:c.id,...STYLES[C0.tactic.style]};
     S.xi=st.xi.xi.map(x=>x.p.id);S.injured=C0.squad.filter(p=>p.inj).map(p=>p.name);
   }else if(C0.job==='nation'){
+    if(!C0.squad||C0.squad.length<11)C0.squad=genNatSquad(N(C0.natId));
     C0.squad.forEach(p=>{p.inj=R()<.05?1:0});
     const st=squadStrength(),n=N(C0.natId);n.str=clamp(st.base,28,(n.init||n.str)+2);
     S.fx.n[C0.natId]=coachFx()*.5+Math.min(.8,C0.camp||0);S.style={k:'n',id:C0.natId,...STYLES[C0.tactic.style]};S.injured=C0.squad.filter(p=>p.inj).map(p=>p.name);
