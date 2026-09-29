@@ -2448,7 +2448,7 @@ function coachDecisions(){
         {label:'Продать',sub:fmtM(fee),detail:'Деньги уйдут в бюджет',act:{t:'cfx',sellId:p.id,fee,pres:pressure?6:1,log:`${p.name} продан в «${buyer.name}» за ${fmtM(fee)}.`}},
         {label:'Отказать',sub:'Игрок нужен команде',detail:pressure?'Президент будет недоволен':'',act:{t:'cfx',pres:pressure?-10:0,team:2,log:`Вы отказали «${buyer.name}».`}}]})}}
     // academy graduates (summer)
-    if(summer&&RP()<.5){const yl=((C0.staff||[]).find(s=>s.role==='youth')||{lvl:0}).lvl;for(let i=0;i<1;i++){const pot=Math.round(clamp(Math.min(66+gaussP()*8+(C0.skills.yth-50)/5+yl*1.5,prestige(club)+12),58,94)),y=mkPlayer(pickP(SQUAD_POS),riP(48,60),riP(16,18),{pot,academy:true,contract:3});
+    if(summer&&RP()<.3){const yl=((C0.staff||[]).find(s=>s.role==='youth')||{lvl:0}).lvl;for(let i=0;i<1;i++){const pot=Math.round(clamp(Math.min(66+gaussP()*8+(C0.skills.yth-50)/5+yl*1.5,prestige(club)+12),58,94)),y=mkPlayer(pickP(SQUAD_POS),riP(48,60),riP(16,18),{pot,academy:true,contract:3});
       D.push({club:false,title:'Выпускник академии',body:`${y.name}, ${y.age} лет, ${POS[y.pos].n.toLowerCase()}. Сейчас ${Math.round(y.ovr)}, скауты оценивают потенциал в ${pot-3}–${pot+3}.`,opts:[
         {label:'Дать шанс в основе',sub:'Подписать в первую команду',detail:'Будет расти, тренируясь с основой',act:{t:'cfx',youth:{go:'sign',p:y},fans:2,log:`${y.name} подписал первый контракт.`}},
         {label:'Отдать в аренду',sub:'Сезон игровой практики',detail:'Вернётся сильнее',act:{t:'cfx',youth:{go:'loan',p:y},log:`${y.name} уходит в аренду.`}},
