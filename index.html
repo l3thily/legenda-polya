@@ -2397,6 +2397,10 @@ function applyCoachFx(fx){
   if(fx.sellBest&&C0.squad.length){const p=C0.squad.slice().sort((a,b)=>b.ovr-a.ovr)[0];const fee=r1(playerValue(p));C0.squad=C0.squad.filter(x=>x!==p);C0.budget=r1(C0.budget+fee*(fx.sellBest));L.push(`${p.name} продан за ${fmtM(fee)}.`)}
   if(fx.sellId){const p=C0.squad.find(x=>x.id===fx.sellId);if(p){C0.squad=C0.squad.filter(x=>x!==p);C0.budget=r1(C0.budget+(fx.fee||0))}}
   if(fx.contract)C0.contract=fx.contract;
+  if(fx.addPlayer&&C0.squad.length<32)C0.squad.push({...fx.addPlayer,id:'p'+Date.now().toString(36)+(PID++)});
+  if(fx.growYoung){const p=C0.squad.find(x=>x.id===fx.growYoung);if(p){p.ovr=r1(Math.min(p.pot,p.ovr+riP(2,4)));G.summer.push(`${p.name} получил место в основе.`)}}
+  if(fx.loanId){const p=C0.squad.find(x=>x.id===fx.loanId);if(p){p.loan=true;p.ovr=r1(Math.min(p.pot,p.ovr+riP(2,4)));G.summer.push(`${p.name} ушёл в аренду набираться опыта.`)}}
+  if(fx.fireStaff){C0.staff=(C0.staff||[]).filter(s=>s.role!==fx.fireStaff);G.summer.push('Ассистент уволен.')}
   if(fx.youth){const y=fx.youth;if(y.go==='sign')C0.squad.push(y.p);else if(y.go==='loan'){y.p.loan=true;y.p.ovr=r1(y.p.ovr+ri(2,5));C0.squad.push(y.p)}}
   if(fx.hire){C0.staff=(C0.staff||[]).filter(s=>s.role!==fx.hire.role).concat(fx.hire);C0.budget=r1(Math.max(0,C0.budget-fx.hire.cost))}
   if(fx.job)takeJob(fx.job);
@@ -2410,34 +2414,72 @@ function coachDecisions(){
   if(C0.job==='none'){if(RP()<.85||!summer)D.push(jobOffersDecision(false));return D.slice(0,5)}
   // national team invitation (never on top of a club job — you have to leave)
   if(summer&&C0.job==='club'&&C0.rep>=45&&RP()<.18){const pool=G.nations.filter(n=>allowedNat(n)&&n.str<=40+C0.rep*.55&&n.str>=25+C0.rep*.45);if(pool.length){const n=pickP(pool);D.push({ev:true,club:false,title:'Приглашение в сборную',body:`Федерация (${n.name}, сила ${Math.round(n.str)}) предлагает возглавить сборную. Совмещать с клубом нельзя.`,opts:[{label:'Возглавить сборную',sub:`${n.name} · ${CONF_RU[n.conf]}`,detail:'Уйти из клуба',act:{t:'cfx',nation:n.id,rep:3}},{label:'Остаться в клубе',sub:'Не сейчас',detail:'Президент оценит',act:{t:'cfx',pres:6,log:'Вы отказали сборной ради клуба.'}}]})}}
-  if(C0.job==='club'&&summer&&55+C0.rep*.38>C(C0.clubId).str+5&&RP()<.55){
-    const offers=jobOffers(2).filter(c=>c.str>C(C0.clubId).str+3);
-    if(offers.length)D.push({club:false,title:'Вас зовёт клуб побольше',body:`Ваша репутация переросла «${C(C0.clubId).name}». Есть предложения.`,opts:[...offers.map(c=>{const b=budgetFor(c),yrs=ri(2,4);return {label:c.name,sub:`${LG(c.lg).name} · сила ${Math.round(c.str)}`,detail:`Бюджет ${fmtM(b)} · контракт ${yrs} ${plural(yrs,'год','года','лет')}`,badges:compBadges(c.id),act:{t:'cfx',job:{club:c.id,years:yrs,budget:b}}}}),{label:'Остаться',sub:`В «${C(C0.clubId).name}»`,detail:'Президент и фанаты оценят',act:{t:'cfx',pres:6,fans:6,log:'Вы остались в клубе.'}}]});
+  if(C0.job==='club'&&RP()<(summer?.45:.18)){
+    const cur=C(C0.clubId),outgrew=55+C0.rep*.38>cur.str+5;
+    let offers=jobOffers(summer?3:2).filter(c=>c.id!==cur.id);
+    if(outgrew)offers=offers.sort((a,b)=>b.str-a.str);
+    offers=offers.slice(0,summer?2:1);
+    if(offers.length){const mk=c=>{const b=budgetFor(c),yrs=ri(2,4),big=c.str>cur.str+3,abroad=c.cc!==cur.cc;return {label:c.name,sub:`${LG(c.lg).name} · сила ${Math.round(c.str)}${big?' · шаг вверх':abroad?' · за границей':''}`,detail:`Бюджет ${fmtM(b)} · контракт ${yrs} ${plural(yrs,'год','года','лет')}${summer?'':' · уйти прямо сейчас'}`,badges:compBadges(c.id),act:{t:'cfx',job:{club:c.id,years:yrs,budget:b},fans:-4,log:`Вы ушли в «${c.name}».`}}};
+      D.push({club:false,title:summer?(outgrew?'Вас зовёт клуб побольше':'Предложение работы'):'Вас переманивают посреди сезона',body:summer?`${outgrew?'Ваша репутация переросла':'Вами интересуются, пока вы в'} «${cur.name}».`:`Середина сезона, а вас уже зовут. Уход сейчас не понравится фанатам «${cur.name}».`,opts:[...offers.map(mk),{label:'Остаться',sub:`В «${cur.name}»`,detail:'Президент и фанаты оценят',act:{t:'cfx',pres:5,fans:5,log:'Вы остались в клубе.'}}]})}
   }
+  if(summer&&C0.job==='club'&&C0.rep>=38&&!C0.homeAsked){const home=N(C0.nat);if(allowedNat(home)&&RP()<.12){C0.homeAsked=true;D.push({ev:true,club:false,title:'Родина зовёт',body:`Федерация (${home.name}) хочет, чтобы сборную возглавил свой. Совмещать с клубом нельзя.`,opts:[{label:'Возглавить сборную',sub:`${home.name} · сила ${Math.round(home.str)}`,detail:'Уйти из клуба',act:{t:'cfx',nation:home.id,rep:2,log:`Вы возглавили сборную: ${home.name}.`}},{label:'Не сейчас',sub:'Клуб важнее',detail:'Второго шанса может не быть',act:{t:'cfx',pres:4}}]})}}
   if(C0.job==='club'){
     const club=C(C0.clubId);
     // incoming offers for your players
-    if(RP()<.75){const cands=C0.squad.filter(p=>!p.academy||p.ovr>65).sort((a,b)=>b.ovr-a.ovr).slice(0,8);const p=pickP(cands);if(p){const buyer=pickP(G.clubs.filter(c=>c.str>=club.str-2&&c.id!==club.id)),fee=r1(playerValue(p)*(1+RP()*.4)),pressure=C0.budget<2&&RP()<.5;
+    if(RP()<.4){const cands=C0.squad.filter(p=>!p.academy||p.ovr>65).sort((a,b)=>b.ovr-a.ovr).slice(0,8);const p=pickP(cands);if(p){const buyer=pickP(G.clubs.filter(c=>c.str>=club.str-2&&c.id!==club.id)),fee=r1(playerValue(p)*(1+RP()*.4)),pressure=C0.budget<2&&RP()<.5;
       D.push({club:false,title:'Предложение за игрока',body:`«${buyer.name}» предлагает ${fmtM(fee)} за ${p.name} (${POS[p.pos].s}, ${Math.round(p.ovr)}, ${p.age} лет).${pressure?' Президент настаивает на продаже: клубу нужны деньги.':''}`,opts:[
         {label:'Продать',sub:fmtM(fee),detail:'Деньги уйдут в бюджет',act:{t:'cfx',sellId:p.id,fee,pres:pressure?6:1,log:`${p.name} продан в «${buyer.name}» за ${fmtM(fee)}.`}},
         {label:'Отказать',sub:'Игрок нужен команде',detail:pressure?'Президент будет недоволен':'',act:{t:'cfx',pres:pressure?-10:0,team:2,log:`Вы отказали «${buyer.name}».`}}]})}}
     // academy graduates (summer)
-    if(summer){const yl=((C0.staff||[]).find(s=>s.role==='youth')||{lvl:0}).lvl;for(let i=0;i<(RP()<.5?2:1);i++){const pot=Math.round(clamp(Math.min(66+gaussP()*8+(C0.skills.yth-50)/5+yl*1.5,prestige(club)+12),58,94)),y=mkPlayer(pickP(SQUAD_POS),riP(48,60),riP(16,18),{pot,academy:true,contract:3});
+    if(summer&&RP()<.7){const yl=((C0.staff||[]).find(s=>s.role==='youth')||{lvl:0}).lvl;for(let i=0;i<1;i++){const pot=Math.round(clamp(Math.min(66+gaussP()*8+(C0.skills.yth-50)/5+yl*1.5,prestige(club)+12),58,94)),y=mkPlayer(pickP(SQUAD_POS),riP(48,60),riP(16,18),{pot,academy:true,contract:3});
       D.push({club:false,title:'Выпускник академии',body:`${y.name}, ${y.age} лет, ${POS[y.pos].n.toLowerCase()}. Сейчас ${Math.round(y.ovr)}, скауты оценивают потенциал в ${pot-3}–${pot+3}.`,opts:[
         {label:'Дать шанс в основе',sub:'Подписать в первую команду',detail:'Будет расти, тренируясь с основой',act:{t:'cfx',youth:{go:'sign',p:y},fans:2,log:`${y.name} подписал первый контракт.`}},
         {label:'Отдать в аренду',sub:'Сезон игровой практики',detail:'Вернётся сильнее',act:{t:'cfx',youth:{go:'loan',p:y},log:`${y.name} уходит в аренду.`}},
         {label:'Отпустить',sub:'Не наш уровень',detail:'',act:{t:'cfx',log:`${y.name} покинул академию.`}}]})}}
     // staff hiring (summer)
-    if(summer&&RP()<.6){const cands=staffCandidates().sort(()=>RP()-.5).slice(0,3);D.push({club:false,title:'Тренерский штаб',body:`Можно нанять специалиста. Сейчас в штабе: ${(C0.staff||[]).map(s=>`${STAFF_ROLES[s.role][0].toLowerCase()} (${'★'.repeat(s.lvl)})`).join(', ')||'никого'}.`,opts:[...cands.map(c=>({label:STAFF_ROLES[c.role][0],sub:`${c.name} · ${'★'.repeat(c.lvl)}`,detail:`${STAFF_ROLES[c.role][1]} · ${fmtM(c.cost)} из бюджета`,act:{t:'cfx',hire:c,log:`В штабе новый специалист: ${STAFF_ROLES[c.role][0].toLowerCase()} ${c.name}.`}})),{label:'Никого не нанимать',sub:'Штаб устраивает',detail:'',act:{t:'cfx'}}]})}
+    if(summer&&RP()<.4){const lvlOf=r=>((C0.staff||[]).find(x=>x.role===r)||{lvl:0}).lvl,cands=staffCandidates().filter(c=>c.lvl>lvlOf(c.role)).sort(()=>RP()-.5).slice(0,3);if(cands.length)D.push({club:false,title:'Тренерский штаб',body:`Можно нанять специалиста. Сейчас в штабе: ${(C0.staff||[]).map(s=>`${STAFF_ROLES[s.role][0].toLowerCase()} (${'★'.repeat(s.lvl)})`).join(', ')||'никого'}.`,opts:[...cands.map(c=>({label:STAFF_ROLES[c.role][0],sub:`${c.name} · ${'★'.repeat(c.lvl)}`,detail:`${STAFF_ROLES[c.role][1]} · ${fmtM(c.cost)} из бюджета`,act:{t:'cfx',hire:c,log:`В штабе новый специалист: ${STAFF_ROLES[c.role][0].toLowerCase()} ${c.name}.`}})),{label:'Никого не нанимать',sub:'Штаб устраивает',detail:'',act:{t:'cfx'}}]})}
     // contract renewal
     if(summer&&C0.contract<=1)D.push({club:false,title:'Контракт тренера',body:`Контракт с «${club.name}» заканчивается. Президент ${C0.rel.pres>=50?'хочет продлить':'сомневается'}.`,opts:C0.rel.pres>=40?[{label:'Продлить на 3 года',sub:'Остаться',detail:'',act:{t:'cfx',contract:3,log:'Вы продлили контракт на 3 года.'}},{label:'Уйти',sub:'Искать новый вызов',detail:'Станете свободным тренером',act:{t:'cfx',resign:1}}]:[{label:'Уйти по окончании',sub:'Контракт не продлят',detail:'',act:{t:'cfx',resign:1}}]});
   }
+  D.push(...coachFuss());
   D.push(...pressConference());
   D.push(...coachEggs());
   return D.slice(0,5);
 }
+/* random 'fuss' of a coach's life: ~35% a window, each story at most once in 5 seasons */
+function coachFuss(){
+  const C0=G.C;if(C0.job!=='club'||RP()>=.35)return [];
+  C0.evLast=C0.evLast||{};
+  const club=C(C0.clubId),summer=C0.phase==='summer',sq=C0.squad,best=sq.slice().sort((a,b)=>b.ovr-a.ovr)[0],young=sq.filter(p=>p.age<=21).sort((a,b)=>b.pot-a.pot)[0];
+  const cap=sq.slice().sort((a,b)=>b.age*.5+b.ovr-(a.age*.5+a.ovr))[0];
+  const ev=(title,body,opts)=>({ev:true,club:false,title,body,opts:opts.map(([label,sub,detail,fx])=>({label,sub,detail,act:{t:'cfx',...fx}}))});
+  const P=[
+    ['veteranStar',()=>summer&&G.rivals.some(r=>G.year+1-r.by>=32&&r.club!==club.id),()=>{const r=pickP(G.rivals.filter(r=>G.year+1-r.by>=32&&r.club!==club.id));const p=mkPlayer(r.pos,r.ovr,G.year+1-r.by,{name:r.name,star:true,pot:r.ovr,contract:2});const fee=r1(Math.max(.5,playerValue(p)*.4));
+      return ev('Звезда хочет к вам',`${r.name} (${POS[r.pos].s}, ${r.ovr}, ${p.age} лет) готов доиграть карьеру у вас. Цена символическая.`,[['Подписать',fmtM(fee),'Опыт и имя, но возраст',{budget:-fee,addPlayer:p,fans:6,rep:1,log:`${r.name} подписан за ${fmtM(fee)}.`}],['Отказать','Строим молодую команду','',{}]])}],
+    ['prodigy',()=>summer,()=>{const p=mkPlayer(pickP(['ST','LW','RW','CAM','CM','CB']),riP(58,66),riP(16,17),{pot:riP(86,94),contract:4});const fee=r1(playerValue(p)*1.3);
+      return ev('Вундеркинд на рынке',`${p.name}, ${p.age} лет, ${POS[p.pos].n.toLowerCase()}. Сейчас ${Math.round(p.ovr)}, но скауты сходят с ума: потенциал ${p.pot-2}–${p.pot+2}.`,[['Купить',fmtM(fee),'Будущая звезда или пустышка',{budget:-fee,addPlayer:p,log:`Вундеркинд ${p.name} подписан.`}],['Пропустить','Слишком рискованно','',{}]])}],
+    ['agentDeal',()=>true,()=>{const pos=bestXI(sq,C0.tactic.scheme).xi.sort((a,b)=>a.eff-b.eff)[0].slot,p=mkPlayer(pos,club.str+riP(0,4),riP(23,28),{contract:3}),fee=r1(playerValue(p)*.55);
+      return ev('Агент с «выгодной» сделкой',`Агент предлагает ${p.name} (${POS[pos].s}, заявлен рейтинг ${Math.round(p.ovr)}) почти даром. Просмотр видео выглядит подозрительно хорошо.`,[['Подписать',fmtM(fee),'65%: всё честно. Иначе рейтинг окажется ниже',{budget:-fee,chance:.65,addPlayer:p,log:`${p.name} подписан. Агент не обманул.`,fail:{budget:-fee,addPlayer:{...p,ovr:p.ovr-8},fans:-3,log:`${p.name} оказался пустышкой. Агент исчез.`}}],['Отказаться','Слишком хорошо, чтобы быть правдой','',{}]])}],
+    ['captain',()=>!!cap&&C0.rel.team<65,()=>ev('Капитан против вас',`${cap.name} при всех раскритиковал вашу тактику.`,[['Снять повязку','Показать, кто главный',`Президент одобрит, раздевалка — нет`,{pres:4,team:-8,log:`${cap.name} лишён капитанской повязки.`}],['Поговорить один на один','Уважение',`Зависит от мотивации`,{chance:.45+C0.skills.mot/250,team:8,log:'Разговор с капитаном всё уладил.',fail:{team:-5,log:'Капитан остался при своём.'}}],['Продать','Нет незаменимых','',{sellId:cap.id,fee:r1(playerValue(cap)*.8),team:3,fans:-6,log:`${cap.name} продан.`}]])],
+    ['investor',()=>club.str<86,()=>ev('Инвестор в клубе','Инвестор хочет купить долю клуба и сразу вложить деньги в трансферы, но ждёт быстрых результатов.',[['Поддержать сделку','Деньги сейчас',`Бюджет вырастет, президент станет строже`,{budget:r1(budgetFor(club)*.8),pres:-8,log:'Инвестор вложил деньги в трансферы.'}],['Отговорить президента','Независимость','',{pres:-3,fans:4}]])],
+    ['stadium',()=>summer,()=>ev('Новый стадион','Президент строит новый стадион. В этом году денег на трансферы меньше, зато потом доходы вырастут.',[['Поддержать','Думаем о будущем','Бюджет сейчас −40%, клуб станет престижнее',{budget:-r1(C0.budget*.4),clubStr:1.5,fans:6,log:'Строительство стадиона началось.'}],['Потребовать деньги на состав','Результат нужен сейчас','',{chance:.5,pres:-6,log:'Президент перенёс стройку.',fail:{pres:-12,log:'Президент обиделся: стройка всё равно будет.'}}]])],
+    ['social',()=>!!best,()=>ev('Скандал в соцсетях',`${best.name} выложил видео с ночной вечеринки накануне матча.`,[['Оштрафовать','Дисциплина',`Раздевалка поймёт, звезда обидится`,{team:3,log:`${best.name} оштрафован.`}],['Защитить игрока','Своих не сдаём','Фанаты не оценят',{fans:-6,team:6}],['Выставить на трансфер','Пример для остальных','',{sellId:best.id,fee:r1(playerValue(best)*.85),fans:-4,pres:3,log:`${best.name} продан после скандала.`}]])],
+    ['rivalCoach',()=>true,()=>{const other=pickP(G.clubs.filter(c=>c.lg===club.lg&&c.id!==club.id));return ev('Тренерская перепалка',`Тренер «${other.name}» назвал вашу команду «автобусом без колёс».`,[['Ответить жёстко','Словом за слово','Фанаты в восторге',{fans:6,rep:1,pres:-2}],['Пошутить','С юмором','',{fans:3,rep:1}],['Промолчать','Ответим на поле','',{team:3}]])}],
+    ['crowdfund',()=>C0.rel.fans>=60,()=>ev('Фанаты скинулись','Болельщики собрали деньги на трансфер «для нашего тренера».',[['Принять','Спасибо, народ!','',{budget:1.5,fans:5,log:'Фанаты подарили бюджету €1.5 млн.'}],['Отдать на академию','Будущее клуба','',{fans:8,skill:{yth:2}}]])],
+    ['youngPlea',()=>!!young&&young.pot>=78,()=>ev('Молодой просит шанс',`${young.name} (${young.age} лет, потенциал ~${Math.round(young.pot)}) требует игрового времени, иначе уйдёт.`,[['Дать шанс','Место в основе','Рост быстрее, основа чуть слабее',{growYoung:young.id,team:2}],['Отдать в аренду','Пусть наиграется','',{loanId:young.id}],['Пусть ждёт','Рано ещё','50%: уйдёт бесплатно',{chance:.5,log:`${young.name} смирился.`,fail:{sellId:young.id,fee:0,log:`${young.name} ушёл бесплатно.`}}]])],
+    ['swap',()=>!!best,()=>{const other=pickP(G.clubs.filter(c=>c.str>=club.str-2&&c.id!==club.id)),p=mkPlayer(best.pos,best.ovr+riP(-2,3),riP(22,27),{contract:3});
+      return ev('Обмен игроками',`«${other.name}» предлагает обмен: ваш ${best.name} (${Math.round(best.ovr)}, ${best.age} лет) на их ${p.name} (${Math.round(p.ovr)}, ${p.age} лет).`,[['Меняемся','Свежая кровь','',{sellId:best.id,fee:0,addPlayer:p,log:`${best.name} обменян на ${p.name}.`}],['Нет','','',{}]])}],
+    ['assistantPlot',()=>(C0.staff||[]).some(s=>s.role==='ass'),()=>ev('Ассистент метит на ваше место','Ходят слухи, что ваш ассистент за спиной общается с президентом.',[['Уволить ассистента','Ножи в спину не терпим','Потеряете его бонус',{fireStaff:'ass',pres:-2}],['Поговорить открыто','Доверие','',{chance:.6,team:3,log:'Слухи оказались пустыми.',fail:{pres:-8,log:'Ассистент действительно играл против вас.'}}]])],
+    ['saudi',()=>C0.rep>=40&&club.lg!=='KSA1',()=>{const c=pickP(LG('KSA1').ids.map(C).sort((a,b)=>b.str-a.str).slice(0,4));return ev('Миллионы из пустыни',`«${c.name}» предлагает контракт мечты и бюджет, как у топ-клубов Европы.`,[['Уехать',c.name,'Огромный бюджет, но репутация в Европе пострадает',{job:{club:c.id,years:3,budget:r1(budgetFor(c)*1.8)},rep:-4,log:`Вы уехали в «${c.name}».`}],['Отказаться','Карьера в Европе','',{rep:1,fans:4}]])}],
+    ['formerClub',()=>C0.jobs.length>=2&&summer,()=>{const j=pickP(C0.jobs.slice(0,-1).filter(j=>j.clubId!=null&&j.clubId!==club.id&&j.why!=='уволен'));if(!j)return null;const c=C(j.clubId);return ev('Бывший клуб зовёт назад',`«${c.name}» хочет вернуть вас. Там вас помнят по ${j.tro} ${plural(j.tro,'трофею','трофеям','трофеям')}.`,[['Вернуться',c.name,'',{job:{club:c.id,years:3,budget:budgetFor(c)},log:`Вы вернулись в «${c.name}».`}],['Остаться','Назад дороги нет','',{pres:3}]])}]
+  ];
+  const pool=P.filter(([id,cond])=>!(C0.evLast[id]!=null&&G.year-C0.evLast[id]<5)&&cond());
+  for(let t=0;t<4&&pool.length;t++){const i=Math.floor(RP()*pool.length),[id,,mk]=pool.splice(i,1)[0],d=mk();if(d){C0.evLast[id]=G.year;return [d]}}
+  return [];
+}
 function pressConference(){
-  const C0=G.C;if(C0.job==='none'||RP()>.7)return [];
+  const C0=G.C;if(C0.job==='none'||C0.pressYear===G.year||RP()>.15)return [];
+  C0.pressYear=G.year;
   const Qs=[
     ['Журналист: «Ваша команда играет скучно. Будете что-то менять?»',[['Мы играем на результат','Спокойно',{pres:2,fans:-2}],['Подождите, скоро все увидят','Обещание',{fans:4,rep:1,pres:-1}],['Вы ничего не понимаете в футболе','Дерзко',{fans:3,rep:-2,pres:-3}]]],
     ['Журналист: «Говорят, игроки вами недовольны».',[['У нас отличная атмосфера','Защитить команду',{team:5,rep:-1}],['Кто недоволен — дверь открыта','Жёстко',{team:-6,pres:3,fans:2}],['Без комментариев','Уйти от ответа',{}]]],
