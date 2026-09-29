@@ -278,6 +278,7 @@ table.t{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px}
 .roster li .num{font-family:var(--disp);font-weight:900;font-size:28px;color:var(--amber)}
 .rdy{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:6px;padding:3px 8px;background:var(--line);white-space:nowrap}
 .rdy.on{background:var(--grass);color:#04170c}
+.roster.slots li{flex-wrap:wrap}
 .btn[disabled]{opacity:.5;pointer-events:none}
 /* rare events, modal */
 .decide.egg{border-color:#FFD58A;background:linear-gradient(135deg,rgba(255,213,138,.16),transparent 55%),var(--card);box-shadow:0 0 0 1px rgba(255,213,138,.35),0 20px 50px -20px rgba(255,180,63,.35)}
@@ -474,9 +475,27 @@ let RUN=null,MATCH=null,SAVED=null;
 function genCode(){const w=['GOL','DERBI','FINAL','KUBOK','ULTRAS','TIFO','KAPITAN','PENALTI','VAR','OFSAID'];return w[Math.floor(Math.random()*w.length)]+'-'+String(1000+Math.floor(Math.random()*9000))}
 const normCode=c=>String(c||'').trim().toUpperCase().replace(/\s+/g,'-').slice(0,24);
 const SAVE='legenda-polya-v1';
-function save(){if(G)G.rng={w:RW.s,p:RPR.s};SAVED=JSON.stringify(G);try{localStorage.setItem(SAVE,SAVED)}catch(e){}}
+const SLOTS_KEY='legenda-polya-slots',ACTIVE_KEY='legenda-polya-active',slotKey=id=>'legenda-polya-slot-'+id,MAX_SLOTS=8;
+function slotsGet(){try{const a=JSON.parse(localStorage.getItem(SLOTS_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function slotsSet(a){try{localStorage.setItem(SLOTS_KEY,JSON.stringify(a))}catch(e){}}
+function save(){
+  if(G)G.rng={w:RW.s,p:RPR.s};SAVED=JSON.stringify(G);
+  if(!G||!G.P)return;
+  if(!G.slot)G.slot=Date.now().toString(36),SAVED=JSON.stringify(G);
+  try{localStorage.setItem(slotKey(G.slot),SAVED);localStorage.setItem(ACTIVE_KEY,G.slot)}catch(e){}
+  const P=G.P,meta={id:G.slot,upd:Date.now(),name:P.name,pos:POS[P.pos].s,club:C(P.clubId).name,age:P.age,ovr:Math.round(P.ovr),season:`${G.year}/${String(G.year+1).slice(2)}`,room:G.room?G.room.code:null,retired:G.phase==='retired',tier:G.phase==='retired'?legacyTier():null};
+  slotsSet([meta,...slotsGet().filter(x=>x.id!==G.slot)]);
+}
+function loadSlot(id){try{const raw=localStorage.getItem(slotKey(id));if(!raw)return false;G=migrate(JSON.parse(raw));G.slot=id;SAVED=JSON.stringify(G);RUN=null;MATCH=null;UI.wait=null;
+  if(G.room&&G.room.token){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave();MP.room=null}
+  try{localStorage.setItem(ACTIVE_KEY,id)}catch(e){}return true}catch(e){return false}}
+function deleteSlot(id){try{localStorage.removeItem(slotKey(id))}catch(e){}slotsSet(slotsGet().filter(x=>x.id!==id));if(G&&G.slot===id){G=null;RUN=null;MATCH=null}}
 function migrate(g){if(g&&g.rng){RW=mkRng(g.rng.w);RPR=mkRng(g.rng.p)}if(g&&g.P){const P=g.P;if(P.rep==null)P.rep=clamp(10+P.trophies.length*2+P.awards.length*3+P.tot.g/15,0,100);if(P.roleMod==null)P.roleMod=0;if(P.growMod==null)P.growMod=0}if(g&&g.clubs){if(!g.derby)g.derby=buildDerbies(g);if(!g.rec)g.rec=buildRecords();else{const f=buildRecords();Object.keys(f).forEach(k=>{if(!g.rec[k])g.rec[k]=f[k]})}}if(g&&g.P){const P=g.P;if(!P.at)P.at=makeAttrs(P.ovr,P.pos);if(!P.focus)P.focus='bal';if(!P.rel)P.rel=freshRel();if(!P.clubRel)P.clubRel={};if(!P.st)P.st={ucl:0,wc:0,euro:0,hat:0,clubG:{}};if(!P.recs)P.recs=[];if(!P.ms)P.ms=[];if(!P.best)P.best={};if(!P.perks)P.perks=[];if(P.num==null)P.num=NUM_BY_POS[P.pos]||9}if(g&&g.set&&!g.set.rusMode)g.set.rusMode=g.set.russia?'on':'random';return g}
-function load(){try{const s=localStorage.getItem(SAVE);return s?JSON.parse(s):null}catch(e){return null}}
+function load(){
+  // one-time move of the old single save into the first slot
+  try{const old=localStorage.getItem(SAVE);if(old&&!slotsGet().length){const g=JSON.parse(old);if(g&&g.P){const id=g.slot||Date.now().toString(36);g.slot=id;localStorage.setItem(slotKey(id),JSON.stringify(g));localStorage.setItem(ACTIVE_KEY,id);slotsSet([{id,upd:Date.now(),name:g.P.name,pos:g.P.pos,club:(g.clubs[g.P.clubId]||{}).name,age:g.P.age,ovr:Math.round(g.P.ovr),season:`${g.year}/${String(g.year+1).slice(2)}`,room:g.room?g.room.code:null,retired:g.phase==='retired'}])}}localStorage.removeItem(SAVE)}catch(e){}
+  try{const id=localStorage.getItem(ACTIVE_KEY);if(!id)return null;const raw=localStorage.getItem(slotKey(id));if(!raw)return null;const g=JSON.parse(raw);g.slot=id;return g}catch(e){return null}
+}
 
 const C=id=>G.clubs[id];
 const N=id=>G.nations[id];
@@ -859,7 +878,7 @@ function* seasonGen(){
         (g.wfx||[]).forEach(w=>{if(G.wfxDone[w.k])return;G.wfxDone[w.k]=1;const wc=C(w.club);if(!wc)return;if(w.str)wc.str=clamp(wc.str+w.str,42,94);if(w.base)wc.base=clamp(wc.base+w.base,42,94)});
         const c=C(g.clubId),ov=g.ovrF||g.ovr,role=g.roleNext!=null?g.roleNext:roleOf(ov,c.str);
         addf(S.fx.c,c.id,eb(ov,c.str,g.posK||'CM',role)+(g.tfx||0));if(role>=3)S.stars.push([c.id,ov]);
-        if(c.id!==club.id)mm.c[c.id]=p.id;
+        if(c.id!==club.id)mm.c[c.id]=p.id;else{S.teammates=(S.teammates||[]).concat(p.name);addf(S.fx.c,c.id,.8)}
         if(g.calledNext&&g.natId!=null){const n=N(g.natId);addf(S.fx.n,n.id,eb(ov,n.str,g.posK||'CM',g.nroleNext||2));if(n.id!==P.nat)mm.n[n.id]=p.id}});
       S.mates=mm}
   }
@@ -956,6 +975,7 @@ function* clubWorldCup(Y,SB,ch){
 }
 
 function* nationYear(Y,SB,ch){
+  if(S.teammates&&S.teammates.length)S.news.push(`Одноклубники из комнаты: ${S.teammates.join(', ')}. Сыгранность даёт команде бонус.`);
   const P=G.P,nat=N(P.nat),Q=qualifyConf;
   if(TR.called){
     const inConf=allowedNat(nat);
@@ -1259,6 +1279,11 @@ function genDecisions(){
   if(P.age>=29&&P.ovr>=77&&club.lg!=='KSA1'&&RP()<.3){const c=pickP(LG('KSA1').ids.map(C).sort((a,b)=>b.str-a.str).slice(0,6));const of=makeOffer(c,P.contract<=0,2.3);of.years=riP(2,3);D.push({club:true,title:'Предложение из Саудовской Аравии',body:`«${c.name}» предлагает контракт, от которого трудно отказаться.`,opts:[offerOpt(of),{label:'Отказаться',sub:'Остаться в Европе',detail:'Спортивные амбиции важнее',act:{t:'none'}}]})}
   if(P.age>=32&&P.ovr>=68&&club.lg!=='USA1'&&RP()<.35){const c=pickP(LG('USA1').ids.map(C).sort((a,b)=>b.str-a.str).slice(0,10));const of=makeOffer(c,P.contract<=0,1.4);of.years=2;D.push({club:true,title:'Зовут в MLS',body:`«${c.name}» хочет сделать вас лицом команды.`,opts:[offerOpt(of),{label:'Отказаться',sub:'Остаться',detail:'',act:{t:'none'}}]})}
   if(P.age>=31&&P.firstClub!==P.clubId&&RP()<.25){const c=C(P.firstClub);const of=makeOffer(c,P.contract<=0);of.fee=r1(of.fee*.6);of.years=2;D.push({club:true,title:'Родной клуб зовёт домой',body:`«${c.name}», где вы начинали, хочет вернуть вас.`,opts:[offerOpt(of),{label:'Не сейчас',sub:'Остаться',detail:'',act:{t:'none'}}]})}
+  // a room-mate joined my club
+  if(inRoom()&&MP.room){P.duo=P.duo||{};MP.room.players.forEach(p=>{const g=p.progress;if(p.id===MP.sess.pid||!g||g.retired||g.clubId!==P.clubId||P.duo[p.id+':'+P.clubId])return;P.duo[p.id+':'+P.clubId]=1;
+    D.push({ev:true,club:false,title:'Одноклубник из комнаты',body:`${p.name} теперь играет с вами в «${club.name}». Пресса уже спорит, кто из вас главный.`,opts:[
+      {label:'Сыгранная связка',sub:'Играть друг на друга',detail:'Раздевалка сплочённее, прогресс чуть быстрее',act:{t:'fx',team:10,growMod:.3,log:`Вы с ${p.name} — главная связка «${club.name}».`}},
+      {label:'Конкуренция',sub:'Лидер здесь один',detail:'50%: вы главный. Иначе меньше игрового времени',act:{t:'fx',chance:.5,roleMod:1,rep:2,log:`В споре за лидерство с ${p.name} победили вы.`,fail:{roleMod:-2,team:-6,log:`${p.name} оказался главным в «${club.name}».`}}}]})})}
   // reactions to what happened last season
   D.push(...anomalyDecisions());
   // transfer saga and rare easter eggs
@@ -1997,7 +2022,7 @@ function mpBegin(){
   UI.form.rus=MP.room.rus;UI.roomSeed=MP.room.seed;
   startCareer();
   UI.roomSeed=null;
-  G.room={code:MP.sess.code,pid:MP.sess.pid};save();
+  G.room={code:MP.sess.code,pid:MP.sess.pid,token:MP.sess.token};save();
   UI.tab='career';mpProgress(true);render();window.scrollTo(0,0);
 }
 function mpProgress(force){
@@ -2027,7 +2052,8 @@ function mpLiveHtml(){
   const rows=r.players.map(p=>{
     const you=p.id===MP.sess.pid,host=p.id===r.host,s=p.setup||{},g=p.progress;
     const right=lobby?`<span class="rdy ${p.ready?'on':''}">${p.ready?'готов':'ждём'}</span>`:g?`<span class="num">${g.ovr}</span>`:'<span class="dim">ещё не начал</span>';
-    const sub=lobby?[s.pos&&POS[s.pos]?POS[s.pos].s:'',s.club,s.nat].filter(Boolean).join(' · '):g?`${g.retired?`завершил · ${g.tier}`:`${g.season} · ${g.age} лет`} · ${g.club} · ${g.gk?`${g.cs||0} сухих`:`${g.g} голов, ${g.a} пас.`} · трофеев ${g.tro} · ${g.gk?'Яшин':'ЗМ'} ${g.bdo}`:'';
+    const myClub=G&&G.P&&G.room&&G.room.code===r.code?G.P.clubId:null,mate=!you&&g&&myClub!=null&&g.clubId===myClub&&!g.retired;
+    const sub=lobby?[s.pos&&POS[s.pos]?POS[s.pos].s:'',s.club,s.nat].filter(Boolean).join(' · '):g?(mate?'одноклубник · ':'')+`${g.retired?`завершил · ${g.tier}`:`${g.season} · ${g.age} лет`} · ${g.club} · ${g.gk?`${g.cs||0} сухих`:`${g.g} голов, ${g.a} пас.`} · трофеев ${g.tro} · ${g.gk?'Яшин':'ЗМ'} ${g.bdo}`:'';
     return `<li class="${you?'me':''}"><div><b>${esc(p.name)}${you?' (вы)':''}${host?' <span class="tag">хост</span>':''}</b><span>${esc(sub)}</span></div>${right}</li>`}).join('');
   const sorted=lobby?'':`<p class="small dim">Сортировка по вкладу: трофеи, Золотые мячи, голы.</p>`;
   const feed=r.feed.length?`<p class="eyebrow" style="margin:14px 0 6px">Лента комнаты</p><ul class="lines">${r.feed.slice(-14).reverse().map(f=>`<li>${esc(f.text)}</li>`).join('')}</ul>`:'';
@@ -2062,10 +2088,10 @@ function viewMulti(){
       <div class="row2"><div class="field"><label for="m-lg">Лига</label><select id="m-lg">${S_LEAGUES.map(l=>`<option value="${l.id}" ${l.id===f.lg?'selected':''}>${esc(l.name)} · ${COUNTRIES[l.cc][0]}</option>`).join('')}</select></div>
         <div class="field"><label for="m-club">Клуб (сила)</label><select id="m-club">${lg.clubs.map(c=>`<option value="${esc(c.name)}" ${c.name===f.club?'selected':''}>${esc(c.name)} · ${c.str}</option>`).join('')}</select></div></div>
       ${r&&r.host===MP.sess.pid?`<div class="field"><label for="m-rus">Россия в международном футболе (решает хост)</label><select id="m-rus">${[['random','Отстранена, может вернуться'],['off','Отстранена навсегда'],['on','Допущена']].map(([v,l])=>`<option value="${v}" ${r.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>`:''}
-      ${G&&G.P&&!mine?'<p class="small muted">Внимание: при старте игры в комнате текущая одиночная карьера будет заменена.</p>':''}
+      ${G&&G.P&&!mine?'<p class="small muted">Карьера в комнате будет в отдельном слоте, текущая сохранится во вкладке «Сохранения».</p>':''}
     </div></div>`:'';
   const startedBlock=!lobby?(mine?`<div class="go"><button class="btn primary" data-a="tab" data-v="career">К своей карьере</button></div>`
-    :`<div class="panel"><p>Игра в комнате уже идёт${G&&G.P?'. Ваша текущая одиночная карьера будет заменена.':'.'} Настройки игрока возьмутся из формы одиночной игры: «${esc(f.name)}», ${POS[f.pos].n.toLowerCase()}, «${esc(f.club)}».</p><div class="go"><button class="btn primary" data-a="mpBegin">Начать карьеру в комнате</button></div></div>`):'';
+    :`<div class="panel"><p>Игра в комнате уже идёт${G&&G.P?'. Карьера в комнате будет в отдельном слоте, текущая сохранится.':'.'} Настройки игрока возьмутся из формы одиночной игры: «${esc(f.name)}», ${POS[f.pos].n.toLowerCase()}, «${esc(f.club)}».</p><div class="go"><button class="btn primary" data-a="mpBegin">Начать карьеру в комнате</button></div></div>`):'';
   return `<section class="mp">
     <div class="sec-h"><div><p class="eyebrow">Комната · ${lobby?'лобби':'игра идёт'}</p><h1 class="disp" style="font-size:clamp(48px,9vw,90px);color:var(--amber)">${esc(MP.sess.code)}</h1></div>
       <div class="go" style="margin:0"><button class="btn" data-a="mpCopy">Скопировать код</button><button class="btn ghost" data-a="mpLeave">Выйти</button></div></div>
@@ -2193,9 +2219,11 @@ function roomPanel(){
 
 /* ================= start ================= */
 function startCareer(){
+  if(slotsGet().length>=MAX_SLOTS){UI.tab='saves';UI.slotFull=true;render();return}
+  UI.slotFull=false;
   const f=UI.form,code=UI.roomSeed||genCode();
   RW=mkRng(hashStr('world|'+code+'|'+f.rus));RPR=mkRng(hashStr('player|'+code+'|'+Math.random()));
-  G=buildWorld(f.rus);G.code=code;
+  G=buildWorld(f.rus);G.code=code;G.slot=Date.now().toString(36);
   const lg=LG(f.lg),club=lg.ids.map(C).find(c=>c.name===f.club)||C(lg.ids[0]);
   const nat=natByName(f.nat);
   const ovr=riP(55,61),pot=Math.round(clamp(78+gaussP()*5.5,68,94));
@@ -2220,8 +2248,8 @@ function playerCard(o){
     <div class="fc-meta"><span>${esc(o.club)}</span><span>${esc(o.nat)}</span><span>${esc(o.posFull)}</span></div></div>`;
 }
 function topbar(){
-  const tabs=(G&&G.P?[['career',G.phase==='retired'?'Итоги':'Карьера'],['tables','Таблицы'],['world','Мир'],['multi','Мультиплеер']]:[['career','Новая карьера'],['multi','Мультиплеер']]).map(([k,l])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l}</button>`).join('');
-  const nb=G&&G.P?(UI.confirmNew?`<span class="confirm"><span class="small muted">Удалить карьеру?</span><button class="btn warn" data-a="newYes">Да</button><button class="btn ghost" data-a="newNo">Нет</button></span>`:`<button class="btn ghost" data-a="new">Новая карьера</button>`):'';
+  const tabs=(G&&G.P?[['career',G.phase==='retired'?'Итоги':'Карьера'],['tables','Таблицы'],['world','Мир'],['multi','Мультиплеер'],['saves','Сохранения']]:[['career','Новая карьера'],['multi','Мультиплеер'],['saves','Сохранения']]).map(([k,l])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l}</button>`).join('');
+  const nb=G&&G.P?`<button class="btn ghost" data-a="newYes">Новая карьера</button>`:'';
   return `<header class="top"><div class="wrap topin"><div class="brand"><i></i>Легенда поля</div><nav class="tabs">${tabs}</nav>${nb}</div></header>`;
 }
 function viewSetup(){
@@ -2394,6 +2422,15 @@ function viewHall(){
     <div class="go"><button class="btn primary" data-a="share">Картинка с итогами</button><button class="btn" data-a="newYes">Новая карьера</button></div>
   </section>`;
 }
+function viewSaves(){
+  const list=slotsGet().sort((a,b)=>b.upd-a.upd);
+  const rows=list.map(m=>{const cur=G&&G.slot===m.id;return `<li class="${cur?'me':''}"><div><b>${esc(m.name)} · ${esc(m.pos||'')}${m.room?` <span class="tag">комната ${esc(m.room)}</span>`:''}${cur?' <span class="tag">сейчас</span>':''}</b><span>${m.retired?`завершил · ${esc(m.tier||'')}`:`${esc(m.season||'')} · ${m.age} лет · ${esc(m.club||'')} · рейтинг ${m.ovr}`}</span></div>
+    <div class="go" style="margin:0">${UI.delSlot===m.id?`<span class="confirm"><span class="small muted">Удалить?</span><button class="btn warn" data-a="slotDelYes">Да</button><button class="btn ghost" data-a="slotDelNo">Нет</button></span>`:`${cur?'':`<button class="btn" data-a="slotLoad" data-id="${esc(m.id)}">Продолжить</button>`}<button class="btn ghost" data-a="slotDel" data-id="${esc(m.id)}">Удалить</button>`}</div></li>`}).join('');
+  return `<section><div class="sec-h"><h2>Сохранения</h2><span class="small muted">${list.length} из ${MAX_SLOTS} · хранятся в этом браузере</span></div>
+    ${UI.slotFull?`<p class="err">Все ${MAX_SLOTS} слотов заняты. Удалите старую карьеру, чтобы начать новую.</p>`:''}
+    ${list.length?`<ul class="roster slots">${rows}</ul>`:'<p class="muted">Сохранений пока нет. Начните карьеру — она появится здесь.</p>'}
+    <div class="go"><button class="btn primary" data-a="newYes">Новая карьера</button></div></section>`;
+}
 function viewTables(){
   const P=G.P,lgId=UI.tblLg||C(P.clubId).lg,lg=LG(lgId),t=G.tables[lgId];
   const sel=`<div class="selrow"><select id="tblLg" aria-label="Лига">${G.leagues.map(l=>`<option value="${l.id}" ${l.id===lgId?'selected':''}>${esc(l.name)} · ${COUNTRIES[l.cc][0]}</option>`).join('')}</select><span class="small muted">${t?`Итоги сезона ${G.tablesSeason}`:'Сезон ещё не сыгран — показан состав лиги по силе'}</span></div>`;
@@ -2423,6 +2460,7 @@ function render(){
   const app=document.getElementById('app');
   let body;
   if(UI.tab==='multi')body=viewMulti();
+  else if(UI.tab==='saves')body=viewSaves();
   else if(!G||!G.P)body=viewSetup();
   else if(UI.tab==='tables')body=viewTables();
   else if(UI.tab==='world')body=viewWorld();
@@ -2442,7 +2480,11 @@ document.addEventListener('click',e=>{
   else if(a==='opt'){chooseOpt(+b.dataset.i)}
   else if(a==='new'){UI.confirmNew=true;render()}
   else if(a==='newNo'){UI.confirmNew=false;render()}
-  else if(a==='newYes'){UI.confirmNew=false;G=null;RUN=null;MATCH=null;try{localStorage.removeItem(SAVE)}catch(err){}render();window.scrollTo(0,0)}
+  else if(a==='newYes'){UI.confirmNew=false;G=null;RUN=null;MATCH=null;UI.wait=null;UI.tab='career';try{localStorage.removeItem(ACTIVE_KEY)}catch(err){}render();window.scrollTo(0,0)}
+  else if(a==='slotLoad'){if(loadSlot(b.dataset.id)){UI.tab='career';render();window.scrollTo(0,0)}}
+  else if(a==='slotDel'){UI.delSlot=b.dataset.id;render()}
+  else if(a==='slotDelYes'){deleteSlot(UI.delSlot);UI.delSlot=null;render()}
+  else if(a==='slotDelNo'){UI.delSlot=null;render()}
   else if(a==='ret'){UI.confirmRetire=true;render()}
   else if(a==='retNo'){UI.confirmRetire=false;render()}
   else if(a==='cer'){G.ceremony=false;save();render();window.scrollTo(0,0)}
@@ -2490,6 +2532,7 @@ function updPrev(){const f=UI.form,el=document.getElementById('cardPrev');if(el)
 function start(data){
   if(data&&data.Gs)G=migrate(JSON.parse(data.Gs));else if(data&&data.G)G=migrate(data.G);else{const s=load();if(s&&s.P&&s.clubs)G=migrate(s)}
   if(G)SAVED=JSON.stringify(G);
+  if(G&&G.room&&G.room.token&&!MP.sess){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave()}
   if(data&&data.UI)Object.assign(UI,data.UI);
   render();
 }
