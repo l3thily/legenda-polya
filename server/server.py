@@ -19,7 +19,11 @@ DATA = os.environ.get("DATA", "/var/lib/legenda-polya/rooms.json")
 ORIGINS = {"https://l3thily.github.io", "https://legenda-polya.88-218-121-40.sslip.io"}
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED = 500, 8, 120_000, 120
-ROOM_TTL = 30 * 24 * 3600
+# inactive rooms are removed: lobby nobody started, finished games, abandoned games
+LOBBY_TTL = 12 * 3600
+DONE_TTL = 2 * 24 * 3600
+ROOM_TTL = 14 * 24 * 3600
+CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
 
 lock = threading.Lock()
@@ -43,9 +47,32 @@ def persist():
     os.replace(tmp, DATA)
 
 
+def room_ttl(room):
+    players = list(room["players"].values())
+    if not players:
+        return 0
+    if room["status"] == "lobby":
+        return LOBBY_TTL
+    if all((p.get("progress") or {}).get("retired") for p in players):
+        return DONE_TTL
+    return ROOM_TTL
+
+
 def cleanup(now):
-    for code in [c for c, r in rooms.items() if now - r["updated"] > ROOM_TTL]:
+    dead = [c for c, r in rooms.items() if not r["players"] or now - r["updated"] > room_ttl(r)]
+    for code in dead:
         del rooms[code]
+    return dead
+
+
+def janitor():
+    while True:
+        time.sleep(CLEAN_EVERY)
+        with lock:
+            dead = cleanup(int(time.time()))
+            if dead:
+                persist()
+                print("cleanup: " + " ".join(dead), flush=True)
 
 
 def new_code(n=5):
@@ -274,6 +301,10 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     load()
+    with lock:
+        if cleanup(int(time.time())):
+            persist()
+    threading.Thread(target=janitor, daemon=True).start()
     httpd = ThreadingHTTPServer((HOST, PORT), Handler)
     print(f"legenda-polya api on {HOST}:{PORT}", flush=True)
     httpd.serve_forever()
