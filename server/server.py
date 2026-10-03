@@ -18,7 +18,7 @@ HOST, PORT = "127.0.0.1", int(os.environ.get("PORT", "8095"))
 DATA = os.environ.get("DATA", "/var/lib/legenda-polya/rooms.json")
 ORIGINS = {"https://l3thily.github.io", "https://legenda-polya.88-218-121-40.sslip.io"}
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED = 500, 8, 60_000, 120
+MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED = 500, 8, 120_000, 120
 ROOM_TTL = 30 * 24 * 3600
 RUS_MODES = {"random", "off", "on"}
 
@@ -243,6 +243,20 @@ class Handler(BaseHTTPRequestHandler):
                 if len(room["matches"]) > 400:
                     for old in list(room["matches"])[:-300]:
                         del room["matches"][old]
+            elif action == "world":
+                # canonical world per room season: the first snapshot posted for a year wins, everyone continues from it
+                year = data.get("year")
+                snap = data.get("snap")
+                if not isinstance(year, int) or not isinstance(snap, dict):
+                    return self.reply(400, {"error": "нужны год и мир"})
+                worlds = room.setdefault("worlds", {})
+                if str(year) not in worlds:
+                    worlds[str(year)] = snap
+                    for old in sorted(worlds)[:-3]:
+                        del worlds[old]
+                    room["updated"] = now
+                    persist()
+                return self.reply(200, {"year": year, "snap": worlds[str(year)]})
             elif action == "leave":
                 del room["players"][me["id"]]
                 if not room["players"]:
