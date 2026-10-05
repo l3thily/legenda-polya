@@ -3281,7 +3281,8 @@ function viewMulti(){
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const mpActive=()=>MP.room?MP.room.players.filter(p=>p.progress&&!p.progress.retired):[];
 const inRoom=()=>!!(G&&G.room&&MP.sess&&MP.sess.code===G.room.code);
-/* the next season starts only when every active teammate has pressed "play" for it (or is already ahead) */
+/* the next season starts only when every active teammate has pressed "play" for it (or is already ahead).
+   Someone two or more seasons behind (joined late, catching up) doesn't hold the room: they get the canonical world anyway */
 function mpSeasonGo(){
   const Y=G.year;UI.wait={t:'start',year:Y,since:Date.now(),names:[]};render();
   Promise.resolve(mpProgress('quiet')).then(()=>api(`/rooms/${G.room.code}/season`,{...mpAuth(),year:Y})).then(r=>{MP.room=r;mpWaitLoop()}).catch(()=>{UI.wait=null;beginSeason()});
@@ -3305,7 +3306,7 @@ async function mpWorldSync(){
 function mpBeginSeason(){if(UI.wait)UI.wait.syncing=true;mpWorldSync().then(()=>{UI.wait=null;beginSeason()})}
 async function mpWaitLoop(){
   while(UI.wait&&UI.wait.t==='start'&&G&&G.room){
-    const Y=UI.wait.year,block=mpActive().filter(p=>p.id!==MP.sess.pid&&typeof p.year==='number'&&(p.year<Y||(p.year===Y&&p.readyYear!==Y)));
+    const Y=UI.wait.year,block=mpActive().filter(p=>p.id!==MP.sess.pid&&typeof p.year==='number'&&(p.year===Y-1||(p.year===Y&&p.readyYear!==Y)));
     UI.wait.names=block.map(p=>p.name+(p.year<Y?` (ещё в сезоне ${p.year}/${String(p.year+1).slice(2)})`:''));
     if(!block.length||UI.wait.skip){mpBeginSeason();return}
     render();await sleep(2000);
@@ -3354,17 +3355,17 @@ function h2hView(m){
     <div class="board"><div class="tm"><span>вы · сила ${m.me.s}</span><b>${esc(m.me.n)}</b></div><div class="vs">VS</div><div class="tm r"><span>${esc(mateName(m.mate))} · сила ${m.op.s}</span><b>${esc(m.op.n)}</b></div></div>
     <h2>Очный матч против ${esc(mateName(m.mate))}</h2>
     <p>${m.go?'Ждём, пока соперник тоже выйдет на поле.':'Матч начнётся, когда вы оба нажмёте «На поле». Результат будет одинаковым у обоих.'}</p>
-    ${m.go?`<ul class="summer"><li>${esc(mateName(m.mate))}</li></ul>${Date.now()-m.since>45000?'<div class="go"><button class="btn ghost" data-a="mpSkip">Играть без него</button></div>':''}`:'<div class="go"><button class="btn primary" data-a="h2hGo">На поле</button></div>'}
+    ${m.go?`<ul class="summer"><li>${esc(mateName(m.mate))}</li></ul><div class="go"><button class="btn ghost" data-a="mpSkip">Играть без него</button></div>`:'<div class="go"><button class="btn primary" data-a="h2hGo">На поле</button></div>'}
   </section>`;
 }
 function waitView(w,awards){
-  const long=Date.now()-(w.since||Date.now())>45000,names=w.names||[];
-  if(w.kind==='await')return `<section class="decide bigm" aria-live="polite"><div class="d-top"><span class="eyebrow">Комната ${esc(G.room.code)} · финал игрока комнаты</span></div><h2>Ждём результат финала</h2><p>В этом финале играет команда игрока комнаты. Его решения влияют на счёт, поэтому результат берём у него.</p>${names.length?`<ul class="summer">${names.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}${long?'<div class="go"><button class="btn ghost" data-a="mpSkip">Играть без него</button></div>':''}</section>`;
+  const names=w.names||[];
+  if(w.kind==='await')return `<section class="decide bigm" aria-live="polite"><div class="d-top"><span class="eyebrow">Комната ${esc(G.room.code)} · финал игрока комнаты</span></div><h2>Ждём результат финала</h2><p>В этом финале играет команда игрока комнаты. Его решения влияют на счёт, поэтому результат берём у него.</p>${names.length?`<ul class="summer">${names.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:''}<div class="go"><button class="btn ghost" data-a="mpSkip">Играть без него</button></div></section>`;
   return `<section class="decide bigm" aria-live="polite"><div class="d-top"><span class="eyebrow">Комната ${esc(G.room.code)} · ${awards?'голосование за Золотой мяч':'сезон '+G.year+'/'+String(G.year+1).slice(2)}</span></div>
     <h2>${awards?'Жюри ждёт итоги остальных':'Ждём остальных игроков'}</h2>
     <p>${awards?'Золотой мяч, Копа, Яшин и Золотая бутса считаются по одному голосованию на всю комнату. Как только остальные доиграют этот сезон, объявим результаты.':'Сезон начнётся, когда все в комнате нажмут «Сыграть сезон».'}</p>
     ${names.length?`<ul class="summer">${names.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:'<p class="muted small">Проверяю…</p>'}
-    ${long?`<div class="go"><button class="btn ghost" data-a="mpSkip">Играть без них</button><span class="small muted">Если кто-то ушёл надолго.</span></div>`:''}
+    <div class="go"><button class="btn ghost" data-a="mpSkip">Играть без ${names.length===1?'него':'них'}</button><span class="small muted">Остальные догонят: мир комнаты общий.</span></div>
   </section>`;
 }
 function h2hData(a,b){
