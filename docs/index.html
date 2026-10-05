@@ -3187,8 +3187,10 @@ function mpBegin(){
   const me=mpMe(),su=me&&me.setup||{},f=UI.form,keep={...f};
   // the player set up in the lobby lives on the server: after a reload the local form is back to defaults
   if(me&&me.name)f.name=me.name;
-  if(su.nat&&natByName(su.nat))f.nat=su.nat;
-  f.nat2=su.nat2&&natByName(su.nat2)?su.nat2:'';
+  // no career may be loaded yet (G is null), so check names against the static list, not G.nations
+  const natOk=n=>S_NATS.some(x=>x.name===n);
+  if(su.nat&&natOk(su.nat))f.nat=su.nat;
+  f.nat2=su.nat2&&natOk(su.nat2)?su.nat2:'';
   if(su.pos&&POS[su.pos])f.pos=su.pos;
   const lg=S_LEAGUES.find(l=>l.id===su.lg);if(lg){f.lg=lg.id;f.club=lg.clubs.some(c=>c.name===su.club)?su.club:lg.clubs[0].name}
   if(su.num)f.num=su.num;
