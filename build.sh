@@ -10,7 +10,7 @@ cat <<'HEAD'
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#08121B">
+<meta name="theme-color" content="#070D12">
 <meta name="description" content="Симулятор футбольной карьеры: 30 лиг, еврокубки, сборные, Золотой мяч.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
