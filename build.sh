@@ -27,4 +27,5 @@ cat index.html
 printf '\n</html>\n'
 } > dist/index.html
 cp static/* dist/ 2>/dev/null || true
+rm -rf dist/logos && cp -R static/logos dist/logos
 echo "built dist/index.html ($(wc -c < dist/index.html) bytes)"
