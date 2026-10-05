@@ -1,11 +1,11 @@
 <title>Легенда поля</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Sofia+Sans+Extra+Condensed:ital,wght@0,700;0,800;0,900;1,900&family=Old+Standard+TT:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600;700&family=JetBrains+Mono:wght@500;700&family=Sofia+Sans+Extra+Condensed:ital,wght@0,800;0,900;1,900&family=Old+Standard+TT:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* Layout: a night match under floodlights. Broadcast graphics over a dark pitch, gold reserved for glory, a cream newspaper as the one warm surface. */
 :root{
-  --bg:#070D12;--bg2:#0B151C;--card:#0E1A22;--card2:#13232D;--glass:rgba(16,30,39,.72);--line:#1A2D38;--line2:#2A4654;
+  --bg:#070D12;--bg2:#0B151C;--card:#0E1A22;--card2:#13232D;--glass:rgba(14,27,35,.84);--line:#1A2D38;--line2:#2A4654;
   --text:#EAF1F3;--muted:#93A8B3;--dim:#5E7784;
   --gold:#F2C14E;--gold2:#FFE3A1;--gold3:#B8862A;--ink:#1E1400;
   --turf:#2FD27C;--turf2:#0F3B26;--red:#FF5E5B;--sky:#6CC6FF;
@@ -18,14 +18,15 @@
   --r:16px;--ease:cubic-bezier(.2,.8,.2,1);
   color-scheme:dark;
 }
-html,body{background:var(--bg)}
-body{color:var(--text);font:15px/1.55 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100%;
+html{background:var(--bg)}
+body{color:var(--text);font:15px/1.55 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;background:transparent}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;transform:translateZ(0);
   background:
-    radial-gradient(60% 40% at 8% -6%,rgba(214,236,255,.10),transparent 70%),
-    radial-gradient(60% 40% at 92% -6%,rgba(214,236,255,.10),transparent 70%),
-    repeating-linear-gradient(90deg,rgba(47,210,124,.022) 0 90px,transparent 90px 180px),
-    linear-gradient(180deg,var(--bg) 0%,#08130F 100%);
-  background-attachment:fixed}
+    radial-gradient(55% 38% at 6% -4%,rgba(214,236,255,.13),transparent 70%),
+    radial-gradient(55% 38% at 94% -4%,rgba(214,236,255,.13),transparent 70%),
+    radial-gradient(90% 50% at 50% 115%,rgba(47,210,124,.13),transparent 70%),
+    repeating-linear-gradient(90deg,rgba(47,210,124,.026) 0 90px,transparent 90px 180px),
+    linear-gradient(180deg,var(--bg) 0%,#081610 100%)}
 *{box-sizing:border-box}
 button,select,input{font:inherit;color:inherit}
 button,select,summary,a,.opt,.tab{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
@@ -142,7 +143,7 @@ main>*,.grid2>*,.hero>*,.setup>*,.hof>*,.cer>*,.nem>*,.decide>*,.panel,.season,.
 .totals .gold b{color:var(--gold);text-shadow:0 0 24px rgba(242,193,78,.35)}
 
 /* decisions */
-.decide{position:relative;border-radius:22px;padding:24px;background:linear-gradient(180deg,rgba(242,193,78,.07),transparent 40%),var(--glass);backdrop-filter:blur(6px);box-shadow:inset 0 0 0 1px rgba(242,193,78,.45),0 30px 70px -40px rgba(0,0,0,.9)}
+.decide{position:relative;border-radius:22px;padding:24px;background:linear-gradient(180deg,rgba(242,193,78,.07),transparent 40%),var(--glass);box-shadow:inset 0 0 0 1px rgba(242,193,78,.45),0 30px 70px -40px rgba(0,0,0,.9)}
 .d-top{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
 .pips{display:flex;gap:5px}
 .pips i{width:24px;height:4px;border-radius:3px;background:var(--line2)}
@@ -167,7 +168,7 @@ main>*,.grid2>*,.hero>*,.setup>*,.hof>*,.cer>*,.nem>*,.decide>*,.panel,.season,.
 /* sections & panels */
 .sec-h{display:flex;align-items:baseline;gap:14px;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
 .sec-h h2{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:36px;line-height:1}
-.panel{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);padding:20px;backdrop-filter:blur(6px)}
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);padding:20px}
 .cabinet{display:flex;flex-wrap:wrap;gap:8px}
 .tro{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(242,193,78,.5);background:linear-gradient(180deg,rgba(242,193,78,.14),rgba(242,193,78,.04));color:var(--gold2);border-radius:999px;padding:5px 13px;font-size:13.5px;font-weight:600}
 .tro::before{content:"";width:9px;height:11px;background:var(--gold);clip-path:polygon(0 0,100% 0,85% 45%,60% 60%,60% 80%,85% 100%,15% 100%,40% 80%,40% 60%,15% 45%)}
@@ -179,7 +180,7 @@ svg text{fill:var(--muted);font:11px var(--mono)}
 
 /* season feed */
 .feed{display:grid;gap:16px}
-.season{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:grid;gap:14px;backdrop-filter:blur(6px)}
+.season{background:var(--glass);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:grid;gap:14px}
 .season.latest{border-color:var(--line2);box-shadow:0 0 0 1px rgba(242,193,78,.18),0 24px 60px -40px rgba(242,193,78,.4)}
 .s-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center}
 .s-year{font-family:var(--disp);font-weight:900;font-size:44px;color:var(--gold);line-height:.9}
@@ -466,14 +467,9 @@ button.cell:hover,button.cell:focus-visible{background:rgba(242,193,78,.24);bord
 @media (max-width:600px){
   body{font-size:15px}
   .field input,.field select,.selrow select{font-size:16px}
-  .topin{gap:6px 10px;padding-block:8px}
   .brand{font-size:22px}
-  .tabs{order:3;flex-basis:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
-  .tabs::-webkit-scrollbar{display:none}
-  .tab{white-space:nowrap;padding:8px 14px}
-  .topact{margin-left:auto}
-  .top .btn.ghost{padding:6px 10px;font-size:12.5px;min-height:38px}
-  .top .btn.snd{padding:0;width:38px}
+  .top .btn.ghost{padding:6px 11px;font-size:13px;min-height:40px}
+  .top .btn.snd{padding:0;width:40px}
   main{padding-block:18px 64px;gap:22px}
   .hero-t{font-size:54px}
   .hero{gap:18px}
@@ -528,17 +524,6 @@ button.cell:hover,button.cell:focus-visible{background:rgba(242,193,78,.24);bord
 /* brand is the way home */
 button.brand{background:none;border:0;padding:0;color:inherit;cursor:pointer;min-height:44px;transition:opacity .2s}
 button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242,193,78,.9)}
-/* main menu */
-.home{display:grid}
-.home-hero h1{font-size:clamp(64px,13vw,160px);line-height:.82;margin-top:6px}
-.home-hero h1 em{font-style:italic;background:linear-gradient(180deg,var(--gold2),var(--gold) 60%,var(--gold3));-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.05em}
-.home-btns{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:12px;margin-top:26px}
-.home-card{position:relative;text-align:left;display:grid;gap:4px;align-content:start;padding:18px 18px 20px;border-radius:18px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent),var(--glass);cursor:pointer;overflow:hidden;transition:transform .2s var(--ease),border-color .2s,box-shadow .2s;min-width:0}
-.home-card b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:30px;line-height:1;overflow-wrap:anywhere}
-.home-card>span:last-child{color:var(--muted);font-size:13.5px}
-.home-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 18px 40px -24px rgba(242,193,78,.7)}
-.home-card.main{grid-column:1/-1;background:radial-gradient(80% 120% at 100% 0%,rgba(242,193,78,.25),transparent 60%),var(--glass);box-shadow:inset 0 0 0 1px rgba(242,193,78,.5)}
-.home-card.main b{font-size:clamp(34px,5vw,52px);color:var(--gold2)}
 .t.greats tr.top1 td:first-child{color:var(--gold);font-weight:700}.t.greats tr.top2 td:first-child{color:#D9E1E8}.t.greats tr.top3 td:first-child{color:#E0A97A}
 /* deadline day */
 .decide.dl{box-shadow:inset 0 0 0 1px rgba(255,94,91,.6),0 30px 70px -40px rgba(255,94,91,.5)}
@@ -568,7 +553,172 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 .clips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:18px;padding:18px;border-radius:18px;background:#2B2219;box-shadow:inset 0 0 40px rgba(0,0,0,.5)}
 .clip{transform:rotate(var(--r));transition:transform .3s var(--ease)}
 .clip:hover{transform:rotate(0) scale(1.03);z-index:1}
-@media (max-width:600px){.home-card b{font-size:26px}.kits{grid-template-columns:repeat(2,1fr);padding:14px}.shelf{grid-template-columns:repeat(3,1fr)}.tro-i .ic svg{width:44px;height:44px}.clips{padding:12px}}
+
+/* ===== polish: navigation, menu, slots, motion ===== */
+.ic{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.topin{flex-wrap:nowrap;min-height:60px}
+.tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;min-width:0}
+.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap}
+.topact{margin-left:auto}
+.btn.newc{gap:6px;padding-inline:13px 15px}
+.btn.newc .ic{width:18px;height:18px;stroke-width:2.2}
+.bnav{display:none}
+@media (max-width:1100px){.nb-long{display:none}.top .tab{padding-inline:9px}}
+@media (max-width:960px){
+  .top .tabs{display:none}
+  .topin{min-height:54px;padding-block:5px;gap:10px}
+  .bnav{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:30;
+    padding:5px max(6px,env(safe-area-inset-right,0px)) calc(5px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px));
+    background:rgba(6,11,15,.9);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);border-top:1px solid var(--line)}
+  .bnav::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,193,78,.5),transparent)}
+  .bn{position:relative;display:grid;justify-items:center;align-content:center;gap:3px;min-height:52px;padding:5px 1px 3px;border:0;border-radius:12px;background:none;color:var(--dim);font-size:10.5px;font-weight:600;cursor:pointer;transition:color .2s}
+  .bn span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bn .ic{width:23px;height:23px;transition:transform .25s var(--ease)}
+  .bn[aria-current="true"]{color:var(--gold2)}
+  .bn[aria-current="true"] .ic{filter:drop-shadow(0 0 7px rgba(242,193,78,.6))}
+  .bn[aria-current="true"]::before{content:"";position:absolute;top:-5px;left:50%;width:28px;height:3px;margin-left:-14px;border-radius:0 0 3px 3px;background:var(--gold);box-shadow:0 0 12px var(--gold)}
+  .bn:active .ic{transform:scale(.86)}
+  body:has(input:focus) .bnav{display:none}
+  main{padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+}
+
+/* setup: mode switch */
+.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;margin-top:26px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid var(--line)}
+.seg .tab{min-height:42px;padding:8px 18px}
+.seg .tab[aria-current="true"]{background:linear-gradient(180deg,rgba(242,193,78,.22),rgba(242,193,78,.08));box-shadow:inset 0 0 0 1px rgba(242,193,78,.45)}
+.seg .tab[aria-current="true"]::after{display:none}
+.facts{display:grid;grid-template-columns:repeat(4,auto);justify-content:start;gap:12px 30px}
+
+/* main menu */
+.home{display:grid}
+.home-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:center}
+.home-hero h1{font-size:clamp(64px,12vw,150px);line-height:.82;margin-top:6px}
+.home-hero h1 em{font-style:italic;background:linear-gradient(180deg,var(--gold2),var(--gold) 60%,var(--gold3));-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.05em}
+.fan{position:relative;height:clamp(310px,31vw,390px);pointer-events:none}
+.fan::before{content:"";position:absolute;inset:4% 6%;background:radial-gradient(closest-side,rgba(242,193,78,.26),transparent)}
+.fan .fcard{position:absolute;left:50%;top:50%;width:230px;margin:0;translate:-50% -50%}
+.fan .fcard:nth-child(1){translate:-112% -47%;rotate:-14deg;scale:.84}
+.fan .fcard:nth-child(2){translate:-78% -53%;rotate:-4deg;scale:.92}
+.fan .fcard:nth-child(3){translate:-36% -50%;rotate:7deg}
+@media (prefers-reduced-motion:no-preference){
+  .fan .fcard{animation:fanIn .9s var(--ease) both}
+  .fan .fcard:nth-child(2){animation-delay:.08s}.fan .fcard:nth-child(3){animation-delay:.16s}
+  .fan .fcard:nth-child(3) .sheen{animation:sheen 1.6s var(--ease) .9s}
+}
+@keyframes fanIn{from{opacity:0;translate:-60% -42%;rotate:0deg;scale:.8}}
+.home-btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
+.home-card{position:relative;text-align:left;display:grid;gap:3px;align-content:start;padding:18px 18px 20px;border-radius:18px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent),var(--glass);cursor:pointer;overflow:hidden;transition:transform .2s var(--ease),border-color .2s,box-shadow .2s;min-width:0}
+.home-card b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:30px;line-height:1;overflow-wrap:anywhere}
+.home-card .hc-s{color:var(--muted);font-size:13.5px}
+.hc-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;margin-bottom:10px;color:var(--gold);background:rgba(242,193,78,.09);box-shadow:inset 0 0 0 1px rgba(242,193,78,.28)}
+.hc-go{display:none}
+.home-card:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 18px 40px -24px rgba(242,193,78,.7)}
+.home-card:active{transform:scale(.985)}
+.home-card.main{grid-column:1/-1;grid-template-columns:auto minmax(0,1fr) auto;column-gap:18px;align-items:center;padding:20px 22px;background:radial-gradient(70% 140% at 100% 0%,rgba(242,193,78,.24),transparent 60%),var(--glass);box-shadow:inset 0 0 0 1px rgba(242,193,78,.5)}
+.home-card.main>*{grid-column:2}
+.home-card.main .hc-ic{grid-column:1;grid-row:1/4;width:58px;height:58px;margin:0;border-radius:16px;color:var(--ink);background:linear-gradient(180deg,#FFD978,var(--gold) 55%,#E0A93A);box-shadow:0 10px 26px -10px rgba(242,193,78,.8)}
+.home-card.main .hc-ic .ic{width:28px;height:28px;stroke-width:2}
+.home-card.main b{font-size:clamp(34px,5vw,52px);color:var(--gold2)}
+.home-card.main .hc-go{display:block;grid-column:3;grid-row:1/4;font-family:var(--disp);font-weight:900;font-size:40px;line-height:1;color:var(--gold);transition:transform .25s var(--ease)}
+.home-card.main:hover .hc-go{transform:translateX(5px)}
+
+/* save slots */
+.meter{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;max-width:540px;margin:0 0 16px}
+.meter i{height:6px;border-radius:3px;background:var(--line)}
+.meter i.on{background:linear-gradient(90deg,var(--gold3),var(--gold));box-shadow:0 0 8px rgba(242,193,78,.35)}
+.slots{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:10px}
+.slot{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.03),transparent),var(--bg2);transition:border-color .2s}
+.slot:hover{border-color:var(--line2)}
+.slot.me{border-color:rgba(242,193,78,.6);background:linear-gradient(90deg,rgba(242,193,78,.08),transparent 60%),var(--bg2)}
+.sl-ovr{display:grid;justify-items:center;align-content:center;height:62px;border-radius:11px;color:#2A1C02;background:linear-gradient(160deg,#F7DE8A,#D9A642 48%,#9A6B1E);box-shadow:inset 0 0 0 1px rgba(255,236,170,.85),0 8px 18px -10px rgba(0,0,0,.9)}
+.sl-ovr b{font-family:var(--disp);font-weight:900;font-size:30px;line-height:.9}
+.sl-ovr i{font-style:normal;font-family:var(--disp);font-weight:800;font-size:13px;opacity:.75}
+.sl-ovr.bronze{color:#2B1608;background:linear-gradient(160deg,#E9B98C,#B97843 48%,#6E3F1D)}
+.sl-ovr.silver{color:#141C22;background:linear-gradient(160deg,#F1F5F8,#B9C5CF 48%,#6E7E8B)}
+.sl-ovr.icon{color:var(--gold2);background:radial-gradient(90% 60% at 80% 10%,rgba(242,193,78,.35),transparent 60%),linear-gradient(160deg,#1C2B36,#0E161D 55%,#05090C);box-shadow:inset 0 0 0 1px rgba(242,193,78,.85)}
+.sl-ovr.coach{color:var(--sky);background:linear-gradient(160deg,#20323D,#0E1A22);box-shadow:inset 0 0 0 1px rgba(108,198,255,.5)}
+.sl-main{display:grid;gap:1px;min-width:0}
+.sl-main b{overflow-wrap:anywhere}
+.sl-main span{font-size:13px;color:var(--muted)}
+.sl-main span.dim{font-size:12.5px;color:var(--dim)}
+.slot.done .sl-main>span:not(.dim){color:var(--gold2)}
+.sl-act{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.tag.now{background:var(--gold);color:var(--ink)}
+@media (max-width:600px){
+  .slots.full .slot{grid-template-columns:48px minmax(0,1fr)}
+  .slots.full .sl-act{grid-column:1/-1;justify-content:stretch}
+  .slots.full .sl-act .btn,.slots.full .sl-act .confirm{flex:1}
+  .slot{gap:12px;padding:11px 12px;grid-template-columns:48px minmax(0,1fr) auto}
+  .sl-ovr{height:56px}.sl-ovr b{font-size:26px}
+}
+
+/* motion: sections slide in on a tab change, options of a new decision follow each other */
+@media (prefers-reduced-motion:no-preference){
+  main.enter>*{animation:pageIn .45s var(--ease) both}
+  main.enter>*:nth-child(2){animation-delay:.05s}
+  main.enter>*:nth-child(n+3){animation-delay:.1s}
+  .opts>.opt{animation:optIn .4s var(--ease) both}
+  .opts>.opt:nth-child(2){animation-delay:.05s}.opts>.opt:nth-child(3){animation-delay:.1s}.opts>.opt:nth-child(n+4){animation-delay:.15s}
+}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}}
+@keyframes optIn{from{opacity:0;transform:translateY(10px)}}
+.opt:active{transform:scale(.985)}
+/* touch screens: no sticky hover lifts */
+@media (hover:none){
+  .opt:hover,.home-card:hover{transform:none;box-shadow:none}
+  .opt:hover{border-color:var(--line2)}.opt:hover::before{background:var(--line2);top:14px;bottom:14px}
+  .home-card:not(.main):hover{border-color:var(--line2)}
+  .fcard:hover{transform:perspective(900px)}
+}
+/* long careers: old season cards are laid out only when scrolled to */
+.feed>.season:not(.latest){content-visibility:auto;contain-intrinsic-size:auto 340px}
+
+/* tablets and phones */
+@media (max-width:900px){
+  .home-hero{grid-template-columns:1fr;gap:0}
+  .fan{order:-1;height:300px;margin:-8px -16px 6px;overflow:hidden}
+  .fan .fcard{zoom:.8}
+}
+/* career hero: compact card next to the name, the main button above the fold */
+@media (max-width:820px){
+  .hero{grid-template-columns:196px minmax(0,1fr);gap:0 22px;align-items:center}
+  .hero>.fcard{grid-row:1/3;width:280px;max-width:none;zoom:.7;align-self:start}
+  .hero .fcard:hover{transform:none}
+  .status{display:contents}
+  .status>.eyebrow{grid-column:2;grid-row:1;align-self:end}
+  .status>h1{grid-column:2;grid-row:2;align-self:start;overflow-wrap:anywhere}
+  .status>.act{grid-column:1/-1;grid-row:3;margin-top:20px}
+  .status>.stat-grid{grid-column:1/-1;grid-row:4}
+}
+@media (max-width:720px){
+  .fan{height:236px;margin-top:-6px;margin-bottom:4px}
+  .fan .fcard{zoom:.62}
+  .home-hero h1{font-size:clamp(60px,19vw,96px)}
+  .home-btns{grid-template-columns:1fr;gap:8px;margin-top:20px}
+  .home-card{grid-template-columns:auto minmax(0,1fr);column-gap:14px;align-items:center;padding:13px 14px}
+  .home-card>*{grid-column:2}
+  .home-card .hc-ic{grid-column:1;grid-row:1/4;margin:0}
+  .home-card b{font-size:25px}
+  .home-card .hc-s{font-size:13px}
+  .home-card.main{grid-template-columns:auto minmax(0,1fr) auto;padding:16px}
+  .home-card.main .hc-ic{width:50px;height:50px}
+  .home-card.main b{font-size:32px}
+}
+@media (max-width:600px){
+  .seg{display:grid;width:100%;margin-top:20px}
+  .facts{gap:10px 20px;margin-top:18px}
+  .facts b{font-size:28px}
+  .facts span{font-size:10px}
+  .lead{font-size:14.5px}
+  .hero{grid-template-columns:132px minmax(0,1fr);gap:0 16px}
+  .hero>.fcard{width:220px;zoom:.6}
+  .hero .fc-meta span:nth-child(n+2){display:none}
+  .hero .fc-up{font-size:22px;padding:4px 12px}
+  .status>h1{font-size:clamp(30px,10vw,42px)}
+  .status>.act{margin-top:18px}
+}
+@media (max-width:600px){.kits{grid-template-columns:repeat(2,1fr);padding:14px}.shelf{grid-template-columns:repeat(3,1fr)}.tro-i .ic svg{width:44px;height:44px}.clips{padding:12px}}
 </style>
 
 <div id="app"></div>
@@ -601,6 +751,34 @@ function fmtM(x){if(!x)return 'бесплатно';if(x>=100)return `€${Math.r
 function fmtW(w){return w>=10?`€${Math.round(w)} тыс./нед`:`€${w.toFixed(1)} тыс./нед`}
 function plural(n,a,b,c){const m=n%10,h=n%100;return m===1&&h!==11?a:m>=2&&m<=4&&(h<10||h>=20)?b:c}
 const yrs=n=>`${n} ${plural(n,'год','года','лет')}`;
+
+/* saves: LZW over UTF-16 code units, codes packed 15 bits per char (+32, never a control char or surrogate) — about 4.5x smaller */
+function lzPack(s){
+  if(!s)return '';
+  let size=1<<15,mask=size-1,kc=new Int32Array(size),kh=new Uint16Array(size),kv=new Int32Array(size),used=0;
+  const find=(c,h)=>{let i=(Math.imul(c,0x9E3779B1)^Math.imul(h,0x85EBCA6B))&mask;while(kc[i]&&(kc[i]!==c+1||kh[i]!==h))i=(i+1)&mask;return i};
+  const grow=()=>{const oc=kc,oh=kh,ov=kv;size*=2;mask=size-1;kc=new Int32Array(size);kh=new Uint16Array(size);kv=new Int32Array(size);for(let j=0;j<oc.length;j++)if(oc[j]){const i=find(oc[j]-1,oh[j]);kc[i]=oc[j];kh[i]=oh[j];kv[i]=ov[j]}};
+  const out=[];let acc=0,bits=0,k=0,w=17,lim=131072,next=65536,cur=s.charCodeAt(0);
+  const put=c=>{if(65535+k>=lim){w++;lim*=2}k++;acc=acc*(1<<w)+c;bits+=w;while(bits>=15){bits-=15;const p=1<<bits,ch=Math.floor(acc/p);acc-=ch*p;out.push(ch+32)}};
+  for(let i=1;i<s.length;i++){const ch=s.charCodeAt(i),j=find(cur,ch);if(kc[j]){cur=kv[j];continue}put(cur);kc[j]=cur+1;kh[j]=ch;kv[j]=next++;if(++used*2>size)grow();cur=ch}
+  put(cur);
+  if(bits)out.push(acc*(1<<(15-bits))+32);
+  let r='\u0001'+k.toString(36)+'|';for(let i=0;i<out.length;i+=8192)r+=String.fromCharCode.apply(null,out.slice(i,i+8192));
+  return r;
+}
+function lzUnpack(z){
+  if(!z||z.charCodeAt(0)!==1)return z;
+  const bar=z.indexOf('|'),n=parseInt(z.slice(1,bar),36),dict=[],out=[];
+  let pos=bar+1,acc=0,bits=0,w=17,lim=131072,prev='';
+  for(let k=0;k<n;k++){
+    if(65535+k>=lim){w++;lim*=2}
+    while(bits<w){acc=acc*32768+(z.charCodeAt(pos++)-32);bits+=15}
+    bits-=w;const p=1<<bits,c=Math.floor(acc/p);acc-=c*p;
+    const e=c<65536?String.fromCharCode(c):c-65536<dict.length?dict[c-65536]:prev+prev[0];
+    if(k)dict.push(prev+e[0]);out.push(e);prev=e;
+  }
+  return out.join('');
+}
 
 /* ================= static data ================= */
 const COUNTRIES={ENG:['Англия','Кубок Англии'],ESP:['Испания','Кубок Испании'],ITA:['Италия','Кубок Италии'],GER:['Германия','Кубок Германии'],FRA:['Франция','Кубок Франции'],POR:['Португалия','Кубок Португалии'],NED:['Нидерланды','Кубок Нидерландов'],BEL:['Бельгия','Кубок Бельгии'],TUR:['Турция','Кубок Турции'],SCO:['Шотландия','Кубок Шотландии'],AUT:['Австрия','Кубок Австрии'],SUI:['Швейцария','Кубок Швейцарии'],RUS:['Россия','Кубок России'],UKR:['Украина','Кубок Украины'],GRE:['Греция','Кубок Греции'],CZE:['Чехия','Кубок Чехии'],DEN:['Дания','Кубок Дании'],NOR:['Норвегия','Кубок Норвегии'],SWE:['Швеция','Кубок Швеции'],CRO:['Хорватия','Кубок Хорватии'],SRB:['Сербия','Кубок Сербии'],POL:['Польша','Кубок Польши'],USA:['США','Открытый кубок США'],BRA:['Бразилия','Кубок Бразилии'],ARG:['Аргентина','Кубок Аргентины'],MEX:['Мексика','Кубок Мексики'],KSA:['Саудовская Аравия','Королевский кубок'],JPN:['Япония','Кубок Императора']};
@@ -680,27 +858,67 @@ let RUN=null,MATCH=null,SAVED=null;
 function genCode(){const w=['GOL','DERBI','FINAL','KUBOK','ULTRAS','TIFO','KAPITAN','PENALTI','VAR','OFSAID'];return w[Math.floor(Math.random()*w.length)]+'-'+String(1000+Math.floor(Math.random()*9000))}
 const normCode=c=>String(c||'').trim().toUpperCase().replace(/\s+/g,'-').slice(0,24);
 const SAVE='legenda-polya-v1';
-const SLOTS_KEY='legenda-polya-slots',ACTIVE_KEY='legenda-polya-active',slotKey=id=>'legenda-polya-slot-'+id,MAX_SLOTS=8;
+const SLOTS_KEY='legenda-polya-slots',ACTIVE_KEY='legenda-polya-active',slotKey=id=>'legenda-polya-slot-'+id,MAX_SLOTS=15;
 function slotsGet(){try{const a=JSON.parse(localStorage.getItem(SLOTS_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
 function slotsSet(a){try{localStorage.setItem(SLOTS_KEY,JSON.stringify(a))}catch(e){}}
+/* a career enters the save list only after real progress: a season played (coach: a job taken), a room, or a player career turned coach */
+function hasProgress(g){g=g||G;if(!g||(!g.P&&!g.C))return false;if(g.room||g.ex)return true;if(g.C)return g.C.seasons.length>0||g.C.jobs.length>0;return g.seasons.length>0}
+/* S.mk (match counters of the running season) is scratch: ~270 KB per season, never needed once the season is over */
+const saveJSON=g=>JSON.stringify(g,(k,v)=>k==='mk'?undefined:v);
 function save(){
-  if(G)G.rng={w:RW.s,p:RPR.s};SAVED=JSON.stringify(G);
+  if(G)G.rng={w:RW.s,p:RPR.s};SAVED=saveJSON(G);
   if(!G||(!G.P&&!G.C))return;
-  if(!G.slot)G.slot=Date.now().toString(36),SAVED=JSON.stringify(G);
-  try{localStorage.setItem(slotKey(G.slot),SAVED);localStorage.setItem(ACTIVE_KEY,G.slot)}catch(e){}
+  if(!G.slot)G.slot=Date.now().toString(36),SAVED=saveJSON(G);
+  if(SV.job&&SV.job.id!==G.slot)flushSave();
+  SV.job={id:G.slot,json:SAVED};clearTimeout(SV.t);SV.t=setTimeout(flushSave,60);
+  try{localStorage.setItem(ACTIVE_KEY,G.slot)}catch(e){}
+  if(!hasProgress())return;
   if(isCoach()){const C0=G.C;slotsSet([{id:G.slot,upd:Date.now(),name:C0.name,pos:'ТРЕНЕР',club:C0.job==='club'?C(C0.clubId).name:C0.job==='nation'?'Сборная: '+N(C0.natId).name:'без работы',age:C0.age,ovr:Math.round(C0.rep),season:`${G.year}/${String(G.year+1).slice(2)}`,room:null,retired:G.phase==='retired',tier:G.phase==='retired'?coachTier():null},...slotsGet().filter(x=>x.id!==G.slot)]);return}
   const P=G.P,meta={id:G.slot,upd:Date.now(),name:P.name,pos:POS[P.pos].s,club:C(P.clubId).name,age:P.age,ovr:Math.round(P.ovr),season:`${G.year}/${String(G.year+1).slice(2)}`,room:G.room?G.room.code:null,retired:G.phase==='retired',tier:G.phase==='retired'?legacyTier():null};
   slotsSet([meta,...slotsGet().filter(x=>x.id!==G.slot)]);
 }
-function loadSlot(id){try{const raw=localStorage.getItem(slotKey(id));if(!raw)return false;G=migrate(JSON.parse(raw));G.slot=id;SAVED=JSON.stringify(G);RUN=null;MATCH=null;UI.wait=null;
+/* packing a long career takes a few ms: done after the click has been drawn, and at once when the page is hidden */
+const SV={job:null,t:0};
+function flushSave(){
+  const j=SV.job;clearTimeout(SV.t);if(!j)return;SV.job=null;
+  try{localStorage.setItem(slotKey(j.id),lzPack(j.json));if(UI.saveErr){UI.saveErr=false;render()}}
+  catch(e){if(!UI.saveErr){UI.saveErr=true;render()}}
+}
+const slotRaw=id=>{if(SV.job&&SV.job.id===id)return SV.job.json;try{return lzUnpack(localStorage.getItem(slotKey(id)))}catch(e){return null}};
+addEventListener('pagehide',flushSave);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushSave()});
+/* leaving a career that has no progress yet: it is thrown away instead of taking a save slot */
+function dropEmpty(){
+  if(!G||!G.slot||hasProgress())return;
+  if(SV.job&&SV.job.id===G.slot)SV.job=null;
+  try{localStorage.removeItem(slotKey(G.slot));if(localStorage.getItem(ACTIVE_KEY)===G.slot)localStorage.removeItem(ACTIVE_KEY)}catch(e){}
+  slotsSet(slotsGet().filter(x=>x.id!==G.slot));
+}
+/* once: careers saved before this rule that never got past the start, and orphaned slot data */
+function slotsTidy(){
+  try{
+    if(localStorage.getItem('legenda-polya-tidy1'))return;
+    const act=localStorage.getItem(ACTIVE_KEY),keep=[];
+    for(const m of slotsGet()){
+      let ok=true;
+      if(m.id!==act&&!m.room&&!m.retired){try{const raw=slotRaw(m.id);if(!raw)ok=false;else if(raw.length<400000)ok=hasProgress(JSON.parse(raw))}catch(e){}}
+      if(ok)keep.push(m);else localStorage.removeItem(slotKey(m.id));
+    }
+    slotsSet(keep);
+    const ids=new Set(keep.map(m=>m.id));if(act)ids.add(act);
+    for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith('legenda-polya-slot-')&&!ids.has(k.slice(19)))localStorage.removeItem(k)}
+    localStorage.setItem('legenda-polya-tidy1','1');
+  }catch(e){}
+}
+function loadSlot(id){try{const raw=slotRaw(id);if(!raw)return false;if(G&&G.slot!==id)dropEmpty();flushSave();G=migrate(JSON.parse(raw));G.slot=id;SAVED=saveJSON(G);RUN=null;MATCH=null;UI.wait=null;
   if(G.room&&G.room.token){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave();MP.room=null}
   try{localStorage.setItem(ACTIVE_KEY,id)}catch(e){}return true}catch(e){return false}}
-function deleteSlot(id){try{localStorage.removeItem(slotKey(id))}catch(e){}slotsSet(slotsGet().filter(x=>x.id!==id));if(G&&G.slot===id){G=null;RUN=null;MATCH=null}}
+function deleteSlot(id){if(SV.job&&SV.job.id===id)SV.job=null;try{localStorage.removeItem(slotKey(id))}catch(e){}slotsSet(slotsGet().filter(x=>x.id!==id));if(G&&G.slot===id){G=null;RUN=null;MATCH=null;try{localStorage.removeItem(ACTIVE_KEY)}catch(e){}}}
 function migrate(g){if(g&&g.rng){RW=mkRng(g.rng.w);RPR=mkRng(g.rng.p)}if(g&&g.P){const P=g.P;if(P.rep==null)P.rep=clamp(10+P.trophies.length*2+P.awards.length*3+P.tot.g/15,0,100);if(P.roleMod==null)P.roleMod=0;if(P.growMod==null)P.growMod=0}if(g&&g.clubs){if(!g.derby)g.derby=buildDerbies(g);if(!g.rec)g.rec=buildRecords();else{const f=buildRecords();Object.keys(f).forEach(k=>{if(!g.rec[k])g.rec[k]=f[k]})}}if(g&&g.P){const P=g.P;if(!P.at)P.at=makeAttrs(P.ovr,P.pos);if(!P.focus)P.focus='bal';if(!P.rel)P.rel=freshRel();if(!P.clubRel)P.clubRel={};if(!P.st)P.st={ucl:0,wc:0,euro:0,hat:0,clubG:{}};if(!P.recs)P.recs=[];if(!P.ms)P.ms=[];if(!P.best)P.best={};if(!P.perks)P.perks=[];if(P.num==null)P.num=NUM_BY_POS[P.pos]||9;if(P.fol==null)P.fol=r2(.003+Math.pow(P.rep/100,2)*12);if(P.gross==null)P.gross=r2(P.earn/1e6);if(P.spent==null)P.spent=0;if(!P.subs)P.subs={};if(!P.own)P.own={};if(!P.inv)P.inv=[];if(!P.posHist)P.posHist=[];if(P.pos0==null&&!P.posHist.length)P.pos0=P.pos}if(g&&g.set&&!g.set.rusMode)g.set.rusMode=g.set.russia?'on':'random';return g}
 function load(){
   // one-time move of the old single save into the first slot
   try{const old=localStorage.getItem(SAVE);if(old&&!slotsGet().length){const g=JSON.parse(old);if(g&&g.P){const id=g.slot||Date.now().toString(36);g.slot=id;localStorage.setItem(slotKey(id),JSON.stringify(g));localStorage.setItem(ACTIVE_KEY,id);slotsSet([{id,upd:Date.now(),name:g.P.name,pos:g.P.pos,club:(g.clubs[g.P.clubId]||{}).name,age:g.P.age,ovr:Math.round(g.P.ovr),season:`${g.year}/${String(g.year+1).slice(2)}`,room:g.room?g.room.code:null,retired:g.phase==='retired'}])}}localStorage.removeItem(SAVE)}catch(e){}
-  try{const id=localStorage.getItem(ACTIVE_KEY);if(!id)return null;const raw=localStorage.getItem(slotKey(id));if(!raw)return null;const g=JSON.parse(raw);g.slot=id;return g}catch(e){return null}
+  try{const id=localStorage.getItem(ACTIVE_KEY);if(!id)return null;const raw=slotRaw(id);if(!raw)return null;const g=JSON.parse(raw);g.slot=id;return g}catch(e){return null}
 }
 
 const C=id=>G.clubs[id];
@@ -1210,7 +1428,7 @@ function* seasonGen(){
   S={label:`${y}/${String(Y).slice(2)}`,year:y,age:P.age,pos:P.pos,num:P.num,clubId:club.id,clubName:club.name,clubStr:Math.round(club.str),lgId:lg.id,lgName:lg.name,loan:P.loanFrom!=null,
      role:roleOf(P.ovr+P.roleMod+(P.captain===club.id?2:0)+(P.rel.coach-50)/20,club.str),uclG:0,wcG:0,euroG:0,hat:0,bigG:0,finG:0,lastRt:6,lgA:0,lastG:0,records:[],derby:{w:0,d:0,l:0,g:0},club:blank(),intl:blank(),oly:blank(),lgGoals:0,tg:0,tapps:0,trs:0,keyN:0,moments:[],
      comps:[],trophies:[],awards:[],tourn:[],anom:[],log:{},news:[],inj:[],mk:{},summer:G.summer.slice(),ovrBefore:Math.round(P.ovr),natName:nat.name,intlRet:P.intlRetired};
-  G.summer=[];wseed('season');
+  G.summer=[];wseed('season');G.seasons.forEach(x=>{delete x.mk});
   worldEvent();
   if(!P.nem&&!P.nemNo&&!P.feud&&P.age<=28){P.nem=makeNem();S.news.push(`Пресса нашла вам заклятого соперника: ${P.nem.name} (${N(P.nem.nat).name}, «${C(P.nem.club).name}»). Ровесник, та же линия — сравнивать вас будут всю карьеру.`)}else if(!P.nem)P.nemNo=true;
   const called=!P.intlRetired&&!P.skipNT&&P.age>=18&&P.ovr>=nat.str-10;
@@ -2686,6 +2904,8 @@ function sfx(k){
     else if(k==='kick'){tone(c,140,t,.18,'sine',.3,60)}
   }catch(e){}
 }
+/* a short buzz on phones for goals and trophies, only with sound on */
+function buzz(p){try{if(SND.on&&navigator.vibrate)navigator.vibrate(p)}catch(e){}}
 function confetti(){
   try{if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}
   const cv=document.createElement('canvas');cv.className='confetti';cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;document.body.appendChild(cv);
@@ -2711,7 +2931,7 @@ function liveTick(){
   const nxt=items[n],k=nxt.className;void nxt;
   UI.liveT=setTimeout(()=>{
     UI.live.n=n+1;
-    if(/\bgl\b/.test(k)){sfx(/op/.test(k)?'ogoal':'goal');const fx=document.getElementById('lvFx');if(fx){fx.textContent=/op/.test(k)?'Гол соперника':'ГОЛ!';fx.className='goalfx '+(/op/.test(k)?'op':'')+' on'}}
+    if(/\bgl\b/.test(k)){sfx(/op/.test(k)?'ogoal':'goal');buzz(/op/.test(k)?35:[30,40,70]);const fx=document.getElementById('lvFx');if(fx){fx.textContent=/op/.test(k)?'Гол соперника':'ГОЛ!';fx.className='goalfx '+(/op/.test(k)?'op':'')+' on'}}
     else if(/whistle/.test(k))sfx('whistle');else if(/save/.test(k))sfx('save');else if(/card/.test(k))sfx('card');else if(/miss/.test(k))sfx('ogoal');
     liveTick();
   },n===m.from?450:/\bgl\b/.test(items[n-1]?items[n-1].className:'')?1500:850);
@@ -2720,9 +2940,9 @@ function afterRender(){
   liveTick();
   if(document.getElementById('dlLeft')&&!UI.dlTimer)UI.dlTimer=setInterval(dlTick,250);
   const m=MATCH;
-  if(m&&m.kind==='result'&&m.trophy&&UI.fxDone!==m){UI.fxDone=m;sfx('fanfare');confetti()}
+  if(m&&m.kind==='result'&&m.trophy&&UI.fxDone!==m){UI.fxDone=m;sfx('fanfare');buzz([40,60,40,60,140]);confetti()}
   if(m&&m.kind==='result'&&!m.trophy&&UI.fxDone!==m){UI.fxDone=m;if(m.won)sfx('save')}
-  if(G&&G.ceremony&&G.seasons[0]&&UI.fxDone!==G.seasons[0]){UI.fxDone=G.seasons[0];const b=G.seasons[0].bdo;if(b&&b.place===1){sfx('fanfare');confetti()}}
+  if(G&&G.ceremony&&G.seasons[0]&&UI.fxDone!==G.seasons[0]){UI.fxDone=G.seasons[0];const b=G.seasons[0].bdo;if(b&&b.place===1){sfx('fanfare');buzz([40,60,40,60,140]);confetti()}}
 }
 
 /* ================= world events: one shared story per season (world RNG, identical for a whole room) ================= */
@@ -2791,7 +3011,7 @@ function greatRecord(){try{if(!G||(!G.P&&!G.C))return;const e=greatEntry(),a=gre
 function greatsBackfill(){
   const have=new Set(greatsGet().map(x=>x.id)),keep={G,S,RW:RW.s,RPR:RPR.s};
   for(const m of slotsGet()){if(!m.retired||have.has(m.id))continue;
-    try{const raw=localStorage.getItem(slotKey(m.id));if(!raw)continue;G=JSON.parse(raw);G.slot=m.id;S=G.seasons&&G.seasons[0]||null;if(G.P||G.C)greatRecord()}catch(e){}}
+    try{const raw=slotRaw(m.id);if(!raw)continue;G=JSON.parse(raw);G.slot=m.id;S=G.seasons&&G.seasons[0]||null;if(G.P||G.C)greatRecord()}catch(e){}}
   G=keep.G;S=keep.S;RW.s=keep.RW;RPR.s=keep.RPR;
 }
 function greatsTable(limit){
@@ -2801,31 +3021,71 @@ function greatsTable(limit){
 }
 
 /* ================= main menu ================= */
+/* one save slot as a card: rating badge in the card tier colour, career line, actions */
+function slotCard(m,acts){
+  const coach=m.pos==='ТРЕНЕР',cur=G&&G.slot===m.id;
+  return `<li class="slot ${cur?'me':''} ${m.retired?'done':''}"><span class="sl-ovr ${coach?'coach':cardTier(m.ovr)}"><b>${m.ovr!=null?m.ovr:'—'}</b><i>${esc(coach?'ТР':m.pos||'')}</i></span>
+    <div class="sl-main"><b>${esc(m.name)}${m.room?` <span class="tag">комната ${esc(m.room)}</span>`:''}${cur?' <span class="tag now">сейчас</span>':''}</b><span>${m.retired?`завершил · ${esc(m.tier||'')}`:`${esc(m.club||'')}${coach?'':` · ${m.age} лет`}`}</span>${m.retired?'':`<span class="dim">сезон ${esc(m.season||'')}${coach?` · репутация ${m.ovr}`:''}</span>`}</div>
+    <div class="sl-act">${acts}</div></li>`;
+}
 function viewHome(){
   try{greatsBackfill()}catch(e){}
-  const has=G&&(G.P||G.C),slots=slotsGet().sort((a,b)=>b.upd-a.upd).filter(m=>!G||m.id!==G.slot).slice(0,3);
+  const has=G&&(G.P||G.C),all=slotsGet(),slots=all.sort((a,b)=>b.upd-a.upd).filter(m=>!G||m.id!==G.slot).slice(0,3);
   const cur=has?(G.P?{n:G.P.name,s:G.phase==='retired'?`завершил · ${legacyTier()}`:`${G.year}/${String(G.year+1).slice(2)} · ${G.P.age} лет · ${C(G.P.clubId).name} · рейтинг ${Math.round(G.P.ovr)}`}:{n:G.C.name,s:`тренер · ${G.C.job==='club'?C(G.C.clubId).name:G.C.job==='nation'?'сборная':'без работы'}`}):null;
+  const P=has&&G.P&&!isCoach()?G.P:null;
+  const front=P?{ovr:Math.round(P.ovr),pos:POS[P.pos].s,age:P.age,num:P.num,name:P.name,club:C(P.clubId).name,nat:N(P.nat).name,posFull:G.phase==='retired'?'завершил карьеру':'ваша карьера'}
+    :{ovr:93,pos:'НАП',age:29,num:10,name:'Легенда',club:'Золотой мяч',nat:'Лига чемпионов',posFull:'Зал славы'};
+  const fan=`<div class="fan" aria-hidden="true">${playerCard({ovr:58,pos:'НАП',age:17,num:34,name:'Дебют',club:'Академия',nat:'первый контракт',posFull:'17 лет'})}${playerCard({ovr:76,pos:'НАП',age:21,num:19,name:'Прорыв',club:'Основной состав',nat:'вызов в сборную',posFull:'большой трансфер'})}${playerCard(front)}</div>`;
   return `<section class="home">
-    <div class="home-hero"><p class="eyebrow">Симулятор футбольной карьеры</p><h1 class="disp">Легенда <em>поля</em></h1>
-      <p class="lead">От академии до Золотого мяча: сезоны, финалы в прямом эфире, заклятый соперник, деньги, слава и музей вашей карьеры.</p>
-      <div class="home-btns">
-        ${cur?`<button class="home-card main" data-a="tab" data-v="career"><span class="eyebrow">Продолжить</span><b>${esc(cur.n)}</b><span>${esc(cur.s)}</span></button>`:''}
-        <button class="home-card" data-a="newYes"><span class="eyebrow">Начать</span><b>Новая карьера</b><span>Игрок или тренер, новый мир</span></button>
-        <button class="home-card" data-a="tab" data-v="multi"><span class="eyebrow">С друзьями</span><b>Мультиплеер</b><span>Одна комната, один мир</span></button>
-        <button class="home-card" data-a="tab" data-v="saves"><span class="eyebrow">Слоты</span><b>Сохранения</b><span>${slotsGet().length} из ${MAX_SLOTS}</span></button>
-      </div>
-      ${slots.length?`<p class="eyebrow" style="margin:22px 0 8px">Другие карьеры</p><ul class="roster slots">${slots.map(m=>`<li><div><b>${esc(m.name)} · ${esc(m.pos||'')}</b><span>${m.retired?`завершил · ${esc(m.tier||'')}`:`${esc(m.season||'')} · ${m.age} лет · ${esc(m.club||'')}`}</span></div><button class="btn mini" data-a="slotLoad" data-id="${esc(m.id)}">Открыть</button></li>`).join('')}</ul>`:''}
-    </div></section>
+    <div class="home-hero">
+      <div class="home-copy"><p class="eyebrow">Симулятор футбольной карьеры</p><h1 class="disp">Легенда <em>поля</em></h1>
+        <p class="lead">От академии до Золотого мяча: сезоны, финалы в прямом эфире, заклятый соперник, деньги, слава и музей вашей карьеры.</p></div>
+      ${fan}
+    </div>
+    <div class="home-btns">
+      ${cur?`<button class="home-card main" data-a="tab" data-v="career"><span class="hc-ic">${ico(G.phase==='retired'?'hall':'career')}</span><span class="eyebrow">Продолжить</span><b>${esc(cur.n)}</b><span class="hc-s">${esc(cur.s)}</span><span class="hc-go" aria-hidden="true">→</span></button>`:''}
+      <button class="home-card ${cur?'':'main'}" data-a="newYes"><span class="hc-ic">${ico('new')}</span><span class="eyebrow">Начать</span><b>Новая карьера</b><span class="hc-s">Игрок или тренер, новый мир</span></button>
+      <button class="home-card" data-a="tab" data-v="multi"><span class="hc-ic">${ico('multi')}</span><span class="eyebrow">С друзьями</span><b>Мультиплеер</b><span class="hc-s">Одна комната, один мир</span></button>
+      <button class="home-card" data-a="tab" data-v="saves"><span class="hc-ic">${ico('saves')}</span><span class="eyebrow">Слоты</span><b>Сохранения</b><span class="hc-s">${all.length} из ${MAX_SLOTS}</span></button>
+    </div>
+    ${slots.length?`<p class="eyebrow" style="margin:26px 0 10px">Другие карьеры</p><ul class="slots">${slots.map(m=>slotCard(m,`<button class="btn mini" data-a="slotLoad" data-id="${esc(m.id)}">Открыть</button>`)).join('')}</ul>`:''}
+    </section>
     <section class="panel"><div class="sec-h"><h2>Величайшие</h2><span class="small muted">все ваши завершённые карьеры в этом браузере, по очкам наследия</span></div>${greatsTable(20)}</section>`;
 }
 
 /* ================= museum of a career ================= */
 const KIT=['#C8102E','#003DA5','#FFFFFF','#111111','#F2C14E','#0B6E4F','#6CABDD','#7A263A','#FF6B00','#5B2C83','#00843D','#E4002B'];
-function kitOf(name){const h=hashStr('kit|'+name),a=KIT[h%KIT.length],b=KIT[(h>>>4)%KIT.length],st=(h>>>8)%3;return {a,b:b===a?'#FFFFFF':b,st}}
+/* real home kits: name:body,second,pattern[,trim]. Patterns: 0 plain, 1 stripes, 2 hoops, 3 halves, 4 sash, 5 sleeves, 6 centre band, 7 chest band, 8 chevron, 9 cross, 10 diagonal, 11 checks */
+const KITS_REAL='Арсенал:EF0107,FFFFFF,5|Манчестер Сити:6CABDD,FFFFFF,0|Ливерпуль:C8102E,FFFFFF,0|Челси:034694,FFFFFF,0|Ньюкасл:1C1C1C,FFFFFF,1|Астон Вилла:670E36,95BFE5,5|Манчестер Юнайтед:DA291C,FFFFFF,0|Тоттенхэм:FFFFFF,132257,0|Брайтон:0057B8,FFFFFF,1|Ноттингем Форест:DD0000,FFFFFF,0|Кристал Пэлас:1B458F,C4122E,1|Борнмут:DA291C,1C1C1C,1|Брентфорд:E30613,FFFFFF,1|Фулхэм:FFFFFF,1C1C1C,0|Эвертон:003399,FFFFFF,0|Вест Хэм:7A263A,1BB1E7,5|Лидс:FFFFFF,1D428A,0|Сандерленд:EB172B,FFFFFF,1|Ковентри Сити:59B5E8,FFFFFF,0|Ипсвич Таун:3A64A3,FFFFFF,0|Реал Мадрид:FFFFFF,00529F,0|Барселона:004D98,A50044,1|Атлетико:CB3524,FFFFFF,1|Вильярреал:FFE114,005187,0|Атлетик:EE2523,FFFFFF,1|Бетис:0BB363,FFFFFF,1|Реал Сосьедад:0067B1,FFFFFF,1|Сельта:8AC3EE,FFFFFF,0|Валенсия:FFFFFF,1C1C1C,0|Севилья:FFFFFF,D70E1B,0|Хирона:CD2534,FFFFFF,1|Осасуна:D91A21,0A346F,0|Райо Вальекано:FFFFFF,E53027,4|Эспаньол:007FC8,FFFFFF,1|Мальорка:E20613,1C1C1C,0|Хетафе:005999,FFFFFF,0|Алавес:0761AF,FFFFFF,1|Эльче:FFFFFF,05642C,7|Леванте:00428C,B4053F,1|Расинг Сантандер:FFFFFF,007A3D,0|Интер:005BAC,111111,1|Наполи:12A0D7,FFFFFF,0|Милан:D7141A,111111,1|Ювентус:FFFFFF,111111,1|Аталанта:1E71B8,111111,1|Рома:8E1F2F,F0BC42,0|Комо:1A4A8E,FFFFFF,0|Лацио:87D8F7,FFFFFF,0|Болонья:1A2F48,A21C26,1|Фиорентина:482E92,FFFFFF,0|Торино:881F19,FFFFFF,0|Удинезе:111111,FFFFFF,1|Дженоа:AE1919,00225A,3|Сассуоло:00A752,111111,1|Кальяри:AD002A,002350,3|Парма:FFFFFF,111111,9|Венеция:1C1C1C,F26522,0|Палермо:F4A7C3,111111,0|Лечче:FFE600,D8001D,1|Верона:002F6C,FFD700,0|Бавария:DC052D,FFFFFF,0|Боруссия Дортмунд:FDE100,111111,0|Байер:E32221,111111,0|РБ Лейпциг:FFFFFF,DD0741,0|Штутгарт:FFFFFF,E32219,7|Айнтрахт Франкфурт:1C1C1C,E1000F,0|Фрайбург:D7001D,111111,0|Хоффенхайм:1961B5,FFFFFF,0|Вольфсбург:65B32E,FFFFFF,0|Боруссия Мёнхенгладбах:FFFFFF,008C45,0|Майнц:C3141E,FFFFFF,0|Унион Берлин:EB1923,FFFFFF,0|Вердер:1D9053,FFFFFF,0|Аугсбург:FFFFFF,BA3733,0|Кёльн:FFFFFF,ED1C24,0|Гамбург:FFFFFF,0A3F86,0|Хайденхайм:E2001A,003B79,0|Шальке 04:004D9D,FFFFFF,0|ПСЖ:004170,DA291C,6,FFFFFF|Марсель:FFFFFF,2FAEE0,0|Монако:E51B22,FFFFFF,10|Лилль:E01E13,1D2A5B,0|Лион:FFFFFF,1F3B87,0,DA0812|Страсбур:009FE3,FFFFFF,0|Ницца:D71920,111111,1|Ланс:FFD400,E2001A,5|Ренн:E13327,111111,0|Тулуза:563A8E,FFFFFF,0|Брест:E30613,FFFFFF,0|Нант:FCD405,00843D,0|Париж:1B2A4E,7AC1E9,0|Осер:FFFFFF,0067B1,0|Анже:111111,FFFFFF,1|Сент-Этьен:009639,FFFFFF,0|Гавр:0A2D6E,8ACBEB,3|Лорьян:F58220,111111,0|Спортинг:008057,FFFFFF,2|Бенфика:E30613,FFFFFF,0|Порту:00428C,FFFFFF,1|Брага:E30613,FFFFFF,5|Витория Гимарайнш:FFFFFF,111111,0|Фамаликан:1A428A,FFFFFF,1|Жил Висенте:D71920,1B3D8E,0|Эшторил:FFD200,0D3B8C,1|Морейренсе:00843D,FFFFFF,0|Риу Аве:00843D,FFFFFF,1|Эштрела:D71920,0B8A3E,0|Арока:FFD100,1D3E8E,0|Каза Пия:111111,FFFFFF,0|Санта-Клара:D71920,FFFFFF,0|Насьонал:FFFFFF,111111,1|Тондела:00843D,FFD100,1|Алверка:D71920,FFFFFF,0|АВС:C8102E,FFFFFF,0|ПСВ:ED1C24,FFFFFF,1|Аякс:FFFFFF,D2122E,6|Фейеноорд:E30613,FFFFFF,3|АЗ:E30613,FFFFFF,0|Твенте:E2001A,FFFFFF,0|Утрехт:DE0D1A,FFFFFF,0|НЕК:D71920,00843D,1|Гоу Эхед Иглс:E30613,FFE000,3|Херенвен:0051A0,FFFFFF,1|Гронинген:00843D,FFFFFF,3|Спарта:E2001A,FFFFFF,1|Фортуна Ситтард:FFE500,0F7A3B,0|ПЕК Зволле:0072BC,FFFFFF,1|Хераклес:FFFFFF,111111,1|Виллем II:E30613,1E3D8F,1|НАК Бреда:FFD100,111111,0|Волендам:F37021,FFFFFF,0|Эксельсиор:E30613,111111,1|Брюгге:0072CE,111111,1|Юнион Сент-Жиллуаз:FFD200,1D3A8F,0|Андерлехт:4B2884,FFFFFF,0|Генк:004DA0,FFFFFF,0|Гент:1E3884,FFFFFF,0|Антверпен:E30613,FFFFFF,0|Стандард:E2001A,FFFFFF,0|Серкль Брюгге:00843D,111111,1|Мехелен:FFD100,E30613,1|Шарлеруа:111111,FFFFFF,1|Вестерло:1C3F94,FFD100,0|Синт-Трюйден:FFD100,1D3A8F,0|Льовен:009A44,E30613,0|Зюлте-Варегем:E30613,00843D,0|Дендер:2A3E8E,FFFFFF,0|Ла-Лувьер:00843D,FFFFFF,0|Галатасарай:FDB912,A90432,3|Фенербахче:163962,FFED00,1|Бешикташ:FFFFFF,111111,0|Трабзонспор:8C1D40,6CACE4,1|Башакшехир:F37021,1D2D5C,0|Самсунспор:E30613,FFFFFF,0|Гёзтепе:FFD200,E30613,3|Аланьяспор:F7941D,00843D,0|Касымпаша:1E2B62,FFFFFF,0|Антальяспор:E30613,FFFFFF,1|Коньяспор:00843D,FFFFFF,1|Ризеспор:00843D,1C5BA8,1|Газиантеп:D71920,111111,0|Кайсериспор:FFD200,E30613,1|Эюпспор:5B2C83,FFD100,0|Фатих Карагюмрюк:E30613,111111,1|Кочаэлиспор:00843D,111111,1|Генчлербирлиги:E30613,111111,3|Бернли:6C1D45,99D6EA,5|Вулверхэмптон:FDB913,111111,0|Саутгемптон:D71920,FFFFFF,1|Лестер:003090,FFFFFF,0|Мидлсбро:E21B23,FFFFFF,7|Шеффилд Юнайтед:EE2737,FFFFFF,1|Норвич:FFF200,00A650,0|Вест Бромвич:122F67,FFFFFF,1|Халл Сити:F5A12D,111111,1|Бристоль Сити:E21A23,FFFFFF,0|Уотфорд:FBEE23,111111,0|Суонси:FFFFFF,111111,0|Стоук Сити:E03A3E,FFFFFF,1|Миллуолл:001D5E,FFFFFF,0|Престон:FFFFFF,001D5E,0|Рексем:D71920,FFFFFF,0|Бирмингем:1F3E9C,FFFFFF,0|Блэкберн:009EE0,FFFFFF,3|КПР:1D5BA4,FFFFFF,2|Дерби Каунти:FFFFFF,111111,0|Портсмут:001489,FFFFFF,0|Чарльтон:D4021D,FFFFFF,0|Шеффилд Уэнсдей:005BAC,FFFFFF,1|Оксфорд Юнайтед:FFE600,001D5E,0|Селтик:018749,FFFFFF,2|Рейнджерс:1B458F,FFFFFF,0,E30613|Харт оф Мидлотиан:8B1E3F,FFFFFF,0|Абердин:E2001A,FFFFFF,0|Хиберниан:00843D,FFFFFF,5|Данди Юнайтед:F47B20,111111,0|Мотеруэлл:F5A623,7B1E3B,7|Сент-Миррен:111111,FFFFFF,1|Килмарнок:1E4C9A,FFFFFF,1|Фалкирк:002B5C,FFFFFF,0|Ливингстон:F5A623,111111,0|Данди:1B2C5A,FFFFFF,0|Ред Булл Зальцбург:FFFFFF,D6001C,0|Штурм:111111,FFFFFF,1|Рапид:00843D,FFFFFF,0|ЛАСК:FFFFFF,111111,1|Аустрия Вена:4F2D7F,FFFFFF,0|Вольфсберг:111111,FFFFFF,0|Хартберг:1E3E8E,FFFFFF,0|Блау-Вайсс Линц:1C4A9C,FFFFFF,1|Альтах:111111,FFD100,0|Рид:00843D,111111,0|Тироль:00843D,FFFFFF,0|Гразер АК:E30613,FFFFFF,0|Базель:E30613,1B3D8E,3|Янг Бойз:FFE500,111111,0|Лугано:111111,FFFFFF,1|Серветт:8A1538,FFFFFF,0|Лозанна:1E3E8E,FFFFFF,0|Цюрих:FFFFFF,1E5BA8,0|Санкт-Галлен:00843D,FFFFFF,0|Люцерн:0055A4,FFFFFF,0|Сьон:FFFFFF,E30613,0|Грассхоппер:1E7BC8,FFFFFF,3|Тун:E30613,FFFFFF,0|Винтертур:E30613,FFFFFF,0|Зенит:0072BC,FFFFFF,0,7FC8EA|Краснодар:111111,00843D,3|Спартак:C8102E,FFFFFF,7|ЦСКА:1D3A8F,D7111E,3|Локомотив:D71920,00843D,7|Динамо Москва:0A3F86,FFFFFF,0|Ростов:FFD100,1D3A8F,0|Рубин:9E1B32,00843D,0|Балтика:1E5BA8,FFFFFF,0|Ахмат:00843D,FFFFFF,0|Динамо Махачкала:1E3E8E,FFFFFF,0|Крылья Советов:1E5BA8,FFFFFF,1|Акрон:1C2F6B,FFFFFF,0|Пари НН:111111,1E5BA8,1|Оренбург:1E3E8E,FFFFFF,0|Сочи:1E5BA8,111111,1|Шахтёр:F47920,111111,1|Динамо Киев:FFFFFF,1D3A8F,0|Полесье:FFD100,00843D,0|Кривбасс:E30613,FFFFFF,0|Александрия:FFD100,111111,0|Заря:111111,FFFFFF,1|Карпаты:00843D,FFFFFF,0|Колос:FFD100,111111,0|Металлист 1925:FFD100,1D3A8F,1|Верес:00843D,FFD100,0|Оболонь:1E5BA8,FFFFFF,0|Рух:FFD100,111111,0|Олимпиакос:E30613,FFFFFF,1|ПАОК:111111,FFFFFF,1|АЕК:FFD100,111111,0|Панатинаикос:007A3D,FFFFFF,0|Арис:FFD200,111111,0|ОФИ:111111,FFFFFF,0|Атромитос:1E5BA8,FFFFFF,1|Астерас:FFD100,1D3A8F,0|Волос:1E3E8E,E30613,0|Левадиакос:00843D,FFFFFF,0|Панетоликос:FFD100,1D3A8F,1|Кифисия:1E3E8E,FFFFFF,0|Лариса:8C1D40,FFFFFF,0|Панселлиникос:1E5BA8,FFFFFF,0|Славия Прага:E30613,FFFFFF,3|Спарта Прага:9E1B32,FFFFFF,0|Виктория Пльзень:E30613,1D3A8F,3|Баник Острава:3A8FD8,FFFFFF,0|Сигма Оломоуц:1E5BA8,FFFFFF,0|Слован Либерец:FFFFFF,1E5BA8,0|Яблонец:00843D,FFFFFF,0|Млада-Болеслав:1E3E8E,FFFFFF,0|Градец-Кралове:111111,FFFFFF,1|Богемианс:00843D,FFFFFF,1|Теплице:FFD100,1D3A8F,0|Карвина:00843D,FFFFFF,0|Пардубице:E30613,FFFFFF,0|Словацко:1E5BA8,FFFFFF,0|Злин:FFD100,1D3A8F,0|Дукла:9E1B32,FFD100,1|Мидтьюлланн:111111,E30613,0|Копенгаген:FFFFFF,1D3A8F,0|Брондбю:FFD100,1D3A8F,0|Норшелланн:E64B1F,FFFFFF,0|Орхус:FFFFFF,1E3E8E,0|Раннерс:1E5BA8,FFFFFF,0|Силькеборг:E30613,FFFFFF,0|Виборг:00843D,FFFFFF,0|Сённерйюск:1E3E8E,FFFFFF,0|Оденсе:1E5BA8,FFFFFF,0|Вайле:E30613,FFFFFF,0|Фредерисия:C8102E,FFFFFF,0|Будё-Глимт:FFE500,111111,0|Бранн:E30613,FFFFFF,0|Мольде:0055A4,FFFFFF,0|Викинг:1D2A5B,FFFFFF,0|Русенборг:FFFFFF,111111,0|Фредрикстад:E30613,FFFFFF,0|Лиллестрём:FFD100,111111,0|Тромсё:E30613,FFFFFF,1|Сарпсборг:1E5BA8,FFFFFF,0|Саннефьорд:1E3E8E,FFFFFF,0|Хам-Кам:00843D,FFFFFF,0|Стрёмсгодсет:1E5BA8,FFFFFF,0|КФУМ Осло:E30613,FFFFFF,0|Кристиансунн:1E5BA8,FFFFFF,0|Одд:FFFFFF,111111,0|Хёугесунн:111111,FFFFFF,0|Мальмё:77C4F0,FFFFFF,0|Хаммарбю:00843D,FFFFFF,1|Юргорден:1D3A8F,6CABDD,1|АИК:111111,FFD100,0|Мьельбю:FFD100,111111,0|Эльфсборг:FFE500,111111,0|Гётеборг:1E5BA8,FFFFFF,1|Хеккен:FFD100,111111,1|Гаис:00843D,111111,1|Сириус:1E5BA8,111111,1|Норрчёпинг:FFFFFF,1E3E8E,0|Хальмстад:1E3E8E,FFFFFF,0|Дегерфорс:E30613,FFFFFF,0|Броммапойкарна:E30613,111111,1|Эстер:E30613,FFFFFF,0|Васалунд:FFD100,1D3A8F,0|Динамо Загреб:0057B8,FFFFFF,0|Хайдук:FFFFFF,1D3A8F,0,E30613|Риека:FFFFFF,1E5BA8,0|Осиек:1E3E8E,FFFFFF,0|Локомотива:1E5BA8,FFFFFF,0|Вараждин:1E5BA8,FFFFFF,0|Истра 1961:00843D,FFD100,0|Славен Белупо:FFD100,1D3A8F,0|Горица:E30613,1D3A8F,0|Вуковар 91:1E3E8E,FFFFFF,0|Црвена Звезда:E30613,FFFFFF,1|Партизан:111111,FFFFFF,1|ТСЦ Бачка-Топола:FFD100,1D3A8F,0|Воеводина:E30613,FFFFFF,3|Чукарички:111111,FFFFFF,0|Нови-Пазар:C8102E,FFFFFF,0|ОФК Белград:1E5BA8,FFFFFF,0|Железничар Панчево:1E3E8E,FFFFFF,0|Радник Сурдулица:E30613,FFFFFF,0|Младост Лучани:E30613,FFFFFF,0|Спартак Суботица:1E5BA8,FFFFFF,0|Раднички Ниш:E30613,FFFFFF,0|Лех:0055A4,FFFFFF,0|Ракув:E30613,1D3A8F,3|Легия:FFFFFF,00843D,0,E30613|Ягеллония:FFD100,E30613,0|Погонь Щецин:1D3A8F,8C1D40,1|Краковия:E30613,FFFFFF,1|Гурник Забже:1E5BA8,E30613,0|Видзев:E30613,FFFFFF,0|Заглембе Любин:F37021,00843D,0|Пяст Гливице:1D3A8F,E30613,1|Корона Кельце:FFD100,E30613,0|Лехия Гданьск:00843D,FFFFFF,1|Мотор Люблин:FFD100,1D3A8F,0|Радомяк:00843D,FFFFFF,0|Висла Плоцк:1E5BA8,FFFFFF,0|Арка Гдыня:FFD100,1D3A8F,0|Катовице:FFD100,00843D,0|Термалица:F37021,111111,0|Интер Майами:F7B5CD,111111,0|Лос-Анджелес:1C1C1C,C39E6D,0|Цинциннати:263B80,F05323,0|Ванкувер Уайткэпс:FFFFFF,00245E,0|Лос-Анджелес Гэлакси:FFFFFF,00245D,0,FFD200|Коламбус Крю:FEDD00,111111,0|Филадельфия Юнион:071B2C,B19B69,0|Сиэтл Саундерс:5D9741,236192,0|Нью-Йорк Сити:6CACE4,FFFFFF,0|Орландо Сити:633492,FFFFFF,0|Сан-Диего:1E2A4A,F3B1C8,0|Нэшвилл:ECE83A,1F1646,0|Миннесота Юнайтед:585958,8CD2F4,0|Шарлотт:1A85C8,FFFFFF,0|Нью-Йорк Ред Буллз:FFFFFF,ED1E36,0|Атланта Юнайтед:80000A,221F1F,1|Портленд Тимберс:004812,D69A00,0|Остин:00B140,111111,0|Фламенго:E30613,111111,2|Палмейрас:006437,FFFFFF,0|Крузейро:2F529E,FFFFFF,0|Ботафого:111111,FFFFFF,1|Флуминенсе:8C1D40,00843D,1|Сан-Паулу:FFFFFF,E30613,7,111111|Коринтианс:FFFFFF,111111,0|Интернасьонал:E30613,FFFFFF,0|Атлетико Минейро:FFFFFF,111111,1|Баия:FFFFFF,1D3A8F,0,E30613|Гремио:0D80BF,111111,1|Васко да Гама:111111,FFFFFF,4|Ред Булл Брагантино:FFFFFF,E30613,0|Сантос:FFFFFF,111111,0|Форталеза:1D3A8F,E30613,2|Атлетико Паранаэнсе:E30613,111111,1|Витория:E30613,111111,2|Сеара:111111,FFFFFF,1|Коритиба:FFFFFF,00843D,7|Жувентуде:00843D,FFFFFF,1|Ривер Плейт:FFFFFF,E30613,4|Бока Хуниорс:1D3A8F,FFD100,7|Расинг:6CACE4,FFFFFF,1|Велес Сарсфилд:FFFFFF,1D3A8F,8|Эстудиантес:E30613,FFFFFF,1|Индепендьенте:E30613,FFFFFF,0|Тальерес:1D3A8F,FFFFFF,1|Росарио Сентраль:1D3A8F,FFD100,1|Архентинос Хуниорс:E30613,FFFFFF,0|Ланус:8C1D40,FFFFFF,0|Уракан:FFFFFF,E30613,0|Сан-Лоренсо:1D3A8F,E30613,1|Годой-Крус:1D3A8F,FFFFFF,1|Бельграно:6CACE4,FFFFFF,0|Дефенса и Хустисия:FFD100,00843D,0|Ньюэллс Олд Бойз:E30613,111111,3|Америка:FFE500,1D3A8F,0|Тигрес:FDB913,1D3A8F,0|Толука:E30613,FFFFFF,0|Монтеррей:1D2A5B,FFFFFF,1|Крус Асуль:0047AB,FFFFFF,0|Пачука:1D3A8F,FFFFFF,1|Гвадалахара:E30613,FFFFFF,1|УНАМ Пумас:1D2A5B,C9A227,0|Леон:00843D,FFFFFF,0|Сантос Лагуна:00843D,FFFFFF,1|Атлас:E30613,111111,3|Тихуана:E30613,111111,1|Хуарес:E30613,111111,0|Атлетико Сан-Луис:E30613,1D3A8F,0|Некакса:E30613,FFFFFF,1|Керетаро:1D3A8F,111111,1|Масатлан:5B2C83,FFFFFF,0|Пуэбла:FFFFFF,1D3A8F,4|Аль-Хиляль:005EB8,FFFFFF,0|Аль-Наср:FFD200,1D3A8F,0|Аль-Иттихад:FFD200,111111,1|Аль-Ахли:00843D,FFFFFF,0|Аль-Кадисия:E30613,1D3A8F,0|Аль-Таавун:FFD100,111111,0|Аль-Иттифак:00843D,E30613,0|Аль-Шабаб:FFFFFF,111111,0|Неом:1D2A5B,C9A227,0|Аль-Фатех:1E5BA8,FFFFFF,0|Аль-Файха:F37021,FFFFFF,0|Аль-Халидж:FFD100,00843D,0|Аль-Хулуд:1E3E8E,FFFFFF,0|Аль-Рияд:E30613,FFFFFF,0|Дамак:111111,E30613,0|Аль-Охдуд:00843D,FFFFFF,0|Аль-Хазм:FFD100,1D3A8F,0|Аль-Наджма:00843D,FFD100,0|Касима Антлерс:A3172F,1D2A5B,0|Виссел Кобе:8B0000,FFFFFF,0|Касива Рейсол:FFE600,111111,0|Санфречче Хиросима:5B2C83,FFFFFF,0|Кавасаки Фронтале:1E9FD7,111111,0|Урава Ред Даймондс:E30613,FFFFFF,0|Матида Зельвия:1D3A8F,FFFFFF,0|Иокогама Ф. Маринос:003DA5,FFFFFF,0,E30613|Киото Санга:6B2C91,FFFFFF,0|Гамба Осака:1D3A8F,111111,1|Сересо Осака:E5007E,1D2A5B,0|Токио:1D3A8F,E30613,1|Нагоя Грампус:E30613,FFFFFF,0|Токио Верди:00843D,FFFFFF,0|Симидзу С-Палс:F37021,FFFFFF,0|Ависпа Фукуока:1D2A5B,FFFFFF,0|Альбирекс Ниигата:F37021,1D3A8F,0|Сёнан Бельмаре:00A651,1E5BA8,1|Санкт-Паули:5A3D2B,FFFFFF,0|Хольштайн Киль:1D3A8F,FFFFFF,0,E30613|Бохум:005CA9,FFFFFF,0|Герта:005CA9,FFFFFF,1|Ганновер:E30613,111111,0|Дармштадт:1D3A8F,FFFFFF,0|Нюрнберг:A3172F,111111,0|Кайзерслаутерн:E30613,FFFFFF,0|Падерборн:1D3A8F,111111,0|Фортуна Дюссельдорф:E30613,FFFFFF,0|Магдебург:1E5BA8,FFFFFF,0|Эльверсберг:111111,FFFFFF,0|Арминия Билефельд:1A3C82,FFFFFF,0|Карлсруэ:1D3A8F,FFFFFF,0|Гройтер Фюрт:00843D,FFFFFF,0|Динамо Дрезден:FFD100,111111,0|Пройссен Мюнстер:00843D,111111,0|Айнтрахт Брауншвейг:FFD100,1D3A8F,0|Испания:C60B1E,FFC400,0|Франция:21304D,FFFFFF,0,E30613|Англия:FFFFFF,1D2A5B,0|Португалия:A6192E,00663A,0|Нидерланды:F36C21,FFFFFF,0|Германия:FFFFFF,111111,0|Италия:0066B3,FFFFFF,0|Бельгия:C8102E,FFD100,0|Хорватия:FFFFFF,E30613,11|Норвегия:C8102E,FFFFFF,0,1D3A8F|Швейцария:E30613,FFFFFF,0|Дания:C8102E,FFFFFF,0|Турция:E30613,FFFFFF,0|Австрия:E30613,FFFFFF,0|Швеция:FFD100,1D5BA8,0|Сербия:C6363C,1D3A8F,0|Украина:FFD500,0057B7,0|Польша:FFFFFF,DC143C,0|Чехия:D7141A,1D3A8F,0|Шотландия:1D2A5B,FFFFFF,0|Венгрия:CE2939,477050,0|Россия:FFFFFF,1D3A8F,0,E30613|Греция:FFFFFF,0D5EAF,0|Уэльс:C8102E,FFFFFF,0,00843D|Словакия:FFFFFF,0B4EA2,0|Грузия:FFFFFF,E30613,0|Ирландия:169B62,FFFFFF,0|Словения:FFFFFF,00843D,0|Румыния:FCD116,002B7F,0|Босния и Герцеговина:002395,FECB00,0|Албания:E41E20,111111,0|Финляндия:FFFFFF,002F6C,0|Исландия:02529C,DC1E35,0|Израиль:FFFFFF,0038B8,0|Северная Македония:D20000,FFE600,0|Черногория:C40308,D3AE3B,0|Северная Ирландия:00843D,FFFFFF,0|Косово:244AA5,FFD100,0|Болгария:FFFFFF,00966E,0,D62612|Беларусь:C8313E,00843D,0|Казахстан:00AFCA,FEC50C,0|Армения:D90012,0033A0,0|Азербайджан:FFFFFF,0092BC,0|Люксембург:EF3340,00A1DE,0|Кипр:FFFFFF,1D5BA8,0|Латвия:9E3039,FFFFFF,0|Литва:FDB913,006A44,0|Фарерские острова:FFFFFF,0065BD,0|Эстония:0072CE,111111,0|Молдова:0046AE,FFD200,0|Мальта:CF142B,FFFFFF,0|Андорра:10069F,FEDF00,0|Лихтенштейн:002B7F,CE1126,0|Гибралтар:DA000C,FFFFFF,0|Сан-Марино:5EB6E4,FFFFFF,0|Аргентина:75AADB,FFFFFF,1|Бразилия:FFDF00,009C3B,0|Уругвай:5CBFEB,111111,0|Колумбия:FCD116,003893,0|Эквадор:FFDD00,034EA2,0|Парагвай:D52B1E,FFFFFF,1|Чили:D52B1E,FFFFFF,0,0039A6|Венесуэла:7B1E3B,FFFFFF,0|Перу:FFFFFF,D91023,4|Боливия:007934,FFFFFF,0|США:FFFFFF,1D2A5B,0,E30613|Мексика:006847,FFFFFF,0,CE1126|Канада:D80621,FFFFFF,0|Панама:DA121A,FFFFFF,0|Коста-Рика:CE1126,002B7F,0|Ямайка:FED100,009B3A,0|Гондурас:FFFFFF,0073CF,0|Кюрасао:002B7F,F9E814,0|Гаити:00209F,D21034,0|Гватемала:FFFFFF,4997D0,0|Тринидад и Тобаго:CE1126,111111,0|Сальвадор:0F47AF,FFFFFF,0|Куба:CF142B,FFFFFF,0|Марокко:C1272D,006233,0|Сенегал:FFFFFF,00853F,0|Кот-д’Ивуар:F77F00,009E60,0|Египет:CE1126,FFFFFF,0|Нигерия:008751,FFFFFF,0|Алжир:FFFFFF,006233,0|Камерун:007A5E,CE1126,0|Мали:14B53A,FCD116,0|Гана:FFFFFF,111111,0|Тунис:E70013,FFFFFF,0|ДР Конго:007FFF,CE1021,0|ЮАР:FFB612,007749,0|Буркина-Фасо:009E49,EF2B2D,0|Кабо-Верде:003893,FFFFFF,0|Гвинея:CE1126,FCD116,0|Габон:FCD116,009E60,0|Ангола:CC092F,111111,0|Замбия:198A00,EF7D00,0|Уганда:FCDC04,111111,0|Япония:1D3A8F,FFFFFF,0|Южная Корея:C60C30,1D2A5B,0|Иран:FFFFFF,DA0000,0|Австралия:FFCD00,00843D,0|Узбекистан:FFFFFF,0099B5,0|Саудовская Аравия:FFFFFF,006C35,0|Катар:8A1538,FFFFFF,0|Ирак:FFFFFF,00843D,0|Иордания:FFFFFF,CE1126,0|ОАЭ:FFFFFF,E30613,0|Китай:DE2910,FFDE00,0|КНДР:E30613,FFFFFF,0|Индия:1D3A8F,FF9933,0|Таиланд:1D3A8F,FFFFFF,0|Вьетнам:DA251D,FFFF00,0|Новая Зеландия:FFFFFF,111111,0|Фиджи:FFFFFF,68BFE5,0|Таити:E30613,FFFFFF,0';
+const KIT_MAP=new Map(KITS_REAL.split('|').map(x=>{const i=x.indexOf(':'),[a,b,p,c]=x.slice(i+1).split(',');return [x.slice(0,i),{a:'#'+a,b:'#'+b,st:+p,c:c?'#'+c:null}]}));
+function kitOf(name){const r=KIT_MAP.get(name);if(r)return r;const h=hashStr('kit|'+name),a=KIT[h%KIT.length],b=KIT[(h>>>4)%KIT.length];return {a,b:b===a?'#FFFFFF':b,st:(h>>>8)%3,c:null}}
+function kitLum(h){const n=parseInt(h.slice(1),16),f=v=>(v/=255)<=.03928?v/12.92:((v+.055)/1.055)**2.4;return .2126*f(n>>16)+.7152*f(n>>8&255)+.0722*f(n&255)}
+let KIT_N=0;
+const KIT_SHIRT='M38 6 L18 14 L2 40 L20 50 L26 42 L26 124 L94 124 L94 42 L100 50 L118 40 L102 14 L82 6 Q60 15 38 6 Z';
+const KIT_SLEEVES='M31 8.6 L18 14 L2 40 L20 50 L27 41 Z M89 8.6 L102 14 L118 40 L100 50 L93 41 Z';
+function kitPattern(k){
+  const b=k.b,r=(x,y,w,h,f)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f||b}"/>`;
+  switch(k.st){
+    case 1:return [33,49,65,81].map(x=>r(x,0,8,130)).join('');
+    case 2:return [38,62,86,110].map(y=>r(0,y,120,12)).join('');
+    case 3:return r(60,0,60,130);
+    case 4:return `<polygon points="14,12 36,2 104,124 80,130" fill="${b}"/>`;
+    case 5:return `<path d="${KIT_SLEEVES}" fill="${b}"/>`;
+    case 6:return r(49,0,22,130)+(k.c?r(46,0,3,130,k.c)+r(71,0,3,130,k.c):'');
+    case 7:return r(0,46,120,20);
+    case 8:return `<path d="M24 28 L60 70 L96 28" fill="none" stroke="${b}" stroke-width="13"/>`;
+    case 9:return r(52,0,16,130)+r(0,52,120,16);
+    case 10:return `<polygon points="124,-4 124,134 -4,134" fill="${b}"/>`;
+    case 11:{let o='';for(let y=0;y<130;y+=11)for(let x=0;x<120;x+=11)if((x+y)/11%2)o+=r(x,y,11,11);return o}
+    default:return '';
+  }
+}
 function jersey(club,num,sur,sub){
-  const k=kitOf(club),light=c=>['#FFFFFF','#F2C14E','#6CABDD'].includes(c),panel=k.st?k.a:k.a,tx=light(panel)?'#111':'#fff';
-  const stripes=k.st===1?[33,49,65,81].map(x=>`<rect x="${x}" y="30" width="8" height="94" fill="${k.b}"/>`).join(''):k.st===2?[46,72,98].map(y=>`<rect x="26" y="${y}" width="68" height="12" fill="${k.b}"/>`).join(''):'';
-  return `<figure class="kit"><svg viewBox="0 0 120 130" role="img" aria-label="Футболка ${esc(club)}"><path d="M38 6 L18 14 L2 40 L20 50 L26 42 L26 124 L94 124 L94 42 L100 50 L118 40 L102 14 L82 6 Q60 22 38 6 Z" fill="${k.a}"/>${stripes}<path d="M38 6 L18 14 L2 40 L20 50 L26 42 L26 124 L94 124 L94 42 L100 50 L118 40 L102 14 L82 6 Q60 22 38 6 Z" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="2"/><path d="M38 6 Q60 22 82 6" fill="none" stroke="${k.b}" stroke-width="4"/>${k.st?`<rect x="36" y="44" width="48" height="58" rx="6" fill="${panel}"/>`:''}<text x="60" y="56" text-anchor="middle" style="font:800 11px var(--disp);fill:${tx};letter-spacing:.06em">${esc(sur.toUpperCase().slice(0,11))}</text><text x="60" y="96" text-anchor="middle" style="font:900 40px var(--disp);fill:${tx}">${num}</text></svg><figcaption><b>${esc(club)}</b><span>${esc(sub)}</span></figcaption></figure>`;
+  const k=kitOf(club),id=++KIT_N,tx=kitLum(k.a)>.45?'#141414':'#FFFFFF',trim=k.c||(k.st===0||k.st===5?k.b:k.a===k.b?'#FFFFFF':k.b);
+  return `<figure class="kit"><svg viewBox="0 0 120 130" role="img" aria-label="Футболка ${esc(club)}"><defs><clipPath id="kc${id}"><path d="${KIT_SHIRT}"/></clipPath><linearGradient id="kg${id}" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".26"/><stop offset=".22" stop-color="#fff" stop-opacity=".12"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient></defs>
+    <g clip-path="url(#kc${id})"><path d="${KIT_SHIRT}" fill="${k.a}"/>${kitPattern(k)}<path d="M3.5 41 L19.5 49.5 M116.5 41 L100.5 49.5" stroke="${trim}" stroke-width="5"/><rect width="120" height="130" fill="url(#kg${id})"/><path d="M42 68 Q49 95 45 123 M79 62 Q72 92 77 122" fill="none" stroke="#000" stroke-opacity=".09" stroke-width="3"/></g>
+    <path d="${KIT_SHIRT}" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="1.5"/><path d="M38 6 Q60 15 82 6" fill="none" stroke="${trim}" stroke-width="4" stroke-linecap="round"/>
+    <text x="60" y="56" text-anchor="middle" style="font:800 11px var(--disp);fill:${tx};letter-spacing:.06em;stroke:${k.a};stroke-width:2.5px;paint-order:stroke">${esc(sur.toUpperCase().slice(0,11))}</text><text x="60" y="97" text-anchor="middle" style="font:900 42px var(--disp);fill:${tx};stroke:${k.a};stroke-width:4px;paint-order:stroke;stroke-linejoin:round">${num}</text></svg><figcaption><b>${esc(club)}</b><span>${esc(sub)}</span></figcaption></figure>`;
 }
 function trophyIcon(n){
   const big=/Лига чемпионов|Чемпионат мира|Евро|Копа|Клубный чемпионат/.test(n),ball=/Золотой мяч/.test(n),medal=/Олимп/.test(n),shield=LEAGUE_DATA.some(l=>l[2]===n);
@@ -3188,7 +3448,7 @@ function startCoach(fromPlayer){
   const f=UI.form;
   if(!fromPlayer){
     if(slotsGet().length>=MAX_SLOTS){UI.tab='saves';UI.slotFull=true;render();return}
-    const code=genCode();RW=mkRng(hashStr('world|'+code+'|'+f.rus));RPR=mkRng(hashStr('coach|'+code+'|'+Math.random()));
+    dropEmpty();const code=genCode();RW=mkRng(hashStr('world|'+code+'|'+f.rus));RPR=mkRng(hashStr('coach|'+code+'|'+Math.random()));
     G=buildWorld(f.rus);G.code=code;G.slot=Date.now().toString(36);G.euro=euroEntrants();
     G.mode='coach';G.phase='career';
     G.C=newCoach({name:f.name.trim()||'Тренер',nat:natByName(f.nat).id,age:+f.cage||ri(35,45),rep:ri(12,24),skills:{tac:ri(42,56),mot:ri(42,56),yth:ri(40,56),trf:ri(40,56)}});
@@ -3806,7 +4066,7 @@ function beginCoachHalf(){UI.confirmRetire=false;UI.err=null;UI.cMsg=null;RUN=co
 /* ================= start ================= */
 function startCareer(){
   if(slotsGet().length>=MAX_SLOTS){UI.tab='saves';UI.slotFull=true;render();return false}
-  UI.slotFull=false;
+  UI.slotFull=false;dropEmpty();
   const f=UI.form,code=UI.roomSeed||genCode();
   RW=mkRng(hashStr('world|'+code+'|'+f.rus));RPR=mkRng(hashStr('player|'+code+'|'+Math.random()));
   G=buildWorld(f.rus);G.code=code;G.slot=Date.now().toString(36);
@@ -3838,11 +4098,29 @@ function playerCard(o){
 }
 const SVG_SND_ON='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 const SVG_SND_OFF='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const TAB_IC={
+  career:'<path d="M8.2 3.5 3.5 6.3l1.8 4.4 2-.9V20.5h9.4V9.8l2 .9 1.8-4.4-4.7-2.8c-.6 1.7-2 2.8-3.8 2.8s-3.2-1.1-3.8-2.8z"/>',
+  hall:'<path d="M8 4h8v5.5a4 4 0 0 1-8 0z"/><path d="M8 6H5.5a2.5 2.5 0 0 0 2.6 3.6M16 6h2.5a2.5 2.5 0 0 1-2.6 3.6M12 13.5v3.5M8.5 20.5h7M9.5 17h5"/>',
+  life:'<rect x="3.5" y="6.5" width="17" height="12.5" rx="2.5"/><path d="M3.5 10.5h17M15.5 14.8h2"/><path d="M6.5 6.5 15 3.5l1.2 3"/>',
+  museum:'<path d="M3.5 9.5 12 4l8.5 5.5M5.5 10v8M10 10v8M14 10v8M18.5 10v8M3.5 20.5h17"/>',
+  tables:'<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M3.5 14h17M9 4v16"/>',
+  world:'<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.5 3.6 5.3 3.6 8.5s-1.2 6-3.6 8.5c-2.4-2.5-3.6-5.3-3.6-8.5s1.2-6 3.6-8.5z"/>',
+  multi:'<circle cx="9" cy="8.5" r="3.3"/><path d="M3 19.5c.4-3.3 2.9-5.6 6-5.6s5.6 2.3 6 5.6"/><path d="M15.5 5.4a3.3 3.3 0 0 1 0 6.3M17.5 14.2c1.9.7 3.2 2.7 3.5 5.3"/>',
+  saves:'<path d="M5 3.5h11.5L20 7v13.5H5z"/><path d="M8.5 3.5v4.5h6.5V3.5M8.5 20.5v-6.5h7v6.5"/>',
+  new:'<path d="M12 5v14M5 12h14"/>',
+  ball:'<circle cx="12" cy="12" r="8.5"/><path d="m12 8.2 3.4 2.5-1.3 4h-4.2l-1.3-4zM12 3.5v4.7M15.4 10.7l4.4-1.5M14.1 14.7l2.8 3.9M9.9 14.7l-2.8 3.9M8.6 10.7 4.2 9.2"/>'
+};
+const ico=(k,c)=>`<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${TAB_IC[k]||''}</svg>`;
 function topbar(){
-  const tabs=(G&&(G.P||G.C)?[['career',G.phase==='retired'?'Итоги':'Карьера'],...(G.P&&!isCoach()?[['life','Жизнь'],['museum','Музей']]:[]),['tables','Таблицы'],['world','Мир'],['multi','Мультиплеер'],['saves','Сохранения']]:[['career','Новая карьера'],['multi','Мультиплеер'],['saves','Сохранения']]).map(([k,l])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l}</button>`).join('');
-  const nb=G&&(G.P||G.C)?`<button class="btn ghost" data-a="newYes">Новая карьера</button>`:'';
+  const has=G&&(G.P||G.C),ret=has&&G.phase==='retired';
+  const list=has?[['career',ret?'Итоги':'Карьера',ret?'Итоги':'Карьера',ret?'hall':'career'],...(G.P&&!isCoach()?[['life','Жизнь','Жизнь','life'],['museum','Музей','Музей','museum']]:[]),['tables','Таблицы','Таблицы','tables'],['world','Мир','Мир','world'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']]
+    :[['career','Новая карьера','Новая','new'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']];
+  const tabs=list.map(([k,l])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l}</button>`).join('');
+  const bn=list.map(([k,l,sh,ic])=>`<button class="bn" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}" aria-label="${l}">${ico(ic)}<span>${sh}</span></button>`).join('');
+  const nb=has?`<button class="btn ghost newc" data-a="newYes" title="Новая карьера" aria-label="Новая карьера">${ico('new')}<span>Новая<span class="nb-long"> карьера</span></span></button>`:'';
   const snd=`<button class="btn ghost snd" data-a="snd" aria-pressed="${SND.on}" aria-label="${SND.on?'Выключить звук':'Включить звук'}" title="${SND.on?'Звук включён':'Звук выключен'}">${SND.on?SVG_SND_ON:SVG_SND_OFF}</button>`;
-  return `<header class="top"><div class="wrap topin"><button class="brand" data-a="home" aria-label="Главное меню" aria-current="${UI.tab==='home'}"><i></i>Легенда поля</button><nav class="tabs">${tabs}</nav><div class="topact">${snd}${nb}</div></div></header>`;
+  return `<header class="top"><div class="wrap topin"><button class="brand" data-a="home" aria-label="Главное меню" aria-current="${UI.tab==='home'}"><i></i>Легенда поля</button><nav class="tabs" aria-label="Разделы">${tabs}</nav><div class="topact">${snd}${nb}</div></div></header>
+  <nav class="bnav" aria-label="Разделы" style="--n:${list.length}">${bn}</nav>`;
 }
 function viewSetup(){
   const f=UI.form,lg=S_LEAGUES.find(l=>l.id===f.lg),nat=S_NATS.find(n=>n.name===f.nat);
@@ -3852,9 +4130,9 @@ function viewSetup(){
     <div>
       <p class="eyebrow">Симулятор футбольной карьеры</p>
       <h1 class="disp hero-t">От академии<br>до <em>Золотого мяча</em></h1>
-      <p class="lead">Вам 17, вы подписываете первый контракт. Дальше сезон за сезоном: лиги, кубки, еврокубки, турниры сборных, награды. Каждое лето — от 1 до 5 решений: трансферы, контракт, аренда, сборная. Атрибуты, отношения с тренером и фанатами, дерби, рекорды. Плюс случайные события: травмы, тренеры, скандалы, спонсоры, капитанство. В финалах — решение прямо перед матчем. Когда закончится карьера, решит тело.</p>
-      <div class="facts"><div><b>${S_LEAGUES.length}</b><span>лиг</span></div><div><b>${clubsN}</b><span>клубов</span></div><div><b>${S_NATS.length}</b><span>сборных</span></div><div><b>16</b><span>международных турниров</span></div></div>
-      <div class="tabs" style="margin-top:22px"><button type="button" class="tab" data-a="setMode" data-v="player" aria-current="${f.mode!=='coach'}">Карьера игрока</button><button type="button" class="tab" data-a="setMode" data-v="coach" aria-current="${f.mode==='coach'}">Карьера тренера</button></div>
+      <p class="lead">Вам 17, и у вас первый контракт. Сезон за сезоном — лиги, еврокубки, сборная и награды. Каждое лето решения: трансферы, контракт, аренда. Финалы — в прямом эфире, с выбором прямо перед матчем. Когда закончить, решит тело.</p>
+      <div class="facts"><div><b>${S_LEAGUES.length}</b><span>лиг</span></div><div><b>${clubsN}</b><span>клубов</span></div><div><b>${S_NATS.length}</b><span>сборных</span></div><div><b>16</b><span>турниров</span></div></div>
+      <div class="seg" role="group" aria-label="Режим"><button type="button" class="tab" data-a="setMode" data-v="player" aria-current="${f.mode!=='coach'}">Карьера игрока</button><button type="button" class="tab" data-a="setMode" data-v="coach" aria-current="${f.mode==='coach'}">Карьера тренера</button></div>
       ${f.mode==='coach'?`<form class="form" id="coachForm">
         <div class="row2 namerow"><div class="field"><label for="f-name">Имя тренера</label><input id="f-name" maxlength="40" value="${esc(f.name)}" autocomplete="off"></div><div class="field"><label for="f-cage">Возраст</label><select id="f-cage">${[35,36,37,38,39,40,41,42,43,44,45].map(a=>`<option ${+f.cage===a?'selected':''}>${a}</option>`).join('')}</select></div></div>
         <div class="field"><label for="f-nat">Гражданство</label><select id="f-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''}>${esc(n.name)}</option>`).join('')}</select></div>
@@ -4072,12 +4350,13 @@ function viewLife(){
     <section class="panel"><div class="sec-h"><h2>Вложения</h2><span class="small muted">вкладывается 20% счёта, не меньше минимума; итог виден после сезона</span></div><div class="shop">${inv}</div></section>`;
 }
 function viewSaves(){
-  const list=slotsGet().sort((a,b)=>b.upd-a.upd);
-  const rows=list.map(m=>{const cur=G&&G.slot===m.id;return `<li class="${cur?'me':''}"><div><b>${esc(m.name)} · ${esc(m.pos||'')}${m.room?` <span class="tag">комната ${esc(m.room)}</span>`:''}${cur?' <span class="tag">сейчас</span>':''}</b><span>${m.retired?`завершил · ${esc(m.tier||'')}`:`${esc(m.season||'')} · ${m.age} лет · ${esc(m.club||'')} · рейтинг ${m.ovr}`}</span></div>
-    <div class="go" style="margin:0">${UI.delSlot===m.id?`<span class="confirm"><span class="small muted">Удалить?</span><button class="btn warn" data-a="slotDelYes">Да</button><button class="btn ghost" data-a="slotDelNo">Нет</button></span>`:`${cur?'':`<button class="btn" data-a="slotLoad" data-id="${esc(m.id)}">Продолжить</button>`}<button class="btn ghost" data-a="slotDel" data-id="${esc(m.id)}">Удалить</button>`}</div></li>`}).join('');
+  const list=slotsGet().sort((a,b)=>b.upd-a.upd),fresh=G&&(G.P||G.C)&&!hasProgress();
+  const rows=list.map(m=>{const cur=G&&G.slot===m.id;return slotCard(m,UI.delSlot===m.id?`<span class="confirm"><span class="small muted">Удалить?</span><button class="btn warn mini" data-a="slotDelYes">Да</button><button class="btn ghost mini" data-a="slotDelNo">Нет</button></span>`:`${cur?`<button class="btn mini" data-a="tab" data-v="career">Открыта</button>`:`<button class="btn mini" data-a="slotLoad" data-id="${esc(m.id)}">Продолжить</button>`}<button class="btn ghost mini" data-a="slotDel" data-id="${esc(m.id)}" aria-label="Удалить ${esc(m.name)}">Удалить</button>`)}).join('');
   return `<section><div class="sec-h"><h2>Сохранения</h2><span class="small muted">${list.length} из ${MAX_SLOTS} · хранятся в этом браузере</span></div>
+    <div class="meter" role="img" aria-label="Занято ${list.length} слотов из ${MAX_SLOTS}">${Array.from({length:MAX_SLOTS},(_,k)=>`<i class="${k<list.length?'on':''}"></i>`).join('')}</div>
     ${UI.slotFull?`<p class="err">Все ${MAX_SLOTS} слотов заняты. Удалите старую карьеру, чтобы начать новую.</p>`:''}
-    ${list.length?`<ul class="roster slots">${rows}</ul>`:'<p class="muted">Сохранений пока нет. Начните карьеру — она появится здесь.</p>'}
+    ${fresh?`<p class="note">Текущая карьера «${esc((G.P||G.C).name)}» ещё не начата: она появится здесь после первого сезона${isCoach()?' или первой работы':''}. Если начать новую раньше, эта не займёт слот.</p>`:''}
+    ${list.length?`<ul class="slots full">${rows}</ul>`:'<p class="muted">Сохранений пока нет. Сыграйте первый сезон — карьера появится здесь.</p>'}
     <div class="go"><button class="btn primary" data-a="newYes">Новая карьера</button></div></section>`;
 }
 function viewTables(){
@@ -4099,7 +4378,7 @@ function viewWorld(){
   const clubs=`<div class="tw"><table class="t small"><thead><tr><th>#</th><th>Клуб</th><th>Лига</th><th>Сила</th><th>Δ</th></tr></thead><tbody>${top.map((c,k)=>{const d=c.str-c.init;return `<tr class="${c.id===myClubId()?'me':''}"><td>${k+1}</td><td>${esc(c.name)}</td><td style="font-family:var(--body)">${esc(LG(c.lg).name)}</td><td>${c.str.toFixed(1)}</td><td class="${d>=1?'trend-up':d<=-1?'trend-down':'dim'}">${d>=0?'+':''}${d.toFixed(1)}</td></tr>`}).join('')}</tbody></table></div>`;
   const nats=G.nations.slice().sort((a,b)=>b.str-a.str).slice(0,20);
   const nt=`<div class="tw"><table class="t small"><thead><tr><th>#</th><th>Сборная</th><th>Конф.</th><th>Сила</th></tr></thead><tbody>${nats.map((n,k)=>`<tr class="${n.id===myNatId()?'me':''}"><td>${k+1}</td><td>${esc(n.name)}</td><td style="font-family:var(--body)">${CONF_RU[n.conf]}</td><td>${n.str.toFixed(1)}</td></tr>`).join('')}</tbody></table></div>`;
-  const chron=G.chron.length?`<div class="tw"><table class="t small" style="min-width:860px"><thead><tr><th></th><th>Сезон</th><th>Лига чемпионов</th><th>Лига Европы</th><th>Либертадорес</th><th>Межконт.</th><th>Золотой мяч</th><th>Сборные</th></tr></thead><tbody>${G.chron.map((c,k)=>`<tr><td>${G.chron.length-k}</td><td>${c.s}</td><td style="font-family:var(--body);text-align:left">${esc(c.ucl||'—')}</td><td style="font-family:var(--body);text-align:left">${esc(c.uel||'—')}</td><td style="font-family:var(--body);text-align:left">${esc(c.lib||'—')}</td><td style="font-family:var(--body);text-align:left">${esc(c.icc||'—')}</td><td style="font-family:var(--body);text-align:left">${esc(c.bdo||'—')}</td><td style="font-family:var(--body);text-align:left;white-space:normal">${c.nat.map(esc).join('<br>')||'—'}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">Хроника начнётся после первого сезона.</p>';
+  const chron=G.chron.length?`<div class="tw"><table class="t small" style="min-width:1260px"><thead><tr><th></th><th>Сезон</th><th>Лига чемпионов</th><th>Лига Европы</th><th>Либертадорес</th><th>Межконт.</th><th>Золотой мяч</th><th>Сборные</th></tr></thead><tbody>${G.chron.map((c,k)=>`<tr><td>${G.chron.length-k}</td><td>${c.s}</td><td style="font-family:var(--body);text-align:left">${esc(c.ucl||'—')}</td><td style="font-family:var(--body);text-align:left">${esc(c.uel||'—')}</td><td style="font-family:var(--body);text-align:left">${esc(c.lib||'—')}</td><td style="font-family:var(--body);text-align:left">${esc(c.icc||'—')}</td><td style="font-family:var(--body);text-align:left">${esc(c.bdo||'—')}</td><td style="font-family:var(--body);text-align:left;white-space:normal;min-width:440px">${c.nat.map(esc).join('<br>')||'—'}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">Хроника начнётся после первого сезона.</p>';
   return `<section><div class="sec-h"><h2>Хроника</h2><span class="small muted">код мира: <b class="num">${esc(G.code||'—')}</b></span></div>${chron}</section>
   <section class="grid2"><div class="panel"><div class="sec-h"><h2>Таблица коэффициентов УЕФА</h2></div><p class="small muted" style="margin-top:0">Сумма очков за 5 сезонов определяет квоты стран в еврокубках.</p>${coef}</div>
   <div class="panel"><div class="sec-h"><h2>Сильнейшие клубы</h2></div><p class="small muted" style="margin-top:0">Δ — изменение силы с начала карьеры.</p>${clubs}</div></section>
@@ -4117,7 +4396,8 @@ function render(){
   else if(UI.tab==='life'&&G.P&&!isCoach())body=viewLife();
   else if(UI.tab==='museum'&&G.P&&!isCoach())body=viewMuseum();
   else body=viewCareer();
-  app.innerHTML=topbar()+`<main class="wrap">${body}</main>`+(G&&(G.P||G.C)?shareModal():'');
+  const enter=UI.shown!==UI.tab;UI.shown=UI.tab;
+  app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}</main>`+(G&&(G.P||G.C)?shareModal():'');
   try{afterRender()}catch(e){console.error(e)}
 }
 
@@ -4140,7 +4420,7 @@ document.addEventListener('click',e=>{
   else if(a==='opt'){chooseOpt(+b.dataset.i)}
   else if(a==='new'){UI.confirmNew=true;render()}
   else if(a==='newNo'){UI.confirmNew=false;render()}
-  else if(a==='newYes'){UI.confirmNew=false;G=null;RUN=null;MATCH=null;UI.wait=null;UI.tab='career';try{localStorage.removeItem(ACTIVE_KEY)}catch(err){}render();window.scrollTo(0,0)}
+  else if(a==='newYes'){UI.confirmNew=false;dropEmpty();G=null;RUN=null;MATCH=null;UI.wait=null;UI.tab='career';try{localStorage.removeItem(ACTIVE_KEY)}catch(err){}render();window.scrollTo(0,0)}
   else if(a==='slotLoad'){if(loadSlot(b.dataset.id)){UI.tab='career';render();window.scrollTo(0,0)}}
   else if(a==='slotDel'){UI.delSlot=b.dataset.id;render()}
   else if(a==='slotDelYes'){deleteSlot(UI.delSlot);UI.delSlot=null;render()}
@@ -4200,8 +4480,8 @@ function updPrev(){const f=UI.form,el=document.getElementById('cardPrev');if(el)
 
 /* ================= boot ================= */
 function start(data){
-  if(data&&data.Gs)G=migrate(JSON.parse(data.Gs));else if(data&&data.G)G=migrate(data.G);else{const s=load();if(s&&s.P&&s.clubs)G=migrate(s)}
-  if(G)SAVED=JSON.stringify(G);
+  if(data&&data.Gs)G=migrate(JSON.parse(data.Gs));else if(data&&data.G)G=migrate(data.G);else{slotsTidy();const s=load();if(s&&(s.P||s.C)&&s.clubs)G=migrate(s)}
+  if(G)SAVED=saveJSON(G);
   if(G&&G.room&&G.room.token&&!MP.sess){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave()}
   if(data&&data.UI)Object.assign(UI,data.UI);
   else if(!G&&slotsGet().length)UI.tab='home';
