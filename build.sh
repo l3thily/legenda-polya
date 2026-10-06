@@ -14,12 +14,15 @@ cat <<'HEAD'
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070D12">
 <meta name="rating" content="12+">
+<meta name="google-adsense-account" content="ca-pub-3786708907323389">
+<link rel="canonical" href="https://legendapolya.com/">
 <meta name="description" content="Симулятор футбольной карьеры: 30 лиг, еврокубки, сборные, Золотой мяч.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Легенда поля">
 <meta property="og:title" content="Легенда поля">
+<meta property="og:url" content="https://legendapolya.com/">
 <meta property="og:description" content="Создай игрока и проведи его от академии до Золотого мяча.">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
