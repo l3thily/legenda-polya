@@ -68,11 +68,11 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .chal-grid{display:grid;gap:16px;margin-top:20px}.chal-grid .day h2{font-size:clamp(30px,5vw,44px);margin:4px 0 8px;color:var(--gold)}
 .scen{display:grid;gap:8px}.scen-i{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px}.scen-i span,.scen-i em{grid-column:1;font-size:13px;color:var(--muted)}.scen-i em{font-style:normal;color:var(--sky)}.scen-i button{grid-column:2;grid-row:1/4}
 .lb{list-style:none;counter-reset:lb;margin:10px 0 0;padding:0;display:grid;gap:4px}.lb li{counter-increment:lb;display:grid;grid-template-columns:28px 1fr auto;gap:0 8px;align-items:center;border-bottom:1px solid var(--line);padding:5px 0}.lb li::before{content:counter(lb);grid-row:1/3;color:var(--dim);font:700 13px var(--mono)}.lb li span{grid-column:2;font-size:12px;color:var(--muted)}.lb li em{grid-column:3;grid-row:1/3;font-style:normal;color:var(--gold)}.lb li.me b{color:var(--gold)}
-.adbar{position:fixed;left:0;right:0;bottom:env(safe-area-inset-bottom,0px);z-index:40;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 40px 6px 12px;background:#070D12;border-top:1px solid var(--line)}
-.adbar .ad-house img{display:block;max-height:90px;max-width:min(728px,100%);width:auto;height:auto;border-radius:8px}.adbar .adsbygoogle{width:100%;max-width:728px;height:90px}
-.ad-mark{margin:0;font-size:10px;line-height:1.2;color:var(--dim)}.ad-x{position:absolute;right:8px;top:8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line2);background:var(--card);color:var(--muted);font-size:15px;line-height:1;cursor:pointer}
-body.has-ad{padding-bottom:120px}
-@media (max-width:760px){.adbar{bottom:calc(64px + env(safe-area-inset-bottom,0px));padding:5px 36px 4px 8px}.adbar .sp-card{padding:6px 8px;gap:8px}.adbar .sp-ic svg{width:28px;height:28px}.adbar .sp-t b{font-size:16px}.adbar .sp-t span{display:none}.adbar .sp-go{padding:8px 10px;font-size:11px}.ad-x{top:50%;transform:translateY(-50%);right:6px}.adbar .ad-house img{max-height:60px}.adbar .adsbygoogle{height:60px}body.has-ad{padding-bottom:140px}}
+.spbar{position:fixed;left:0;right:0;bottom:env(safe-area-inset-bottom,0px);z-index:40;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 40px 6px 12px;background:#070D12;border-top:1px solid var(--line)}
+.spbar .sp-house img{display:block;max-height:90px;max-width:min(728px,100%);width:auto;height:auto;border-radius:8px}.spbar .adsbygoogle{width:100%;max-width:728px;height:90px}
+.sp-mark{margin:0;font-size:10px;line-height:1.2;color:var(--dim)}.sp-x{position:absolute;right:8px;top:8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line2);background:var(--card);color:var(--muted);font-size:15px;line-height:1;cursor:pointer}
+body.has-sp{padding-bottom:120px}
+@media (max-width:760px){.spbar{bottom:calc(64px + env(safe-area-inset-bottom,0px));padding:5px 36px 4px 8px}.spbar .sp-card{padding:6px 8px;gap:8px}.spbar .sp-ic svg{width:28px;height:28px}.spbar .sp-t b{font-size:16px}.spbar .sp-t span{display:none}.spbar .sp-go{padding:8px 10px;font-size:11px}.sp-x{top:50%;transform:translateY(-50%);right:6px}.spbar .sp-house img{max-height:60px}.spbar .adsbygoogle{height:60px}body.has-sp{padding-bottom:140px}}
 .load{display:grid;gap:6px;justify-items:start;margin:4px 0 6px}.load .seg{margin-top:0}
 .online{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 8px;border:1px solid rgba(47,210,124,.45);border-radius:999px;color:var(--turf);letter-spacing:.04em;text-transform:none}.online i{width:7px;height:7px;border-radius:50%;background:var(--turf);box-shadow:0 0 8px var(--turf)}.online b{color:var(--text)}
 .sp-card{display:flex;align-items:center;gap:12px;width:100%;max-width:728px;min-width:0;text-decoration:none;color:var(--text);background:linear-gradient(90deg,rgba(42,171,238,.14),rgba(14,26,34,.9));border:1px solid rgba(42,171,238,.45);border-radius:14px;padding:8px 12px}
@@ -771,6 +771,7 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 
 <script>
 'use strict';
+if(!Object.fromEntries)Object.fromEntries=it=>{const o={};for(const [k,v] of it)o[k]=v;return o};
 /* storage that never throws: some in-app browsers, iframes and privacy modes block localStorage — the game then keeps
    its data in memory for this tab instead of dying on a black screen */
 const memStore=()=>{const m=new Map();return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>{m.set(k,String(v))},removeItem:k=>{m.delete(k)},clear:()=>m.clear(),key:i=>[...m.keys()][i]??null,get length(){return m.size}}};
@@ -5320,19 +5321,19 @@ function sponsorCard(h,cls=''){return `<a class="sp-card ${cls}" href="${esc(h.u
 function bannerHtml(){
   try{const t=LS.getItem('legenda-polya-adtest')==='1'&&LS.getItem('legenda-polya-banner');if(t)Object.assign(BANNER,JSON.parse(t))}catch(e){}
   const h=BANNER.house,a0=BANNER.adsense;
-  if(a0.client&&a0.slot&&outsideRu())return `<p class="ad-mark">Advertisement</p><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(a0.client)}" data-ad-slot="${esc(a0.slot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
-  if(h&&h.card&&h.url)return sponsorCard(h)+`<p class="ad-mark">${esc(h.label||'Реклама')}${h.erid?' · erid: '+esc(h.erid):''}</p>`;
-  if(h&&h.img&&h.url)return `<a class="ad-house" href="${esc(h.url)}" target="_blank" rel="noopener sponsored"><img src="${esc(h.img)}" alt="${esc(h.alt||'')}" loading="lazy"></a><p class="ad-mark">Реклама${h.adv?' · '+esc(h.adv):''}${h.erid?' · erid: '+esc(h.erid):''}</p>`;
+  if(a0.client&&a0.slot&&outsideRu())return `<p class="sp-mark">Advertisement</p><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(a0.client)}" data-ad-slot="${esc(a0.slot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
+  if(h&&h.card&&h.url)return sponsorCard(h)+`<p class="sp-mark">${esc(h.label||'Реклама')}${h.erid?' · erid: '+esc(h.erid):''}</p>`;
+  if(h&&h.img&&h.url)return `<a class="sp-house" href="${esc(h.url)}" target="_blank" rel="noopener sponsored"><img src="${esc(h.img)}" alt="${esc(h.alt||'')}" loading="lazy"></a><p class="sp-mark">Реклама${h.adv?' · '+esc(h.adv):''}${h.erid?' · erid: '+esc(h.erid):''}</p>`;
   const a=BANNER.adsense;
-  if(a.client&&a.slot&&outsideRu())return `<p class="ad-mark">Advertisement</p><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(a.client)}" data-ad-slot="${esc(a.slot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
+  if(a.client&&a.slot&&outsideRu())return `<p class="sp-mark">Advertisement</p><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(a.client)}" data-ad-slot="${esc(a.slot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
   return '';
 }
 function bannerMount(){
-  if(typeof document==='undefined'||!document.body||!bannerHost()||document.getElementById('adbar'))return;
+  if(typeof document==='undefined'||!document.body||!bannerHost()||document.getElementById('spbar'))return;
   const html=bannerHtml();if(!html)return;
   try{if(SS.getItem('legenda-polya-adx'))return}catch(e){}
-  const d=document.createElement('aside');d.id='adbar';d.className='adbar';d.setAttribute('aria-label','Реклама');d.innerHTML=html+'<button class="ad-x" type="button" aria-label="Скрыть рекламу">×</button>';document.body.appendChild(d);document.body.classList.add('has-ad');
-  d.querySelector('.ad-x').onclick=()=>{d.remove();document.body.classList.remove('has-ad');try{SS.setItem('legenda-polya-adx','1')}catch(e){}};
+  const d=document.createElement('aside');d.id='spbar';d.className='spbar';d.setAttribute('aria-label','Реклама');d.innerHTML=html+'<button class="sp-x" type="button" aria-label="Скрыть рекламу">×</button>';document.body.appendChild(d);document.body.classList.add('has-sp');
+  d.querySelector('.sp-x').onclick=()=>{d.remove();document.body.classList.remove('has-sp');try{SS.setItem('legenda-polya-adx','1')}catch(e){}};
   if(d.querySelector('.adsbygoogle')){const sc=document.createElement('script');sc.async=true;sc.crossOrigin='anonymous';sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+encodeURIComponent(BANNER.adsense.client);document.head.appendChild(sc);try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
 }
 
@@ -5348,8 +5349,8 @@ function statPing(ev){
   if(document.visibilityState==='hidden')return;
   let neu=0;try{const d=new Date().toISOString().slice(0,10);if(LS.getItem('legenda-polya-seen')!==d){LS.setItem('legenda-polya-seen',d);neu=1}}catch(e){}
   const evs=STAT.queue.splice(0);
-  api('/ping',{tab:statTab(),new:neu,lang:LANG,ev:evs[0]||null}).then(r=>{const first=!STAT.online&&r.online;STAT.online=r.online;if(first&&!document.querySelector('[data-online]')&&(UI.tab==='home'||UI.tab==='multi'||!G))render();const el=document.querySelectorAll('[data-online]');el.forEach(x=>x.textContent=String(r.online))}).catch(()=>{});
-  evs.slice(1).forEach(e=>api('/ping',{tab:statTab(),ev:e}).catch(()=>{}));
+  api('/hi',{tab:statTab(),new:neu,lang:LANG,ev:evs[0]||null}).then(r=>{const first=!STAT.online&&r.online;STAT.online=r.online;if(first&&!document.querySelector('[data-online]')&&(UI.tab==='home'||UI.tab==='multi'||!G))render();const el=document.querySelectorAll('[data-online]');el.forEach(x=>x.textContent=String(r.online))}).catch(()=>{});
+  evs.slice(1).forEach(e=>api('/hi',{tab:statTab(),ev:e}).catch(()=>{}));
 }
 const onlineBadge=()=>STAT.online?`<span class="online" title="Сейчас играют"><i></i>онлайн: <b data-online>${STAT.online}</b></span>`:'';
 

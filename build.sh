@@ -24,6 +24,16 @@ cat <<'HEAD'
 <meta property="og:title" content="Легенда поля">
 <meta property="og:url" content="https://legendapolya.com/">
 <meta property="og:description" content="Создай игрока и проведи его от академии до Золотого мяча.">
+<script>
+/* boot guard: if the game hasn't started in 9 s, say so on the splash and send the errors (no personal data) for diagnosis */
+(function(){var errs=[];
+window.addEventListener('error',function(e){errs.push(String(e.message||'error').slice(0,160)+' @'+String(e.filename||'').split('/').pop()+':'+(e.lineno||0))});
+window.addEventListener('unhandledrejection',function(e){var r=e.reason;errs.push('promise: '+String(r&&r.message||r).slice(0,160))});
+setTimeout(function(){var a=document.getElementById('app');if(!a||!a.querySelector('.splash'))return;
+var s=a.querySelector('.splash span');if(s)s.innerHTML='Игра не запустилась · The game did not start<br><button onclick="location.reload()" style="margin:12px 0;padding:10px 18px;border-radius:12px;border:0;background:#F2C14E;font-weight:700">Перезагрузить · Reload</button><br><small style="text-transform:none;letter-spacing:0">Откройте в Chrome или Safari или отключите блокировщик рекламы для сайта</small>';
+try{var x=new XMLHttpRequest();x.open('POST','/api/oops');x.setRequestHeader('Content-Type','application/json');x.send(JSON.stringify({e:errs.slice(0,5),ua:String(navigator.userAgent||'').replace(/\([^)]*\)/g,'').replace(/\s+/g,' ').slice(0,140)}))}catch(e){}
+},9000)})();
+</script>
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">

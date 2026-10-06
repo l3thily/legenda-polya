@@ -33,6 +33,7 @@ RUS_MODES = {"random", "off", "on"}
 lock = threading.Lock()
 STATS_FILE = os.path.join(os.path.dirname(DATA), "stats.json")
 stats: dict = {}  # day (Moscow) -> counters; nothing about people: no IP, no ids
+OOPS: list = []  # last boot failures (memory only)
 online: dict = {}  # throwaway tab token -> last ping time, memory only, forgotten after ONLINE_TTL
 ONLINE_TTL = 150
 STATS_KEY = os.environ.get("STATS_KEY", "")
@@ -110,6 +111,17 @@ def stats_text(days=7):
         lines.append(f"{d[8:10]}.{d[5:7]}: {x['visitors']} уникальных · {x['visits']} визитов · пик онлайн {x['peak']} · "
                      f"{x['careers']} карьер · {x['seasons']} сезонов · {x['rooms']} в комнатах · EN {x['en']}")
     week = [stats[d] for d in keys]
+    fails = sum(x.get("fails", 0) for x in week)
+    if fails:
+        lines += ["", f"⚠️ Не запустилось у {fails} посетителей за {len(week)} дн. Последние ошибки:"]
+        seen = []
+        for o in reversed(OOPS):
+            key = (o["e"][0] if o["e"] else "без ошибки в консоли") + " · " + o["ua"][:60]
+            if key not in seen:
+                seen.append(key)
+            if len(seen) >= 5:
+                break
+        lines += ["— " + k for k in seen]
     lines += ["", f"За {len(week)} дн.: {sum(x['visitors'] for x in week)} уникальных за день (сумма), {sum(x['visits'] for x in week)} визитов"]
     return "\n".join(lines)
 
@@ -366,7 +378,16 @@ class Handler(BaseHTTPRequestHandler):
         now = int(time.time())
         with lock:
             cleanup(now)
-            if parts == ["api", "ping"]:
+            if parts == ["api", "oops"]:
+                # the page did not start in 9 s: error lines + browser name/version without device details
+                d = day_stats(msk_day(now))
+                d["fails"] = d.get("fails", 0) + 1
+                errs = [clip(x, 200) for x in (data.get("e") or [])[:5] if isinstance(x, str)]
+                OOPS.append({"t": now, "e": errs, "ua": clip(data.get("ua"), 160)})
+                del OOPS[:-40]
+                persist_stats()
+                return self.reply(200, {"ok": True})
+            if parts in (["api", "ping"], ["api", "hi"]):
                 # anonymous counters: a browser says "first visit today" itself; the tab token only keeps the online count
                 tab = clip(data.get("tab"), 32)
                 d = day_stats(msk_day(now))
