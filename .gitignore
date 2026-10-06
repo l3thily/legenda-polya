@@ -1,2 +1,5 @@
 dist/
 .DS_Store
+i18n/node_modules/
+i18n/index.built.html
+i18n/todo.json

@@ -1,8 +1,10 @@
 #!/bin/sh
-# Wraps the artifact page (index.html) into a standalone document for the server.
+# Translates the page (i18n/i18n.js: Russian source + English via EN?…:…) and wraps it into a standalone document for the server.
 set -e
 cd "$(dirname "$0")"
 mkdir -p dist
+[ -d i18n/node_modules ] || (cd i18n && npm install --silent)
+node i18n/i18n.js build i18n/index.built.html
 {
 cat <<'HEAD'
 <!doctype html>
@@ -11,6 +13,7 @@ cat <<'HEAD'
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070D12">
+<meta name="rating" content="12+">
 <meta name="description" content="Симулятор футбольной карьеры: 30 лиг, еврокубки, сборные, Золотой мяч.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -23,9 +26,8 @@ cat <<'HEAD'
 <link rel="manifest" href="manifest.webmanifest">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 HEAD
-cat index.html
+cat i18n/index.built.html
 printf '\n</html>\n'
 } > dist/index.html
 cp static/* dist/ 2>/dev/null || true
-rm -rf dist/logos && cp -R static/logos dist/logos
 echo "built dist/index.html ($(wc -c < dist/index.html) bytes)"

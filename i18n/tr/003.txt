@@ -1,0 +1,260 @@
+520	live
+521	To the shoot-out
+522	Match summary
+523	Orange squares are your reach, the circle is where the ball went.
+524	Red squares are traps, the circle is your shot.
+525	Continue
+526	Already this season
+527	Pace
+528	Shooting
+529	Passing
+530	Defending
+531	Physical
+532	Reflexes
+533	Handling
+534	Kicking
+535	Positioning
+536	conflict
+537	cold
+538	neutral
+539	good
+540	adoration
+541	{0} fans are burning shirts with your name: a move to the sworn enemy.
+542	Back at {0}: the stands greet you with an ovation.
+543	Back at {0}: you were booed at your first training session.
+544	Back at {0}: the fans are reserved.
+545	Career goals
+546	Champions League goals
+547	UCL goals in a season
+548	World Cup goals
+549	European Championship goals
+550	Ballon d'Or wins
+551	Goals in a season · Premier League
+552	Goals in a season · La Liga
+553	Goals in a season · Bundesliga
+554	Goals in a season · Serie A
+555	Assists in a season · Premier League
+556	Most expensive transfer, €M
+557	Goals in a season · Ligue 1
+558	{0} all-time top scorer
+559	National team top scorer: {0}
+560	career goal
+561	career match
+562	international cap
+563	international goal
+564	hat-trick
+565	career assist
+566	clean sheet
+567	Record: {0} — {1} (previous: {2}, {3})
+568	Milestone: {0} {1}
+569	record is yours · {0}
+570	Real records are approximate, as of 2026. On the right is your result (for season records — your best season).
+571	Balanced
+572	Rating by position
+573	Training focus
+574	Bright bars are the key attributes for the “{0}” position. Focus speeds up growth of the chosen attribute at the expense of the others. After 28, pace goes first; passing ages the slowest.
+575	Morale:
+576	Coach
+577	More trust — more playing time
+578	Dressing room
+579	A united team plays better
+580	Fans
+581	They remember an acrimonious exit and a move to the enemy
+582	faster progress
+583	slower progress
+584	no effect on progress
+585	Big-game player
+586	+1 to team strength in finals
+587	Win 3 cup trophies
+588	Sniper
+589	15% more goals
+590	150 club goals or 30 in a season
+591	Maestro
+592	20% more assists
+593	100 club assists
+594	The Wall
+595	Opponents score 5% less when you're on the pitch
+596	100 clean sheets (goalkeeper or defender)
+597	Iron Man
+598	40% fewer injuries, playing through pain is safer
+599	3 seasons in a row with 40+ matches
+600	Leader
+601	Dressing room never drops below 60, the team is stronger
+602	2 seasons as club captain or national team captain
+603	Ice in the veins
+604	+12% in penalty shoot-outs
+605	Decide a penalty shoot-out in a final
+606	Club flagship
+607	Fans never drop below 60, wages +10%
+608	6 seasons in a row at one club
+609	Cosmopolitan
+610	At a new club the coach and dressing room trust you more right away
+611	Play in 4 countries
+612	Evergreen
+613	Decline after 30 is 20% slower
+614	Play a season at 34
+615	Derby king
+616	Fans get a double bonus for derby wins
+617	10 derby wins
+618	Patriot
+619	+2 to national team role
+620	75 international caps
+621	Trait: {0}
+622	Requirement:
+623	First trophy
+624	Win any trophy
+625	King of Europe
+626	Win the Champions League
+627	Fairy tale
+628	Win the UCL with a club outside the top-5 leagues
+629	Treble
+630	League, domestic cup and UCL in one season
+631	World champion
+632	Win the World Cup
+633	Miracle
+634	Win the World Cup with a national team rated below 76
+635	Best on the continent
+636	Win the Euro, Copa América, AFCON, Asian Cup or Gold Cup
+637	Win the Ballon d'Or
+638	Dynasty
+639	Three Ballons d'Or in a career
+640	Wonderkid
+641	Ballon d'Or before 22
+642	Win the Golden Boot
+643	Best club on the planet
+644	Win the Club World Cup
+645	Olympian
+646	Against the tide
+647	Win a top-5 league with a club whose starting strength is below 78
+648	Upwards
+649	Win promotion to the top flight
+650	Russian breakthrough
+651	Win a European trophy with a Russian club
+652	Record breaker
+653	Break a real-world record
+654	Above Ronaldo
+655	Score more than 950 career goals
+656	Five hundred
+657	500 career goals
+658	Nerves of steel
+659	Decide a penalty shoot-out in a final
+660	20 derby wins in a career
+661	Traveller
+662	Play in 5 countries
+663	Eternal
+664	Play a season at 40
+665	A flag on the map
+666	Play at a World Cup for a national team rated below 62
+667	Bronze
+668	Get a statue outside the stadium
+669	Best goalkeeper in the world
+670	Win the Yashin Trophy
+671	A wall for the ages
+672	Three Yashin Trophies
+673	Curse lifted
+674	Win a final after losing two finals in a row
+675	Back from hell
+676	Win the Comeback of the Year award
+677	Who beats whom
+678	Finish above your arch-rival in the Ballon d'Or 5 times
+679	Rivalry of a generation
+680	Retire ahead of your arch-rival in Ballons d'Or and trophies
+681	Hero of the final
+682	Win the key moment of a final
+683	Internet icon
+684	100 million followers
+685	Fortune
+686	Save up €300M
+687	Your own academy
+688	Open a football school in your homeland
+689	Thank you for everything
+690	Play a farewell match
+691	Last second
+692	Move to a new club on deadline day
+693	Hall of greatness
+694	Finish 5 careers in this browser
+695	A new role
+696	Change position and win the league
+697	Collector
+698	Catch 3 rare events in one career
+699	The dark side
+700	Get a lifetime ban
+701	Pricier than Neymar
+702	Become the most expensive player in history
+703	Golden boy
+704	Win the Kopa Trophy
+705	Reach a tournament final with an underdog national team
+706	Score a hat-trick in a final
+707	One-club man
+708	Spend your whole career (10+ seasons) at one club
+709	Achievement: {0}
+710	Unlocked {0} of {1}. Achievements are shared across all careers in this browser.
+711	Persona non grata: the fans never forgave the exit
+712	Statue outside the stadium
+713	Number {0} retired
+714	Club Hall of Fame
+715	Farewell match in a full stadium
+716	Hometown
+717	{0} Football School
+718	FIFA
+719	Persona non grata: lifetime ban
+720	You · {0}
+721	Class — rating and position. Form — average rating. League level — the jury notices players in weak leagues less, form and stats count for less there. Stats — goals, assists and clean sheets adjusted for position. Club trophies — league, cups, European cups. Big matches — goals in the UCL knockouts, World Cup, Euro, Copa and in finals. Name and awards — reputation and the Golden Boot. Plus a little jury subjectivity.
+722	room
+723	Paris · Ballon d'Or ceremony {0}{1}
+724	Winner
+725	It's you. The best goalkeeper on the planet.
+726	You're {0} among goalkeepers.
+727	It's you. The best footballer on the planet.
+728	You're on the podium: {0} place.
+729	Your place — {0}.
+730	You didn't make the top 30.
+731	({0}). Your place in the overall vote — {1}.
+732	th
+733	outside the top 30
+734	Kopa Trophy · best player under 21
+735	{0} · age {1}
+736	The Kopa Trophy is yours!
+737	Kopa Trophy (U21):
+738	Best goalkeepers · points
+739	Top 30 · goals+assists · points
+740	Finals curse lifted: after {0} lost finals in a row you won the {1}.
+741	The press is talking about a “finals curse”: two lost finals in a row.
+742	{0} lost final in a row. The curse grows stronger.
+743	Back from hell: after a serious injury you're back to your best.
+744	A feud with {0} has begun: barbed interviews, clashes on the pitch, the fans split into camps.
+745	Your arch-rival {0} has retired. The feud ends {1}:{2} in the Ballon d'Or race.
+746	Scandal: a deal with bookmakers has come to light. Lifetime ban.
+747	The saga is over
+748	For a whole year {0} followed every match you played. Now they've come with an offer.
+749	Stay at {0}
+750	The fans will appreciate your loyalty
+751	You turned down {0}.
+752	{0} are watching you closely: scouts at every match. The press expects a transfer saga.
+753	Tournament sensation
+754	{0} at {1}: {2}. Nobody believed it. The country is going crazy, thousands met you at the airport.
+755	final
+756	semi-final
+757	Share the success with the team
+758	We did it together
+759	Dressing room and reputation grow
+760	You dedicated the success to the team.
+761	Become the face of the success
+762	Interviews, ads, magazine covers
+763	Reputation and money, but teammates look askance
+764	You became the face of the sensation.
+765	Retire from the national team at your peak
+766	There won't be a better moment
+767	More energy for the club, a longer career
+768	You left the national team at your peak.
+769	Tournament flop
+770	{0} went out in the group stage of {1} despite being favourites. The press is looking for someone to blame.
+771	Take the blame
+772	I'm the leader — I'm responsible
+773	Respect grows
+774	You took the blame for the flop.
+775	Blame the coach
+776	The tactics were terrible
+777	The coach will be sacked, but bad feeling will remain
+778	After your words the national team coach was sacked.
+779	Enough

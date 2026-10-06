@@ -1,0 +1,259 @@
+260	Pressure the referee
+261	It might work, but you risk a card
+262	Wait silently
+263	The decision can't be changed
+264	No risk
+265	Gather your teammates
+266	Whatever they decide — we play on
+267	If the goal is ruled out, the team won't crack
+268	VAR: goal stands!
+269	VAR: offside, goal ruled out.
+270	You gather your teammates in a huddle: “There's still time!”
+271	Dive left
+272	He goes to his side
+273	About 30%
+274	Stay in the middle
+275	Nerves
+276	About 18%
+277	Dive right
+278	Read the run-up
+279	That's not a penalty!
+280	The decision won't change, but you can get a card
+281	Tell the keeper the corner
+282	You know this penalty taker
+283	The keeper's chances are a bit higher
+284	Calm your teammates
+285	Cool head
+286	The team won't fall apart
+287	{0}'. The referee watches the replay… penalty against us. Score {1}:{2}.
+288	VAR: penalty against us.
+289	SAVE! You stop the penalty!
+290	The keeper saves the penalty!
+291	Full time — a draw. Extra time!
+292	Penalty shoot-out!
+293	Full-time whistle.
+295	The End
+296	top left corner
+297	under the bar
+298	top right corner
+299	left of centre
+300	down the middle
+301	right of centre
+302	bottom left corner
+303	low down the middle
+304	bottom right corner
+305	Penalty shoot-out
+306	It's 4:4 in the shoot-out and the opponent just missed. Score — and the trophy is yours. The keeper covers {0} {1} of 9: the stronger you are than your opponent, the fewer there are. Pick where to shoot.
+307	trap
+308	traps
+309	traps
+310	Let a teammate take it
+311	Let someone else shoot
+312	Roughly 50/50
+313	teammate scored
+314	teammate missed
+315	you shot {0} — goal
+316	you shot {0} — {1}
+317	the keeper guessed right
+318	the post
+319	wide
+320	It's 4:4 in the shoot-out. The opponent takes the fifth: save it — and the trophy is yours. Your reach is {0} {1} around the chosen spot: the stronger you are than the taker, the more. Where do you dive?
+321	square
+322	squares
+323	squares
+324	the taker missed
+325	you saved the shot
+326	shot {0} — goal
+327	{0} · {1}: penalty shoot-out — {2}, {3}.
+328	shoot-out win
+329	shoot-out defeat
+330	The injections before the final ({0}) led to a serious injury: ~{1} matches without you.
+331	win
+332	through
+333	out
+334	Hat-trick in the final: {0}. People remember that for decades.
+335	You missed the match through injury.
+336	Your choice: “{0}”.
+337	Penalty shoot-out: {0}.
+338	The price of the injections: a serious injury, ~{0} matches without you.
+339	{0}: the trophy is yours!
+340	{0}: the trophy goes to the opponent.
+341	{0} leaves the pitch without looking at you.
+342	{0} lifts the cup. You'll dream about this.
+343	Victory!
+344	Defeat
+345	Title decider
+346	Survival match
+347	Promotion decider
+348	League phase — {0} place of {1} ({2}W {3}D {4}L)
+349	Play-off
+350	Group — {0} place ({1} pts)
+351	fulfilled
+352	The press has found you an arch-rival: {0} ({1}, {2}). Same age, same line — you'll be compared your whole career.
+353	Season event: {0}
+354	defeat
+355	{0} place
+356	Derby of continents
+357	UEFA and FIFA have reinstated Russia: from next season Russian clubs play in European competitions and the national team in qualifiers.
+358	Russia returns to international football
+359	Teammates from the room: {0}. Chemistry gives the team a bonus.
+360	The Russian national team is banned from official tournaments — friendlies only.
+361	Sensation: {0} — {1} ({2})
+362	champions
+363	finalists
+364	semi-finalists
+365	Sensation: {0} — {1} of {2}.
+366	Flop: {0}, one of the favourites, went out in the group stage of {1}.
+367	gold
+368	silver
+369	— you had {0} {1}, {2} {3}
+370	match
+371	matches
+372	matches
+373	Player quality
+374	Form
+375	Stats
+376	League level
+377	Club trophies
+378	National team
+379	Big matches
+380	Name and awards
+381	The jury sums up
+382	A serious injury slowed your progress.
+383	Scouts raised their estimate of your potential (+{0}).
+384	Scouts lowered their estimate of your potential ({0}).
+385	The sponsorship deal has ended.
+386	A bad landing after a somersault: ~{0} matches without you at the start of next season.
+387	The body still holds up: you decide to play one more season.
+388	The loan at {0} is over — back to {1}.
+389	Injuries this season: {0} (~{1} matches missed).
+390	{0} sacked their head coach after finishing {1}.
+391	{0} were relegated from {1}.
+392	{0} are promoted to {1}!
+393	UCL
+394	UEL
+395	UECL
+396	Season-long loan
+397	{0} · {1} · contract {2}
+398	Transfer
+399	Free transfer
+400	{0} · strength {1} · role: {2}
+401	sworn enemy of {0}
+402	former club · fans: {0}
+403	the club may not let you go · {0}%
+404	Now: {0} (strength {1}), your rating {2}, role — {3}.
+405	Extend for {0}
+406	Stay at the club
+407	{0} (now {1})
+408	Demand a raise
+409	Chance they agree ~{0}%
+410	{0}; if they refuse, the contract won't be renewed
+411	{0}: a new contract
+412	Retire
+413	Hang up your boots
+414	Your career ends now
+415	No offers
+416	Contract expired
+417	You're a free agent — clubs can sign you without a fee. {0}
+418	Contract extension
+419	Your contract with {0} expires in a year. The club offers new terms. {1}
+420	Don't extend
+421	Run down the contract
+422	In a year you'll be a free agent
+423	Transfer offers
+424	{0} to pay for you. {1} Contract runs for another {2}.
+425	One club is ready
+426	Several clubs are ready
+427	Stay
+428	At {0}
+429	Turn everyone down
+430	Loan
+431	You barely play at {0}. The club offers to send you on a season-long loan to gain experience. {1}
+432	Fight for a place in the team
+433	Little playing time — slower growth
+434	Little playing time
+435	The coach rarely puts you on the pitch. {0}
+436	Ask for a transfer
+437	Your agent will start looking for a club
+438	More offers next summer, the club will be more willing to let you go
+439	Fight for your place
+440	Work hard in training
+441	A small boost to progress this season
+442	Deadline day
+443	The last day of the transfer window. Clubs are bidding for you right now: bids are rising, some will drop out. Decide before the window shuts. {0}
+444	The window will close without you
+445	An offer from Saudi Arabia
+446	{0} offer a contract that's hard to refuse.
+447	Decline
+448	Stay in Europe
+449	Sporting ambitions matter more
+450	MLS is calling
+451	{0} want to make you the face of the team.
+452	Your boyhood club calls you home
+453	{0}, where you started, want you back.
+454	Not now
+455	A teammate from the room
+456	{0} now plays alongside you at {1}. The press is already arguing over which of you is the main man.
+457	A well-drilled partnership
+458	Play for each other
+459	A more united dressing room, slightly faster progress
+460	You and {0} are the key partnership at {1}.
+461	Competition
+462	There's only one leader here
+463	50%: you're the main man. Otherwise less playing time
+464	You won the leadership battle with {0}.
+465	{0} turned out to be the main man at {1}.
+466	Switching national allegiance
+467	You've spent {0} in the country. The federation ({1}) offers a passport and a place in the national team. You haven't played for {2} at official tournaments yet, so FIFA rules allow you to switch.
+468	Play for the national team: {0}
+469	Strength {0} · {1}
+470	The decision is irreversible
+471	Stay loyal: {0}
+472	Future in the national team
+473	Behind you are {0} {1} and {2} {3} for the national team. The press asks whether it's time to make way for the youngsters.
+474	Retire from international football
+475	Less workload
+476	Your club career may last longer
+477	Keep playing for the national team
+478	As long as they call — I'll go
+479	The national team wants you back
+480	A big tournament is ahead, and the head coach calls you personally.
+481	Return to the national team
+482	The last chance for a medal
+483	Refuse
+484	The decision is made
+485	A talk with your agent
+486	A quiet summer: no offers. {0}
+487	Look for a new club
+488	Your agent will start negotiations
+489	More offers next summer
+490	Focus on your game
+491	Stay and work
+492	A small boost to progress
+493	{0} refused to let you go to {1}.
+494	Loan to {0} for the season.
+495	Transfer to {0}: {1}, contract for {2}, {3}.
+496	free agent
+497	The most expensive transfer in football history: {0}. The previous record — {1}, €{2}M.
+498	New contract with {0} for {1}, {2}.
+499	The club gave in: a new contract for {0}, {1}.
+500	{0} refused to raise your wages. The contract was not renewed.
+501	Your agent has been tasked with finding a new club.
+502	You decided to prove everything in training.
+503	You switched national teams: you now play for {0}.
+504	You retired from international football.
+505	You returned to the national team.
+506	You stayed: deadline day passed without a move.
+507	The window closed. You stay at the club.
+508	The last season of your career.
+509	Your form isn't what it was — time to call it a day.
+510	Lifetime ban for match-fixing.
+511	You announced your retirement.
+512	Something broke in the season simulation. The season was rolled back to the start, try playing it again.
+513	strength
+514	your team
+515	Season {0} · {1}
+516	Match result
+517	Live
+518	Big match
+519	Skip to the decision

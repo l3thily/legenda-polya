@@ -1,0 +1,279 @@
+1880	Journalist: “What are your chances of a trophy?”
+1881	We're here to win
+1882	Ambition
+1883	We only think about the next match
+1884	Modestly
+1885	Trophies aren't the main thing, we're building a team
+1886	A long road
+1887	Journalist: “Will you ask the president for transfer money?”
+1888	The squad needs strengthening
+1889	Ask
+1890	The president added transfer money.
+1891	The president publicly refused the money.
+1892	We work with what we have
+1893	Support the club
+1894	Youth is our future
+1895	Bet on the academy
+1896	Press conference
+1897	Dressing-room revolt
+1898	The veterans went to the president and demand your resignation.
+1899	Talk to the team
+1900	A test of motivation
+1901	A heart-to-heart saved the dressing room.
+1902	The talk didn't help, the president is unhappy.
+1903	Kick out the ringleaders
+1904	Sell the leader of the revolt
+1905	The ringleader of the revolt was sold.
+1906	Ask the president for support
+1907	He'll decide
+1908	The president backed you, but he won't forget.
+1909	{0} were bought by a Middle Eastern fund. A huge budget, but huge expectations too.
+1910	Take the money and build
+1911	A new era
+1912	The sheikh provided a huge budget, but expects trophies.
+1913	Ask for time
+1914	A project for years
+1915	The sheikh gave money and time.
+1916	The star is acting up
+1917	{0} demands a pay rise or a transfer.
+1918	Pay
+1919	From the budget
+1920	The star got a pay rise. The others are jealous.
+1921	Money for the budget
+1922	The star was sold.
+1923	Bench him
+1924	Who's the boss?
+1925	You dropped the star for a month.
+1926	The president sold {0} behind your back. The money is already in the budget.
+1927	Accept it
+1928	Keep working
+1929	The star was sold without your consent.
+1930	Threaten to resign
+1931	The president cancelled the deal.
+1932	The deal wasn't cancelled, relations with the president are ruined.
+1933	Another club wants you
+1934	A giant offers you a job mid-season.
+1935	A new challenge
+1936	You turned down the giant. The fans are delighted.
+1937	Injury crisis
+1938	Four regulars are out for a long time at once.
+1939	Buy a replacement urgently
+1940	You urgently strengthened the squad.
+1941	A chance for the youngsters
+1942	Academy graduates came into the side.
+1943	Fan protest
+1944	The fans hung up a banner: “Coach, go”.
+1945	A talk
+1946	The talk with the fans eased the tension.
+1947	The fans wouldn't listen.
+1948	Ignore it
+1949	{0} offer you a job mid-season.
+1950	UEFA and FIFA have reinstated Russia in international football.
+1951	Halfway point: {0} place, {1} points (the leader has {2}).
+1952	The president is unhappy: the team is far behind the target.
+1953	The president sacked you mid-season.
+1955	You were sacked.
+1956	{0} coach
+1957	national team:
+1958	The president sacked you after the season ({0} place with a target of: {1}).
+1959	The contract expired, the club decided not to renew it.
+1960	contract expired
+1961	The federation dismissed you.
+1962	{0} ({1}) outgrew the club and left for a top club for {2}.
+1963	Left the team: {0}.
+1964	Greatest coach in history
+1965	Legendary coach
+1966	Top coach of his generation
+1967	Strong coach
+1968	Solid specialist
+1969	Hard-working coach
+1970	Strongest line-up
+1971	Surprise tactics
+1972	Attack
+1973	Hold
+1974	{0}: match plan
+1975	{0}. Choose the line-up and the mood. Coach's tactics: {1}, motivation: {2}.
+1976	Best eleven
+1977	Maximum class on the pitch
+1978	An unexpected system
+1979	If it works — the opponent is confused. Depends on the coach's tactics
+1980	Fire up the team
+1981	Depends on the coach's motivation
+1982	We're ahead. How do we play the second half?
+1983	We're losing. Do we need substitutions?
+1984	A draw after the first half.
+1985	A second striker
+1986	A holding midfielder instead of an attacker
+1987	The plan is working
+1988	4:4 in the shoot-out, the opponent just missed. {0} steps up. Score — and it's done. Traps in the goal: {1} of 9, the stronger your team, the fewer there are. Where to shoot?
+1989	your best penalty taker
+1990	{0} shoots {1} — {2}
+1991	the penalty taker
+1992	{0}, {1} vs {2} {3}:{4}{5} — {6}
+1993	trophy!
+1994	Through to the next round
+1995	Plan: “{0}”, at half-time: “{1}”.
+1996	We go through.
+1997	The tournament is over for you.
+1998	{0}: {1} vs {2} {3}:{4}
+1999	Victory
+2000	Qualifying · {0}
+2001	Decisive qualifier
+2002	Qualifying for {0}: {1} place in the group — {2}
+2003	qualified!
+2004	missed the tournament.
+2005	Clubs are calling you back
+2006	Clubs want you back in club football. You'll have to leave the national team.
+2007	Budget {0} · contract {1} {2}
+2008	You left the national team for {0}.
+2009	Stay with the national team
+2010	The federation will appreciate it
+2011	The last squad place
+2012	One place, two candidates: veteran {0} ({1}, age {2}) or youngster {3} ({4}, age {5}, potential ~{6}).
+2013	Veteran
+2014	Experience matters more
+2015	The dressing room and fans are happy
+2016	{0} didn't make the squad.
+2017	Youngster
+2018	A bet on the future
+2019	He'll grow faster
+2020	{0} was left without a call-up.
+2021	Naturalisation
+2022	The federation can give a passport to {0} ({1}, {2}), who would fix your weak position.
+2023	Naturalise
+2024	Strengthen the squad
+2025	Some fans are against it
+2026	{0} got a passport and a call-up.
+2027	Only our own
+2028	The fans will appreciate it
+2029	A talent chooses his national team
+2030	{0}, age {1}, potential {2}–{3}. He has dual citizenship, and two federations are fighting for him.
+2031	Persuade him personally
+2032	Visit the family
+2033	The chance depends on reputation ({0})
+2034	{0} chose your national team!
+2035	{0} chose the other national team.
+2036	Don't push
+2037	Let him decide himself
+2038	{0} chose your national team on his own.
+2039	A leader retires from the national team
+2040	{0} (age {1}) announced he's done playing for the national team.
+2041	Persuade him to stay
+2042	One more tournament
+2043	Depends on motivation ({0})
+2044	{0} changed his mind and stays.
+2045	{0} retired from the national team.
+2046	Thank him
+2047	See him off with honour
+2048	{0} retired from the national team to applause.
+2049	The club won't release the star
+2050	{0}'s club demands he be rested and threatens a complaint to FIFA.
+2051	Call him up anyway
+2052	The national team comes first
+2053	30%: he'll get injured
+2054	{0} joined the national team.
+2055	{0} got injured and will miss the national team season.
+2056	Let him rest
+2057	Protect him
+2058	He'll miss the national team season
+2059	Pre-tournament camp
+2060	Where to prepare for the tournament?
+2061	Mountains
+2062	Hard work
+2063	The team is stronger at the tournament, but there's a risk of injuries
+2064	The mountain camp went great.
+2065	Several players got injured at the camp.
+2066	Home base
+2067	Commercial tour
+2068	Federation money
+2069	The federation is pleased, preparation is worse
+2070	Friendly against a giant
+2071	They offer a match against {0} (strength {1}).
+2072	Field the strongest
+2073	Test ourselves
+2074	A chance for a famous win
+2075	A sensational win over {0}!
+2076	Lost to {0}, but no disgrace.
+2077	Look at the youngsters
+2078	Experiment
+2079	The youngsters grow
+2080	{0} shone against {1}.
+2081	The players demand bonuses
+2082	Before the tournament the players want to agree on bonuses.
+2083	Support the players
+2084	Pressure the federation
+2085	The dressing room is with you
+2086	Side with the federation
+2087	Results first
+2088	The federation cuts the budget
+2089	The federation is saving: fewer camps and staff.
+2090	We work with what we have
+2091	Protest publicly
+2092	Through the press
+2093	50%: the money will be returned
+2094	The federation returned the money.
+2095	The federation took offence.
+2096	Veterans left the national team: {0}.
+2097	{0} called up for the first time.
+2098	REP
+2099	age
+2100	Head coach
+2101	{0} · first XI {1}
+2102	star
+2103	academy
+2104	injured
+2105	resting
+2106	Don't call up
+2107	{0} players · first XI {1} · first-team players highlighted
+2108	System
+2109	Style
+2110	{0}. A player out of position loses 2 to 12 points.
+2111	Age
+2112	Rat
+2113	Pot
+2114	National team squad
+2115	Squad
+2116	€M
+2117	Contr
+2118	{0} · age {1} · rating {2}{3} · {4}
+2119	Haggle −15%
+2120	former teammate
+2121	· potential ~{0}
+2122	{0} window
+2123	budget {0}
+2124	Haggling lowers the price, but the club may refuse. The “transfers” skill raises the chances.
+2125	No targets left.
+2126	{0}age {1}{2}
+2127	· target: {0} {1}
+2128	place
+2129	{0} place · winner — {1}
+2130	Table
+2131	Skip the spring
+2132	Skip the autumn
+2133	Play the spring {0}
+2134	Play the autumn {0}
+2135	Retire?
+2136	Yes
+2137	Halfway
+2138	{0} place, {1} pts
+2139	Head coach · {0}{1}
+2140	Job
+2141	Phase
+2142	{0} · season {1}
+2143	President's target
+2144	Reputation
+2145	Skills
+2146	tactics {0} · motivation {1} · youth {2} · transfers {3}
+2147	Relations
+2148	president {0} · dressing room {1} · fans {2}
+2149	Staff
+2150	Seasons
+2151	· former player
+2152	· {0} · strength {1}
+2153	winter window
+2154	summer window
+2155	Budget
+2156	Contract
+2157	{0} {1} left
+2158	The story begins after the first season.
+2159	strength {0}

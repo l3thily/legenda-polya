@@ -1,0 +1,280 @@
+1320	Reply with a meme
+1321	Social media will explode
+1322	Followers +12%, the coach isn't thrilled
+1323	Your reply to {0} got millions of views.
+1324	Stay silent
+1325	Slightly faster progress
+1326	You stayed silent and started working harder.
+1327	Congratulate him
+1328	Like a man
+1329	Reputation grows
+1330	You congratulated {0}. The press appreciated it.
+1331	The press pits you against each other
+1332	At every press conference you're asked about {0}: “Which of you is better?”
+1333	“I'm better”
+1334	No false modesty
+1335	The hype grows, but a failure will be held against you
+1336	Your “I'm better” became a meme.
+1337	“He's a great player”
+1338	Respect
+1339	The dressing room appreciates it
+1340	You spoke about {0} with respect.
+1341	No comment
+1342	You refused to discuss your rival.
+1343	Sports Courier
+1344	Voice of the Stands
+1345	Football Herald
+1346	Evening Goal
+1347	Morning Whistle
+1348	{0} — BEST ON THE PLANET
+1349	GOLDEN {0}
+1350	PARIS APPLAUDS: {0}
+1351	WORLD CHAMPIONS!
+1352	THE WORLD AT OUR FEET
+1353	STARS ON THE SHIRT
+1354	{0} LIFTS “BIG EARS”
+1355	{0} — KING OF EUROPE
+1356	EUROPE CONQUERED
+1357	{0} LEADS THE NATION TO THE TITLE
+1358	THE CONTINENT IS OURS!
+1359	{0} — CHAMPION!
+1360	{0} HAS THE TITLE IN THE BAG
+1361	{0} AND {1}: A CHAMPIONSHIP SEASON
+1362	SHAME: {0} GO DOWN
+1363	{0} HIT ROCK BOTTOM
+1364	RECORD! {0} REWRITES HISTORY
+1365	{0} BREAKS A CENTURY-OLD RECORD
+1366	{0} GOALS! {1} CAN'T BE STOPPED
+1367	{0}: {1} GOALS IN A SEASON
+1368	A SEASON ON CRUTCHES: {0}
+1369	INJURY WRECKS {0}'S SEASON
+1370	{0} AHEAD AGAIN
+1371	{0} IN THE RIVAL'S SHADOW
+1372	{0}-YEAR-OLD {1}: A STAR IS BORN
+1373	WONDERKID {0} GROWING BEFORE OUR EYES
+1374	WHERE IS {0}?
+1375	{0} VANISHES FROM THE TEAM
+1376	{0} CARRIES {1}
+1377	THE SEASON OF {0}
+1378	A SOLID SEASON FOR {0}
+1379	{0}: NO MIRACLES, BUT STEADY
+1380	{0} ENDS THE SEASON
+1381	{0}: {1} place
+1382	{0} clean sheets
+1383	average rating {0}
+1384	Ballon d'Or: {0} place
+1385	June {0}
+1386	{0} clean sheets
+1387	{0} {1} in the season
+1388	age {0}
+1389	Opponent goal
+1390	GOAL!
+1391	A season without fans
+1392	Due to an epidemic matches are played in empty stadiums: home advantage has disappeared.
+1393	New offside rules
+1394	IFAB relaxed the offside rule: noticeably more goals.
+1395	Year of defence
+1396	A new ball and heavy pitches: fewer goals than usual.
+1397	Abnormal heat
+1398	A scorching summer: noticeably more injuries.
+1399	VAR everywhere
+1400	Video review has been introduced in all competitions: more controversial moments in big matches.
+1401	Money comes to the league
+1402	Investors have come into {0}: the TV deal has grown, the league's clubs got stronger.
+1403	Financial crisis
+1404	The {0} TV deal collapsed: clubs are selling off their stars.
+1405	Season event: {0}. {1}
+1406	{0} & Friends
+1407	World Stars
+1408	Farewell match
+1409	{0} stadium
+1410	The {0} stadium is packed. The stands are full of banners with your number {1}.
+1411	Teammates from different years play on your side: {0}.
+1412	{0} plays for the World Stars. With a smile today.
+1413	{0} shirt
+1414	First half
+1415	Your last club, your home stands
+1416	The stands applaud
+1417	National team shirt ({0})
+1418	The whole country is watching
+1419	Before the match
+1420	Which shirt will you wear in the first half?
+1421	You walk out in the {0} shirt. An ovation.
+1422	GOAL! {0} scores, and you embrace like the old days.
+1423	World Stars goal: {0} scores.
+1424	Half-time. The veterans are breathing hard but smiling.
+1425	The World Stars are pressing. The fans chant your name.
+1426	79'. The ball is yours. This is the last moment of your career on this pitch.
+1427	Score one last time
+1428	Like in your best years
+1429	About 70%
+1430	Pass to an academy kid
+1431	Pass the torch
+1432	The most touching option
+1433	Shoot from the halfway line
+1434	For the legend
+1435	A small chance, but if it goes in…
+1436	pass to an academy kid
+1437	You pass to a 16-year-old academy kid, and he scores. You're the first to run and congratulate him.
+1438	goal from the halfway line
+1439	GOAL FROM THE HALFWAY LINE! The stadium goes crazy. This goal will be shown forever.
+1440	last goal
+1441	GOAL! You score one last time and fall to your knees.
+1442	shot from the halfway line
+1443	last shot
+1444	The ball flies over the bar. The stands applaud anyway.
+1445	The keeper saves it, but hugs you right away.
+1446	Substitution. The whole stadium rises. Your teammates form a guard of honour.
+1447	Full-time whistle. The end of a career.
+1448	You walked out in the {0} shirt.
+1449	The last moment of your career — {0}.
+1450	The match will go into your career museum.
+1451	{0} seas., {1} clubs
+1452	{0} matches
+1453	{0} goals
+1454	Your finished careers will appear here, from best to worst. None has ended yet.
+1455	Name
+1456	Pos
+1457	Years
+1458	Points
+1459	Trophies
+1460	BdO
+1461	Highlights
+1462	CO
+1463	room {0}
+1464	now
+1465	retired · {0}
+1466	· age {0}
+1467	season {0}{1}
+1468	· reputation {0}
+1469	{0}/{1} · age {2} · {3} · rating {4}
+1470	coach · {0}
+1471	national team
+1472	retired
+1473	your career
+1474	Legend
+1475	Hall of Fame
+1476	Debut
+1477	Academy
+1478	first contract
+1479	age 17
+1480	Breakthrough
+1481	First team
+1482	national call-up
+1483	big transfer
+1484	Football career simulator
+1485	of the pitch
+1486	From the academy to the Ballon d'Or: seasons, live finals, an arch-rival, money, fame and a museum of your career.
+1487	Start
+1488	New career
+1489	Player or coach, a new world
+1490	With friends
+1491	Multiplayer
+1492	One room, one world
+1493	Slots
+1494	Saves
+1495	{0} of {1}
+1496	The greatest
+1497	all your finished careers in this browser, by legacy points
+1498	Other careers
+1499	Open
+1500	{0} shirt
+1501	Flag: {0}
+1502	Crest: {0}
+1503	{0}–{1} · {2} matches{3}{4}
+1504	, {0} goals
+1505	· loan
+1506	national team · {0} matches, {1} goals
+1507	The trophy cabinet is empty for now. Your first trophy will stand here.
+1508	Newspaper clippings will appear after the first season.
+1509	Ticket to the farewell match
+1510	bought in {0}
+1511	Record
+1512	Arch-rival
+1513	{0}: {1}:{2} in the Ballon d'Or race ({3}–{4})
+1514	Career museum
+1515	Wall of shirts
+1516	every club — with your number
+1517	Trophy cabinet
+1518	trophies and top awards
+1519	Newspaper clippings
+1520	the biggest seasons
+1521	season
+1522	seasons
+1523	trophies
+1524	Relics
+1525	No connection to the room server. Multiplayer works on l3thily.github.io/legenda-polya
+1526	Server error
+1527	Enter the room code
+1528	The saved career for this room was created in a different world ({0}). Delete it in the “Saves” tab and start again.
+1529	No free slot: delete an old career in the “Saves” tab to start a career in the room.
+1530	start
+1531	trophy:
+1532	award:
+1533	starts a career: {0}, {1}, {2}
+1534	retired — {0}
+1535	Loading the room…
+1536	ready
+1537	waiting
+1538	hasn't started yet
+1539	teammate ·
+1540	{0} · {1} · {2} · trophies {3} · {4} {5}
+1541	{0} goals, {1} ast.
+1542	Yashin
+1543	(you)
+1544	host
+1545	different world
+1546	Room world code:
+1547	yours is {0}
+1548	Sorted by contribution: trophies, Ballons d'Or, goals.
+1549	Room feed
+1550	Not ready
+1551	Ready
+1552	Start now
+1553	The game starts when there are two in the room and everyone is ready.
+1554	The game starts when everyone presses “Ready”.
+1555	One room,
+1556	one world
+1557	Create a room and send the code to your friends. Everyone sets up their player and presses “Ready”. When everyone's ready, the careers start in the very same world. The room shows who moved where, who won what and who has more Ballons d'Or.
+1558	Create
+1559	Your name in the room
+1560	Russia in international football
+1561	Create room
+1562	Join
+1563	Room code
+1564	e.g. K7QX2
+1565	Banned, may return
+1566	Banned for good
+1567	Allowed
+1568	Your player
+1569	Player name
+1570	Number
+1571	Second nationality
+1572	none
+1573	Position
+1574	League
+1575	Club (strength)
+1576	Russia in international football (the host decides)
+1577	The room career will be in a separate slot, your current one stays in the “Saves” tab.
+1578	To my career
+1579	The room game is on, your career in it is saved on this device.
+1580	Continue the room career
+1581	The room game is already on{0} The player will be taken from the lobby settings{1}.
+1582	Start a career in the room
+1583	. The room career will be in a separate slot, your current one is kept.
+1584	Room · {0}
+1585	Copy code
+1586	Leave
+1587	Players
+1588	{0} of 8
+1589	lobby
+1590	game on
+1591	(still in season {0}/{1})
+1592	{0} is playing: {1}, {2}
+1593	Season {0} · head-to-head
+1594	you · strength {0}
+1595	{0} · strength {1}
+1596	Head-to-head against {0}
+1597	Waiting for the opponent to take the pitch too.
+1598	The match starts when you both press “To the pitch”. The result will be the same for both.
+1599	Play without him

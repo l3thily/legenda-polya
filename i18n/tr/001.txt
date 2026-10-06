@@ -1,0 +1,259 @@
+0	free
+1	€{0}M
+2	€{0}K
+3	€{0}K/wk
+4	year
+5	years
+6	years
+7	Goalkeeper
+8	GK
+9	Centre-back
+10	CB
+11	Left-back
+12	LB
+13	Right-back
+14	RB
+15	Defensive midfielder
+16	CDM
+17	Central midfielder
+18	CM
+19	Attacking midfielder
+20	CAM
+21	Left winger
+22	LW
+23	Right winger
+24	RW
+25	Striker
+26	ST
+27	Reserves / youth
+28	Substitute
+29	Rotation
+30	Starter
+31	Team star
+32	UEFA
+33	CONMEBOL
+34	CONCACAF
+35	CAF
+36	AFC
+37	OFC
+39	National team:
+40	unemployed
+41	 (pens)
+42	 (a.e.t.)
+43	— you had {0}{1}{2}
+44	goal
+45	goals
+46	goals
+47	and
+48	assist
+49	assists
+50	assists
+51	— no goals or assists
+52	{0} · {1} — {2} {3}{4}. Choice: “{5}”{6}.
+53	opponent
+54	Head-to-head
+55	Head-to-head against a room player: {0}.
+56	Your contribution: {0}{1}{2}, rating {3}.
+57	No goals or assists, rating {0}.
+58	You didn't play.
+59	Head-to-head win
+60	Head-to-head defeat
+61	Head-to-head draw
+62	Play through the pain
+63	Injections and tape
+64	You'll play, but not at 100%. The injury may get worse (~40%)
+65	Skip the match
+66	Watch from the stands
+67	The team plays without you
+68	Injections — and go
+69	The doctors say no, you say yes
+70	You'll play the whole match, but not at 100%. Risk of being out for up to half a season: ~{0}%
+71	Come off the bench
+72	The last half hour
+73	Less influence on the game, less risk for the team. Risk: ~{0}%
+74	Skip the final
+75	Health comes first
+76	Watch from the stands in a suit
+77	Command the box
+78	Come for every cross
+79	The opponent scores less, but a mistake will cost a lot
+80	Play from the back
+81	The team sits deep
+82	Fewer goals at both ends
+83	Start the attacks
+84	Long passes, quick throws
+85	The team is more dangerous up front but more vulnerable at the back
+86	Take the game on yourself
+87	Shoot at every chance
+88	Better chance to score, but the team loses balance
+89	Play for the team
+90	Passing, pressing, discipline
+91	The team is stronger, fewer personal stats
+92	Don't concede first
+93	Dressing-room speech
+94	Fire up your teammates
+95	The team is charged, and so are you
+96	Ask to start
+97	A talk with the coach
+98	You start from the first minute
+99	You haven't fully recovered from injury.
+100	At the last training session before the final you felt a sharp pain in your thigh. The doctors offer painkilling injections.
+101	The opponents have your arch-rival {0}.
+102	The press keeps writing about the curse: {0} lost finals in a row.
+103	{0} vs {1}. At stake — {2}.{3} How will you prepare?
+104	the season's outcome
+105	the trophy
+106	the road to the final
+107	, celebration — {0}
+108	GOAL! {0}{1}.
+109	You score
+110	Your shot — and it's in the net
+111	You meet the cross
+112	Your first-time shot
+113	You tap in the rebound
+114	GOAL! {0} scores from your pass.
+115	GOAL! {0} {1}.
+116	Scores
+117	Great strike —
+118	Heads it in
+119	Makes no mistake from the spot
+120	Opponent goal. {0} scores — and looks straight at you.
+121	Opponent goal: {0} {1}.
+122	opens the scoring
+123	scores again
+124	We concede. A shot from outside the box into the top corner.
+125	Opponent goal from a corner.
+126	We concede on the counter.
+127	You save a point-blank shot!
+128	You claim the cross.
+129	The opponent shoots wide.
+130	Yellow card for the opponent.
+131	A corner at your goal — cleared.
+132	You restart quickly — attack!
+133	You win the header.
+134	Your tackle saves the team.
+135	Post! The opponent came close.
+136	Opponent's shot — wide.
+137	You join the attack, but the cross is off target.
+138	Your shot — just over the bar.
+139	You beat two players but lose the ball.
+140	The opposing keeper saves your shot.
+141	You go down the wing, but the cut-back is intercepted.
+142	The stands roar.
+143	Post!
+144	The coach paces nervously on the touchline.
+145	Kick-off. {0} — {1}.{2}{3}
+146	You watch from the stands.
+147	You start on the bench.
+148	The opponents include {0}.
+149	Half-time.
+150	All forward
+151	Four strikers
+152	More goals at both ends
+153	No panic
+154	Play our game
+155	Patience and control
+156	Start the attacks yourself
+157	Ball to me
+158	Long kicks
+159	I'll win this match
+160	Faster attacks, more danger at the back
+161	Your chance to score is much higher
+162	Shut up shop
+163	Park the bus
+164	Finish them off
+165	A third goal kills the game
+166	Keep attacking, but take risks
+167	Ball possession
+168	Let them chase the ball
+169	The opponent rarely reaches the goal
+170	Pressing
+171	Squeeze them from the first minute
+172	More chances at the opponent's goal
+173	Carefully
+174	Whoever errs, loses
+175	Organise the defence
+176	A voice heard across the pitch
+177	The opponent scores less
+178	Half-time
+179	The coach is waiting for your word in the dressing room. What will you tell the team?
+180	Second half. Instruction: “{0}”.
+181	Second half.
+182	You're losing
+183	You're ahead
+184	Draw
+185	{0} {1}:{2}. The opposing striker is through one-on-one. Your call — in a split second.
+186	Rush out
+187	Narrow the angle
+188	Reflexes decide
+189	Stay on the line
+190	Wait for the shot
+191	Positioning decides
+192	Dive at his feet
+193	All or nothing
+194	Success — a heroic save, a mistake — a penalty
+195	{0} {1}:{2}. The opponent breaks three on two, and you're the last defender.
+196	Slide tackle
+197	Clean on the ball
+198	Defending decides
+199	Tactical foul
+200	Stop him at any cost
+201	Almost certainly a yellow, a dangerous free kick
+202	Track back
+203	Cut the pass
+204	Pace decides
+205	{0} {1}:{2}. Corner. You go up into the opponent's box.
+206	Jump higher than everyone
+207	Header
+208	Physique decides
+209	You leap above everyone and head it in
+210	Play for the knock-down
+211	Lay it off to a teammate
+212	Passing decides
+213	Stay back as cover
+214	No risk
+215	No chance to score, but no counter either
+216	{0} {1}:{2}. You get the ball in the box, only the keeper ahead of you.
+217	Shoot at once
+218	Far corner
+219	Shooting decides
+220	You shoot into the far corner — goal
+221	Round the keeper
+222	In style
+223	Pace decides. Pull it off and it'll be in every highlight reel
+224	You round the keeper and roll it into an empty net
+225	Pass to a teammate
+226	He's free
+227	Key moment · {0}'
+228	You stay back as cover. The corner is played — no danger.
+229	Your goal in the final ({0}) is on every highlight show.
+230	You pass, but it's intercepted.
+231	Wide! You clutch your head.
+232	The keeper saves! An incredible save.
+233	Post! The ball bounces back into play.
+234	You foul in midfield. Yellow card, but the attack is stopped.
+235	SAVE! You rescue the team.
+236	You rescue the team — the ball is cleared.
+237	Yellow card. Free kick…
+238	Free kick — into the wall.
+239	You can't reach it. The referee signals it's all clean.
+240	Red card! You're sent off for arguing with the referee.
+241	A yellow card for you — for arguing with the referee.
+242	Leave it to the penalty taker
+243	He never misses in training
+244	About 76%
+245	Take it yourself
+246	Take responsibility
+247	Give it to the regular taker
+248	He's taken them all season
+249	Give it to a teammate without a goal
+250	Let him get a taste
+251	About 66%, the dressing room will appreciate it
+252	{0}'. The referee goes to the monitor… and points to the spot! Penalty to us. Score {1}:{2}.
+253	VAR: penalty to us!
+254	You coolly convert the penalty
+255	GOAL! {0} converts the penalty.
+256	The keeper guessed right! You miss the penalty.
+257	Penalty missed: the keeper guessed right.
+258	{0}'. The ball is in the opponent's net! But the referee is listening to VAR: possible offside. The stadium freezes.
+259	Argue with the referee

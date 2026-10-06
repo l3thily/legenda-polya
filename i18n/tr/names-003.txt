@@ -1,0 +1,300 @@
+700	Greuther Fürth
+701	Dynamo Dresden
+702	Preußen Münster
+703	Eintracht Braunschweig
+704	Premier League
+705	La Liga
+706	Serie A
+707	Bundesliga
+708	Ligue 1
+709	Primeira Liga
+710	Eredivisie
+711	Pro League
+712	Süper Lig
+713	Championship
+714	Premiership
+715	Austrian Bundesliga
+716	Swiss Super League
+717	RPL
+718	UPL
+719	Greek Super League
+720	Czech First League
+721	Danish Superliga
+722	Eliteserien
+723	Allsvenskan
+724	HNL
+725	Serbian SuperLiga
+726	Ekstraklasa
+727	Brasileirão
+728	Liga Profesional
+729	Liga MX
+730	Saudi Pro League
+731	J1 League
+732	2. Bundesliga
+733	FA Cup
+734	Copa del Rey
+735	Coppa Italia
+736	DFB-Pokal
+737	Coupe de France
+738	Taça de Portugal
+739	KNVB Cup
+740	Belgian Cup
+741	Turkish Cup
+742	Scottish Cup
+743	Austrian Cup
+744	Swiss Cup
+745	Russian Cup
+746	Ukrainian Cup
+747	Greek Cup
+748	Czech Cup
+749	Danish Cup
+750	Norwegian Cup
+751	Svenska Cupen
+752	Croatian Cup
+753	Serbian Cup
+754	Polish Cup
+755	US Open Cup
+756	Copa do Brasil
+757	Copa Argentina
+758	Copa MX
+759	King's Cup
+760	Emperor's Cup
+761	Kylian Mbappé
+762	Erling Haaland
+763	Lamine Yamal
+764	Vinícius Júnior
+765	Jude Bellingham
+766	Harry Kane
+767	Mohamed Salah
+768	Ousmane Dembélé
+769	Pedri
+770	Raphinha
+771	Rodri
+772	Jamal Musiala
+773	Florian Wirtz
+774	Vitinha
+775	Michael Olise
+776	Bukayo Saka
+777	Cole Palmer
+778	Khvicha Kvaratskhelia
+779	Declan Rice
+780	Viktor Gyökeres
+781	Lautaro Martínez
+782	Alexander Isak
+783	Virgil van Dijk
+784	Achraf Hakimi
+785	Nuno Mendes
+786	William Saliba
+787	Thibaut Courtois
+788	Gianluigi Donnarumma
+789	Jan Oblak
+790	Alisson
+791	Mike Maignan
+792	David Raya
+793	Emiliano Martínez
+794	Désiré Doué
+795	Pau Cubarsí
+796	Estêvão
+797	João Neves
+798	Alexis Mac Allister
+799	Lionel Messi
+800	Cristiano Ronaldo
+801	Federico Valverde
+802	Bruno Fernandes
+803	Julián Álvarez
+804	Alessandro Bastoni
+805	Kenan Yıldız
+806	Franco Mastantuono
+807	Pep Guardiola
+808	Arne Slot
+809	Mikel Arteta
+810	Xabi Alonso
+811	Hansi Flick
+812	Luis Enrique
+813	Vincent Kompany
+814	Diego Simeone
+815	Antonio Conte
+816	Alex Ferguson
+817	Carlo Ancelotti
+818	José Mourinho
+819	Zinedine Zidane
+820	Bob Paisley
+821	Pelé
+822	Robert Lewandowski
+823	Zlatan Ibrahimović
+824	Karim Benzema
+825	Neymar
+826	Thierry Henry
+827	Kevin De Bruyne
+828	Mesut Özil
+829	Xavi
+830	Andrés Iniesta
+831	Luka Modrić
+832	Frank Lampard
+833	Steven Gerrard
+834	Paolo Maldini
+835	Sergio Ramos
+836	Fabio Cannavaro
+837	Carles Puyol
+838	Ronald Koeman
+839	Gianluigi Buffon
+840	Iker Casillas
+841	Manuel Neuer
+842	Petr Čech
+843	Lev Yashin
+844	Miroslav Klose
+845	Ciro Immobile
+846	Henry and De Bruyne
+847	Josip Skoblar
+848	Gerd Müller
+849	Wayne Rooney
+850	Ian Rush
+851	Sergio Agüero
+852	Alessandro Del Piero
+853	Francesco Totti
+854	Giuseppe Meazza
+855	Gunnar Nordahl
+856	David Villa
+857	Olivier Giroud
+858	Robin van Persie
+859	Luigi Riva
+860	Champions League
+861	Europa League
+862	Conference League
+863	UEFA Super Cup
+864	Copa Libertadores
+865	CONCACAF Champions Cup
+866	AFC Champions League
+867	Intercontinental Cup
+868	Challenger Cup
+869	Club World Cup
+870	World Cup
+871	European Championship
+872	Copa América
+873	OFC Nations Cup
+874	Africa Cup of Nations
+875	CONCACAF Gold Cup
+876	UEFA Nations League
+877	Asian Cup
+878	Finalissima
+879	Olympic Games
+880	Olympic gold
+881	Final
+882	Semi-final
+883	Quarter-final
+884	Round of 16
+885	Round of 32
+886	Round of 64
+887	Round of 128
+888	Early round
+889	Group stage
+890	League phase
+891	Winner
+892	Final matchday
+893	failed to qualify
+894	Ballon d'Or
+895	Golden Boot
+896	Yashin Trophy
+897	Kopa Trophy
+898	FIFPro World XI
+899	Finals curse lifted
+900	National hero
+901	Comeback of the Year
+902	Hat-trick in the final
+903	Coach of the Year
+904	Player of the Season
+905	Team of the Season
+906	Top scorer
+907	Best player
+908	Coach of the Season
+909	Lucas
+910	Mateo
+911	Emil
+912	Rafael
+913	Nico
+914	Theo
+915	Yusuf
+916	Caio
+917	Andrea
+918	João
+919	Lars
+920	Miloš
+921	Oscar
+922	Samuel
+923	Ibrahim
+924	Hugo
+925	Gabriel
+926	Timo
+927	Marco
+928	Leo
+929	Enzo
+930	Amadou
+931	Arda
+932	Sebastian
+933	Thomas
+934	Adam
+935	Nils
+936	Diego
+937	Noah
+938	Ilias
+939	Kenji
+940	Min-jun
+941	Álvaro
+942	Bastian
+943	Moussa
+944	Ivan
+945	Dmitry
+946	Alexei
+947	Maxim
+948	Artyom
+949	Nikita
+950	Kirill
+951	Yegor
+952	Daniil
+953	Sergei
+954	Andrei
+955	Mikhail
+956	Ilya
+957	Roman
+958	Pavel
+959	Vladislav
+960	Matvei
+961	Denis
+962	Anton
+963	Gleb
+964	Arseny
+965	Fyodor
+966	Vadim
+967	Konstantin
+968	Yevgeny
+969	Timur
+970	Alexander
+971	Nikolai
+972	Vitaliy
+973	Taras
+974	Bohdan
+975	Ostap
+976	Nazar
+977	Yaroslav
+978	Yuriy
+979	Oleh
+980	Danylo
+981	Luka
+982	Nikola
+983	Stefan
+984	Dušan
+985	Filip
+986	Ante
+987	Josip
+988	Mate
+989	Domagoj
+990	Lazar
+991	Aleksandar
+992	Dragan
+993	Vuk
+994	Petar
+995	Dario
+996	Nemanja
+997	Ognjen
+998	Edin
+999	Miralem

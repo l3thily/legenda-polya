@@ -1,0 +1,280 @@
+1600	To the pitch
+1601	Room {0} · a room player's final
+1602	Waiting for the final's result
+1603	A room player's team is playing in this final. His decisions affect the score, so we take the result from him.
+1604	Room {0} · {1}
+1605	Play without {0}
+1606	The others will catch up: the room's world is shared.
+1607	Ballon d'Or vote
+1608	The jury is waiting for the others' results
+1609	Waiting for the other players
+1610	The Ballon d'Or, Kopa, Yashin and Golden Boot are decided by one vote for the whole room. As soon as the others finish this season, we'll announce the results.
+1611	The season starts when everyone in the room presses “Play season”.
+1612	Checking…
+1613	him
+1614	them
+1615	Head-to-heads (wins)
+1616	{0}–{1}–{2}, goals {3}:{4}
+1617	never met
+1618	Head-to-head goals
+1619	Higher in the Ballon d'Or, seasons
+1620	Legacy points
+1621	Yashin Trophies
+1622	Ballons d'Or · Yashins
+1623	Best Ballon d'Or finish
+1624	Peak rating
+1625	Matches
+1626	Clean sheets
+1627	Goals
+1628	Assists
+1629	International caps
+1630	{0} · head-to-heads: {1}
+1631	{0} the rivalry
+1632	You're winning
+1633	is winning
+1634	{0} is winning the rivalry
+1635	The rivalry is a draw
+1636	Player
+1637	Status
+1638	BdO/Yashin
+1639	Goals/CS
+1640	retired
+1641	playing,
+1642	CS
+1643	Room winner
+1644	The room result will be announced when everyone has retired. The current leader is {0}.
+1645	Room {0} results
+1646	Room {0}
+1647	Connection to the room was lost on this device.
+1648	Open lobby
+1649	Press high: more goals at both ends, more injuries
+1650	Counter-attacks
+1651	Give up the ball and hit on the break: strong against favourites
+1652	Possession
+1653	Ball control. Works if the coach's tactics are 60+
+1654	Defence
+1655	The bus: few goals at both ends
+1656	Transfer budget {0} · contract {1} {2}
+1657	Wait
+1658	Take half a season off
+1659	Offers will come again
+1660	You decided to wait for a new job.
+1661	First job
+1662	Job offers
+1663	Reputation {0} ({1}). These clubs are ready to trust you with their team.
+1664	left
+1665	You took charge of {0}. Budget {1}. The president's goal: {2}.
+1666	left for a national team
+1667	get out of the group at the next major tournament
+1668	You took charge of the national team: {0}.
+1669	the title
+1670	survive (no lower than {0})
+1671	no lower than {0}
+1672	summer
+1673	winter
+1674	Not enough budget: you need {0}, you have {1}.
+1675	The squad already has 30 players. Sell someone first.
+1676	{0} refused: {1} is not for sale.
+1677	{0} ({1}, {2}) signed for {3}.
+1678	{0} sold for {1}.
+1679	Assistant
+1680	team strength
+1681	Fitness coach
+1682	fewer injuries
+1683	Scout
+1684	stronger targets
+1685	Youth coach
+1686	academy and youth growth
+1687	{0} got a place in the first team.
+1688	{0} went on loan to gain experience.
+1689	The assistant was sacked.
+1690	resigned
+1691	National team invitation
+1692	The federation ({0}, strength {1}) offers you the national team job. You can't combine it with a club.
+1693	Take the national team
+1694	Leave the club
+1695	The president will appreciate it
+1696	You turned down the national team for the club.
+1697	{0} · strength {1}{2}
+1698	· a step up
+1699	· abroad
+1700	Budget {0} · contract {1} {2}{3}
+1701	· leave right now
+1702	You left for {0}.
+1703	A bigger club wants you
+1704	Job offer
+1705	They're poaching you mid-season
+1706	Your reputation has outgrown
+1707	They're interested in you while you're at
+1708	It's mid-season, and you're already being called. Leaving now won't please the {0} fans.
+1709	The president and fans will appreciate it
+1710	You stayed at the club.
+1711	The homeland calls
+1712	The federation ({0}) wants one of its own to lead the national team. You can't combine it with a club.
+1713	The club comes first
+1714	There may not be a second chance
+1715	Offer for a player
+1716	{0} offer {1} for {2} ({3}, {4}, age {5}).{6}
+1717	The president insists on selling: the club needs money.
+1718	Sell
+1719	The money goes into the budget
+1720	{0} sold to {1} for {2}.
+1721	The team needs the player
+1722	The president will be unhappy
+1723	Academy graduate
+1724	{0}, age {1}, {2}. Now {3}, scouts rate his potential at {4}–{5}.
+1725	Give him a first-team chance
+1726	Sign him to the first team
+1727	He'll grow training with the first team
+1728	{0} signed his first contract.
+1729	Send on loan
+1730	A season of game time
+1731	He'll come back stronger
+1732	{0} goes out on loan.
+1733	Let go
+1734	Not our level
+1735	{0} left the academy.
+1736	Coaching staff
+1737	You can hire a specialist. Current staff: {0}.
+1738	nobody
+1739	{0} · {1} from the budget
+1740	A new specialist on the staff: {0} {1}.
+1741	Don't hire anyone
+1742	The staff is fine
+1743	Coach's contract
+1744	Your contract with {0} is ending. The president {1}.
+1745	wants to extend
+1746	has doubts
+1747	Extend for 3 years
+1748	You extended your contract for 3 years.
+1749	Look for a new challenge
+1750	You'll become a free coach
+1751	Leave at the end
+1752	The contract won't be renewed
+1753	A star wants to join you
+1754	{0} ({1}, {2}, age {3}) is ready to finish his career with you. A token fee.
+1755	Sign
+1756	Experience and a name, but age
+1757	{0} signed for {1}.
+1758	We're building a young team
+1759	Wonderkid on the market
+1760	{0}, age {1}, {2}. Now {3}, but the scouts are going crazy: potential {4}–{5}.
+1761	Buy
+1762	A future star or a dud
+1763	Wonderkid {0} signed.
+1764	Skip
+1765	Too risky
+1766	An agent with a “great” deal
+1767	An agent offers {0} ({1}, claimed rating {2}) almost for free. The video looks suspiciously good.
+1768	65%: it's all legit. Otherwise the rating will be lower
+1769	{0} signed. The agent didn't lie.
+1770	{0} turned out to be a dud. The agent vanished.
+1771	Too good to be true
+1772	The captain is against you
+1773	{0} criticised your tactics in front of everyone.
+1774	Strip the armband
+1775	Show who's boss
+1776	The president will approve, the dressing room won't
+1777	{0} has been stripped of the captaincy.
+1778	Talk one-on-one
+1779	Depends on motivation
+1780	The talk with the captain settled everything.
+1781	The captain stuck to his guns.
+1782	Nobody is irreplaceable
+1783	{0} sold.
+1784	An investor at the club
+1785	An investor wants to buy a stake in the club and put money straight into transfers, but expects quick results.
+1786	Back the deal
+1787	Money now
+1788	The budget will grow, the president will get stricter
+1789	The investor put money into transfers.
+1790	Talk the president out of it
+1791	Independence
+1792	New stadium
+1793	The president is building a new stadium. Less transfer money this year, but revenue will grow later.
+1794	Support
+1795	Thinking about the future
+1796	Budget −40% now, the club will become more prestigious
+1797	Construction of the stadium has begun.
+1798	Demand money for the squad
+1799	We need results now
+1800	The president postponed the construction.
+1801	The president took offence: the construction will go ahead anyway.
+1802	Social media scandal
+1803	{0} posted a video from a late-night party on the eve of a match.
+1804	Fine him
+1805	Discipline
+1806	The dressing room will understand, the star will be offended
+1807	{0} has been fined.
+1808	Protect the player
+1809	We don't give up our own
+1810	The fans won't appreciate it
+1811	Put him on the transfer list
+1812	An example to the rest
+1813	{0} sold after the scandal.
+1814	Coaches' spat
+1815	The {0} coach called your team “a bus without wheels”.
+1816	Hit back hard
+1817	Tit for tat
+1818	The fans are delighted
+1819	Make a joke
+1820	With humour
+1821	We'll answer on the pitch
+1822	The fans chipped in
+1823	The supporters raised money for a transfer “for our coach”.
+1824	Thank you, people!
+1825	The fans gave the budget €1.5M.
+1826	Give it to the academy
+1827	The club's future
+1828	A youngster asks for a chance
+1829	{0} (age {1}, potential ~{2}) demands playing time, or he'll leave.
+1830	Give him a chance
+1831	A first-team place
+1832	Faster growth, a slightly weaker first team
+1833	Let him get games
+1834	Let him wait
+1835	Too early
+1836	50%: he leaves for free
+1837	{0} accepted it.
+1838	{0} left for free.
+1839	Player swap
+1840	{0} offer a swap: your {1} ({2}, age {3}) for their {4} ({5}, age {6}).
+1841	Swap
+1842	Fresh blood
+1843	{0} swapped for {1}.
+1844	No
+1845	The assistant is after your job
+1846	Rumour has it your assistant talks to the president behind your back.
+1847	Sack the assistant
+1848	We don't tolerate backstabbing
+1849	You'll lose his bonus
+1850	Talk openly
+1851	Trust
+1852	The rumours were empty.
+1853	The assistant really was playing against you.
+1854	Millions from the desert
+1855	{0} offer a dream contract and a budget like Europe's top clubs.
+1856	Go
+1857	A huge budget, but your reputation in Europe will suffer
+1858	You left for {0}.
+1859	A career in Europe
+1860	Your former club wants you back
+1861	{0} want you back. They remember you for {1} {2}.
+1862	trophy
+1863	trophies
+1864	Go back
+1865	You returned to {0}.
+1866	No way back
+1867	Journalist: “Your team plays boring football. Will you change anything?”
+1868	We play for results
+1869	Calmly
+1870	Wait, soon everyone will see
+1871	A promise
+1872	You know nothing about football
+1873	Cheeky
+1874	Journalist: “They say the players are unhappy with you.”
+1875	We have a great atmosphere
+1876	Protect the team
+1877	Whoever's unhappy — the door is open
+1878	Harsh
+1879	Dodge the question

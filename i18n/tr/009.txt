@@ -1,0 +1,263 @@
+2160	half-time
+2161	Playing career
+2162	· peak rating {0} · {1} matches · {2} · {3} trophies · {4}
+2163	clean sheets
+2164	Yashin ×
+2165	Coaching career over · age {0}
+2166	Jobs
+2167	Among the great coaches
+2168	trophies and Champions Leagues, legends ≈
+2169	As a player: {0}
+2170	No trophies.
+2171	· {0}–{1} · trophies {2}{3}
+2172	{0}{1} · UCL {2}
+2173	Nameless
+2174	First professional contract with {0} for 3 years, {1}.
+2175	Your peer {0} ({1}) signed a contract with {2}. Scouts are already comparing you.
+2176	Player card
+2177	Summary
+2178	Career
+2179	Life
+2180	Museum
+2181	Tables
+2182	World
+2183	Online
+2184	New
+2185	career
+2186	Mute sound
+2187	Unmute sound
+2188	Sound on
+2189	Sound off
+2190	Main menu
+2191	Legend of the Pitch
+2192	Sections
+2193	From the academy
+2194	to the
+2195	Ballon d'Or
+2196	You're 17 and have your first contract. Season after season — leagues, European cups, the national team and awards. Every summer brings decisions: transfers, contract, loans. Finals are live, with choices right before the match. Your body will decide when it's time to stop.
+2197	leagues
+2198	clubs
+2199	national teams
+2200	tournaments
+2201	Mode
+2202	Player career
+2203	Coach career
+2204	Achievements · {0} of {1}
+2205	Coach name
+2206	Age
+2207	Nationality
+2208	A start without a big name: clubs will offer you jobs based on your reputation. A full squad of 25 players, system and style, transfers in the summer and winter windows, the president's targets. Former players start their coaching career from the Hall of Fame: with a reputation bonus and in the same world.
+2209	Start coaching career
+2210	Banned, but may return (~10% a year)
+2211	Allowed from the first season
+2212	Every new career is a new random world. To play with friends in one world — the “Multiplayer” tab.
+2213	Start career
+2214	{0} national team strength: {1} · {2}
+2215	National team ({0}):
+2216	{0} {1}, {2} {3}, {4} ast., role — {5}
+2217	not called up
+2218	(without you)
+2219	Feud:
+2220	you're {0} in the Ballon d'Or, {1} — {2}
+2221	Arch-rival:
+2222	{0} ({1}): {2} {3}{4}; in the Ballon d'Or he's {5}, you're {6}
+2223	th
+2224	Derbies:
+2225	{0}W {1}D {2}L{3}
+2226	, your goals — {0}
+2227	{0} · winner — {1} ({2})
+2228	Club
+2229	P
+2230	W
+2231	D
+2232	L
+2233	Goals
+2234	{0} · age {1} · {2}
+2235	Table and tournament runs
+2236	loan
+2237	matches
+2238	clean sheets
+2239	conceded per match
+2240	goals
+2241	assists
+2242	avg. rating
+2243	value, €
+2244	Ballon d'Or vote: {0} place
+2245	No cup matches.
+2246	Empty for now. The first trophy is somewhere ahead.
+2247	The chart will appear after the first season.
+2248	Rating by age
+2249	national team: caps/goals
+2250	Off-season {0} · last day of the window
+2251	Decision {0} of {1}
+2252	seconds until the window closes
+2253	· {0} · contract {1}
+2254	dropped out of the bidding
+2255	★ Rare event
+2256	Event
+2257	Off-season
+2258	Morning papers
+2259	To the summer decisions
+2260	Play season {0}
+2261	Retire now?
+2262	retired from international football
+2263	Club strength
+2264	Role
+2265	Value
+2266	Potential
+2267	Followers
+2268	World code
+2269	Attributes
+2270	rating {0}
+2271	Records and milestones
+2272	Player traits
+2273	Rating
+2274	by age
+2275	Trophies and awards
+2276	(loan)
+2277	until summer {0}
+2278	expired
+2279	club captain
+2280	national team captain
+2281	super-agent
+2282	personal staff
+2283	sponsor {0}/yr
+2284	Your career history will appear here — season by season.
+2285	newest first
+2286	Forwards
+2287	Midfielders
+2288	Defenders
+2289	Goalkeepers
+2290	Explosive forward
+2291	Mbappé type
+2292	Battering ram
+2293	Haaland type
+2294	Playmaking forward
+2295	Kane type
+2296	Dribbler
+2297	Vinícius type
+2298	Playmaker
+2299	De Bruyne type
+2300	Destroyer
+2301	Rodri type
+2302	Bellingham type
+2303	Conductor
+2304	Modrić type
+2305	Defensive leader
+2306	van Dijk type
+2307	Quick defender
+2308	Saliba type
+2309	Attacking full-back
+2310	Hakimi type
+2311	Ball-playing defender
+2312	Bastoni type
+2313	Cat on the line
+2314	Courtois type
+2315	Sweeper keeper
+2316	Neuer type
+2317	Reliable
+2318	Oblak type
+2319	Among the legends
+2320	{0} · legends' numbers are approximate
+2321	Career over · age {0} · {1}{2}
+2322	Best rating — {0}. Best Ballon d'Or finish — {1}. Earned over the career — {2}, spent — {3}, in the bank — {4}. Followers — {5}.{6}{7} Reputation — {8} ({9}).
+2323	Career frames
+2324	the best moment of each season
+2325	Clubs
+2326	Assists
+2327	Achievements
+2328	(at the end — {0})
+2329	Signature celebration — {0}.
+2330	Position changes: {0}.
+2331	Legacy at clubs
+2332	Loading the room results…
+2333	Transfers
+2334	. In the Ballon d'Or race you finished higher in {0} of {1} seasons.
+2335	Coaching career
+2336	Best BdO finish
+2337	retired{0}
+2338	in
+2339	age {0} · {1} · {2}
+2340	You won the rivalry of a generation.
+2341	{0} won the rivalry of a generation.
+2342	The rivalry of a generation ended in a draw.
+2343	Arch-rival · since {0}
+2344	Ballon d'Or race
+2345	head-to-heads {0}W {1}D {2}L
+2346	You
+2347	main position
+2348	position
+2349	Previous rivals: {0}.
+2350	you changed lines
+2351	pulled ahead
+2352	fell behind
+2353	Rival's transfers: {0}.
+2354	for
+2355	/season
+2356	Cancel
+2357	Hire
+2358	Buy out your contract
+2359	You'll immediately become a free agent and choose a club yourself. The {0} fans will be offended, your reputation will suffer a little.{1}
+2360	Buy out
+2361	the contract is expiring anyway
+2362	invested {0} → now
+2363	Invest
+2364	Followers by season
+2365	The history will appear after the first season.
+2366	In the bank
+2367	Wages this season
+2368	Staff and services this season
+2369	Earned over the career
+2370	Spent
+2371	Social media
+2372	followers · {0}
+2373	Followers grow with goals, trophies, awards and big stories. Hype adds jury votes and sponsor money, but coaches like social media stars less.{0}
+2374	paid every season, can be cancelled any time
+2375	Purchases
+2376	once and for all
+2377	Investments
+2378	20% of your balance is invested, no less than the minimum; the result shows after the season
+2379	Sponsor
+2380	Business income (last season)
+2381	Your celebration — “{0}”.
+2382	The season is on. You can spend money between seasons.
+2383	Deals
+2384	money that changes a career
+2385	Delete?
+2386	Delete {0}
+2387	Delete
+2388	Open
+2389	{0} of {1} · stored in this browser
+2390	{0} of {1} slots used
+2391	All {0} slots are taken. Delete an old career to start a new one.
+2392	The current career “{0}” hasn't started yet: it will appear here after the first season{1}. If you start a new one before then, this one won't take a slot.
+2393	or first job
+2394	No saves yet. Play the first season — the career will appear here.
+2395	Season {0} results
+2396	The season hasn't been played yet — the league's clubs are shown by strength
+2397	Strength
+2398	Δ start
+2399	(changed league)
+2400	European cups
+2401	blue mark — European place for next season
+2402	Champions
+2403	Country
+2404	Coef. (5 yrs)
+2405	UCL/UEL/UECL
+2406	Conf.
+2407	Season
+2408	Libertadores
+2409	Intercont.
+2410	National teams
+2411	The chronicle begins after the first season.
+2412	Chronicle
+2413	world code:
+2414	UEFA coefficient table
+2415	The sum of points over 5 seasons determines each country's European places.
+2416	Strongest clubs
+2417	Δ — change in strength since the start of the career.
+2418	Strongest national teams
+2419	Browser storage is full — progress isn't being saved. Delete old careers in the “Saves” tab.
+2420	Copied
+2421	{0} is no longer called up.
+2422	You can't leave fewer than 18 players.

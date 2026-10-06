@@ -1,0 +1,370 @@
+330	NEC
+331	Go Ahead Eagles
+332	Heerenveen
+333	Groningen
+334	Sparta
+335	Fortuna Sittard
+336	PEC Zwolle
+337	Heracles
+338	Willem II
+339	NAC Breda
+340	Volendam
+341	Excelsior
+342	Club Brugge
+343	Union Saint-Gilloise
+344	Anderlecht
+345	Genk
+346	Gent
+347	Antwerp
+348	Standard
+349	Cercle Brugge
+350	Mechelen
+351	Charleroi
+352	Westerlo
+353	Sint-Truiden
+354	OH Leuven
+355	Zulte Waregem
+356	Dender
+357	La Louvière
+358	Galatasaray
+359	Fenerbahçe
+360	Beşiktaş
+361	Trabzonspor
+362	Başakşehir
+363	Samsunspor
+364	Göztepe
+365	Alanyaspor
+366	Kasımpaşa
+367	Antalyaspor
+368	Konyaspor
+369	Rizespor
+370	Gaziantep
+371	Kayserispor
+372	Eyüpspor
+373	Fatih Karagümrük
+374	Kocaelispor
+375	Gençlerbirliği
+376	Burnley
+377	Wolverhampton
+378	Southampton
+379	Leicester
+380	Middlesbrough
+381	Sheffield United
+382	Norwich
+383	West Bromwich
+384	Hull City
+385	Bristol City
+386	Watford
+387	Swansea
+388	Stoke City
+389	Millwall
+390	Preston
+391	Wrexham
+392	Birmingham
+393	Blackburn
+394	QPR
+395	Derby County
+396	Portsmouth
+397	Charlton
+398	Sheffield Wednesday
+399	Oxford United
+400	Celtic
+401	Rangers
+402	Hearts
+403	Aberdeen
+404	Hibernian
+405	Dundee United
+406	Motherwell
+407	St Mirren
+408	Kilmarnock
+409	Falkirk
+410	Livingston
+411	Dundee
+412	Red Bull Salzburg
+413	Sturm
+414	Rapid
+415	LASK
+416	Austria Wien
+417	Wolfsberg
+418	Hartberg
+419	Blau-Weiß Linz
+420	Altach
+421	Ried
+422	Tirol
+423	Grazer AK
+424	Basel
+425	Young Boys
+426	Lugano
+427	Servette
+428	Lausanne
+429	Zürich
+430	St. Gallen
+431	Luzern
+432	Sion
+433	Grasshoppers
+434	Thun
+435	Winterthur
+436	Zenit
+437	Krasnodar
+438	Spartak
+439	CSKA
+440	Lokomotiv
+441	Dynamo Moscow
+442	Rostov
+443	Rubin
+444	Baltika
+445	Akhmat
+446	Dynamo Makhachkala
+447	Krylia Sovetov
+448	Akron
+449	Pari NN
+450	Orenburg
+451	Sochi
+452	Shakhtar
+453	Dynamo Kyiv
+454	Polissya
+455	Kryvbas
+456	Oleksandriya
+457	Zorya
+458	Karpaty
+459	Kolos
+460	Metalist 1925
+461	Veres
+462	Obolon
+463	Rukh
+464	Olympiacos
+465	PAOK
+466	AEK
+467	Panathinaikos
+468	Aris
+469	OFI
+470	Atromitos
+471	Asteras
+472	Volos
+473	Levadiakos
+474	Panetolikos
+475	Kifisia
+476	Larissa
+477	Panserraikos
+478	Slavia Prague
+479	Sparta Prague
+480	Viktoria Plzeň
+481	Baník Ostrava
+482	Sigma Olomouc
+483	Slovan Liberec
+484	Jablonec
+485	Mladá Boleslav
+486	Hradec Králové
+487	Bohemians
+488	Teplice
+489	Karviná
+490	Pardubice
+491	Slovácko
+492	Zlín
+493	Dukla
+494	Midtjylland
+495	Copenhagen
+496	Brøndby
+497	Nordsjælland
+498	AGF
+499	Randers
+500	Silkeborg
+501	Viborg
+502	Sønderjyske
+503	Odense
+504	Vejle
+505	Fredericia
+506	Bodø/Glimt
+507	Brann
+508	Molde
+509	Viking
+510	Rosenborg
+511	Fredrikstad
+512	Lillestrøm
+513	Tromsø
+514	Sarpsborg
+515	Sandefjord
+516	HamKam
+517	Strømsgodset
+518	KFUM Oslo
+519	Kristiansund
+520	Odd
+521	Haugesund
+522	Malmö
+523	Hammarby
+524	Djurgården
+525	AIK
+526	Mjällby
+527	Elfsborg
+528	IFK Göteborg
+529	Häcken
+530	GAIS
+531	Sirius
+532	Norrköping
+533	Halmstad
+534	Degerfors
+535	Brommapojkarna
+536	Öster
+537	Vasalund
+538	Dinamo Zagreb
+539	Hajduk
+540	Rijeka
+541	Osijek
+542	Lokomotiva
+543	Varaždin
+544	Istra 1961
+545	Slaven Belupo
+546	Gorica
+547	Vukovar 91
+548	Red Star
+549	Partizan
+550	TSC Bačka Topola
+551	Vojvodina
+552	Čukarički
+553	Novi Pazar
+554	OFK Beograd
+555	Železničar Pančevo
+556	Radnik Surdulica
+557	Mladost Lučani
+558	Spartak Subotica
+559	Radnički Niš
+560	Lech
+561	Raków
+562	Legia
+563	Jagiellonia
+564	Pogoń Szczecin
+565	Cracovia
+566	Górnik Zabrze
+567	Widzew
+568	Zagłębie Lubin
+569	Piast Gliwice
+570	Korona Kielce
+571	Lechia Gdańsk
+572	Motor Lublin
+573	Radomiak
+574	Wisła Płock
+575	Arka Gdynia
+576	Katowice
+577	Termalica
+578	Inter Miami
+579	LAFC
+580	Cincinnati
+581	Vancouver Whitecaps
+582	LA Galaxy
+583	Columbus Crew
+584	Philadelphia Union
+585	Seattle Sounders
+586	New York City
+587	Orlando City
+588	San Diego
+589	Nashville
+590	Minnesota United
+591	Charlotte
+592	New York Red Bulls
+593	Atlanta United
+594	Portland Timbers
+595	Austin
+596	Flamengo
+597	Palmeiras
+598	Cruzeiro
+599	Botafogo
+600	Fluminense
+601	São Paulo
+602	Corinthians
+603	Internacional
+604	Atlético Mineiro
+605	Bahia
+606	Grêmio
+607	Vasco da Gama
+608	Red Bull Bragantino
+609	Santos
+610	Fortaleza
+611	Athletico Paranaense
+612	Vitória
+613	Ceará
+614	Coritiba
+615	Juventude
+616	River Plate
+617	Boca Juniors
+618	Racing
+619	Vélez Sarsfield
+620	Estudiantes
+621	Independiente
+622	Talleres
+623	Rosario Central
+624	Argentinos Juniors
+625	Lanús
+626	Huracán
+627	San Lorenzo
+628	Godoy Cruz
+629	Belgrano
+630	Defensa y Justicia
+631	Newell's Old Boys
+632	América
+633	Tigres
+634	Toluca
+635	Monterrey
+636	Cruz Azul
+637	Pachuca
+638	Guadalajara
+639	UNAM Pumas
+640	León
+641	Santos Laguna
+642	Atlas
+643	Tijuana
+644	Juárez
+645	Atlético San Luis
+646	Necaxa
+647	Querétaro
+648	Mazatlán
+649	Puebla
+650	Al-Hilal
+651	Al-Nassr
+652	Al-Ittihad
+653	Al-Ahli
+654	Al-Qadsiah
+655	Al-Taawoun
+656	Al-Ettifaq
+657	Al-Shabab
+658	Neom
+659	Al-Fateh
+660	Al-Fayha
+661	Al-Khaleej
+662	Al-Kholood
+663	Al-Riyadh
+664	Damac
+665	Al-Okhdood
+666	Al-Hazem
+667	Al-Najma
+668	Kashima Antlers
+669	Vissel Kobe
+670	Kashiwa Reysol
+671	Sanfrecce Hiroshima
+672	Kawasaki Frontale
+673	Urawa Red Diamonds
+674	Machida Zelvia
+675	Yokohama F. Marinos
+676	Kyoto Sanga
+677	Gamba Osaka
+678	Cerezo Osaka
+679	FC Tokyo
+680	Nagoya Grampus
+681	Tokyo Verdy
+682	Shimizu S-Pulse
+683	Avispa Fukuoka
+684	Albirex Niigata
+685	Shonan Bellmare
+686	St. Pauli
+687	Holstein Kiel
+688	Bochum
+689	Hertha
+690	Hannover
+691	Darmstadt
+692	Nürnberg
+693	Kaiserslautern
+694	Paderborn
+695	Fortuna Düsseldorf
+696	Magdeburg
+697	Elversberg
+698	Arminia Bielefeld
+699	Karlsruhe

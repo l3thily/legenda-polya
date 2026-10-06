@@ -1,0 +1,280 @@
+1040	Super-agent
+1041	One of the most influential agents in the world offers his services.
+1042	Sign the super-agent
+1043	8% commission on wages
+1044	More offers from top clubs and wages ~15% higher
+1045	A super-agent now represents your interests.
+1046	Stay with your old agent
+1047	Loyalty
+1048	You stayed with your agent.
+1049	Captain's armband
+1050	Your {0} teammates elected you captain.
+1051	Wear the armband
+1052	Become a leader
+1053	More trust from the coach and reputation; harder for the club to sell you
+1054	You're the captain of {0}.
+1055	Leadership isn't for me
+1056	You turned down the captaincy.
+1057	The family misses home
+1058	Your wife and kids are tired of moving. And {0} are calling right now — the club wants you home.
+1059	Career comes first
+1060	Worse mood: less playing time this season
+1061	You stayed, but the family is unhappy.
+1062	Move the family into a new home
+1063	Spend {0}
+1064	Everything will settle down
+1065	The family moved in with you — everyone's happy.
+1066	Charity foundation
+1067	A children's football school in your homeland asks for help.
+1068	Start your own foundation
+1069	Invest {0}
+1070	Your reputation will grow noticeably
+1071	You started a charity foundation.
+1072	Help anonymously
+1073	Donate {0}
+1074	You helped the school without publicity.
+1075	National team captain
+1076	The national team head coach ({0}) offers you the captain's armband.
+1077	Accept
+1078	Lead the national team
+1079	More national team playing time and reputation
+1080	You're the national team captain.
+1081	Let someone else lead
+1082	You turned down the national team armband.
+1083	Mentor
+1084	A team veteran offers to stay after training and work with you one-on-one.
+1085	Take him as a mentor
+1086	Extra training
+1087	Noticeably faster progress this season
+1088	You have a mentor now.
+1089	Train on your own
+1090	Your own way
+1091	It might work, or it might not
+1092	Working on your own paid off.
+1093	Without supervision you overloaded yourself.
+1094	Burnout
+1095	{0} matches this season. You feel your head and legs stop obeying you.
+1096	Take a break
+1097	A psychologist and a holiday
+1098	You'll miss the start of the season but come back fresh
+1099	The break helped you reset.
+1100	Keep playing
+1101	No time to rest
+1102	60%: all fine. Otherwise — a dip in form
+1103	You pushed through the fatigue.
+1104	A dip in form: you lost rating.
+1105	Documentary series
+1106	A streaming service wants to film a series about your season: cameras in the dressing room and at home.
+1107	Fee {0}
+1108	Reputation and money, but your teammates don't like the cameras
+1109	Filming of the series has begun.
+1110	The dressing room is sacred
+1111	Teammates will appreciate it
+1112	You turned down the streamer, your teammates appreciated it.
+1113	Dressing-room conflict
+1114	One of the team's leaders publicly accused you of selfishness on the pitch.
+1115	Make up publicly
+1116	Shake hands at training
+1117	The dressing room calms down, but you lost in the press
+1118	You made up with your teammate.
+1119	Stand your ground
+1120	Don't back down
+1121	50/50: the teammate gets sold or the team turns its back on you
+1122	The club took your side and sold the teammate.
+1123	The dressing room split, and the majority isn't on your side.
+1124	Ask the coach to sort it out
+1125	An internal matter
+1126	The coach doesn't like being dragged in
+1127	The coach held a team meeting.
+1128	Fans are unhappy
+1129	The fans hung up a banner against you and whistle every time you touch the ball.
+1130	Go out to the fans
+1131	Talk to the ultras in person
+1132	60%: you'll reach an agreement. Otherwise it gets worse
+1133	The talk with the ultras eased the tension.
+1134	The talk with the ultras ended in a scandal.
+1135	Answer on the pitch
+1136	Keep quiet and score
+1137	Slow but sure
+1138	You decided to answer on the pitch.
+1139	They don't want me here
+1140	You asked for a transfer after the conflict with the fans.
+1141	The coach criticises you in the press
+1142	At a press conference the head coach called you “lazy” and “overrated”.
+1143	Reply on social media
+1144	Hit back
+1145	The fans will appreciate it, the coach won't
+1146	Your reply to the coach went viral.
+1147	Apologise and work
+1148	Swallow your pride
+1149	The relationship will improve
+1150	You apologised and got back to work.
+1151	Go to the board
+1152	Him or me
+1153	40%: the coach gets sacked. Otherwise you're put on the transfer list
+1154	The coach was sacked, the new one is counting on you.
+1155	The board backed the coach. You're on the transfer list.
+1156	Fan favourite
+1157	{0} fans wear shirts with your name, and the club offers a contract until the end of your career.
+1158	Sign a “lifetime” contract
+1159	+3 years on the contract, wages +10%
+1160	You become a club legend
+1161	You signed with {0} until the end of your career.
+1162	Don't plan ahead
+1163	We'll see
+1164	You didn't tie yourself to a long contract.
+1165	Viral video
+1166	Your trick in training got millions of views. Brands are sliding into your DMs, bloggers invite you to challenges.
+1167	Launch your own challenge
+1168	Dances, tricks, collabs
+1169	Followers +18%, the coach thinks it's too much
+1170	Kids all over the world repeat your challenge.
+1171	Monetise
+1172	Ad integration
+1173	+{0}, followers +6%
+1174	You made money from the viral video.
+1175	No fuss
+1176	Slightly faster progress
+1177	You didn't feed the hype.
+1178	Wave of hate
+1179	After a bad run the comments under your posts turned into a cesspit. Your family got it too.
+1180	Answer the haters
+1181	Harshly and publicly
+1182	50%: fan support. Otherwise — a scandal
+1183	Thousands of fans backed your reply to the haters.
+1184	The social media spat made the news. The club is unhappy.
+1185	Turn off comments
+1186	Silence
+1187	Followers −5%, but a clear head
+1188	You turned off comments and focused on work.
+1189	A “We'll be back” post
+1190	Words for our people
+1191	The stands will appreciate it
+1192	Your post of support spread across fan groups.
+1193	Collab with a blogger
+1194	The country's most popular football blogger invites you to his show: an interview, challenges, a shirt giveaway.
+1195	Followers +10%
+1196	The episode with you became the most popular in the show's history.
+1197	Not my format
+1198	You turned down the blogger.
+1199	Personal trainer
+1200	One-on-one sessions: faster growth, slower decline after 30
+1201	Physio and nutritionist
+1202	30% fewer injuries, a slightly longer career
+1203	Sports psychologist
+1204	Key moments in finals succeed more often, morale never below 45, fewer traps on penalties
+1205	SMM team
+1206	Followers grow a third faster
+1207	Personal video analyst
+1208	Analysis of every match: higher ratings, 8% more goals and assists
+1209	Top agency
+1210	More transfer offers and from stronger clubs, wages in new contracts +12%
+1211	Ballon d'Or PR campaign
+1212	The press and the jury are on your side: noticeably higher in the vote, reputation grows
+1213	from rating 80
+1214	Hyperbaric chamber at home
+1215	20% fewer injuries, career half a season longer
+1216	Dream house
+1217	The family is happy and doesn't ask to go home, slightly faster progress
+1218	Supercar
+1219	Followers grow faster. Sometimes — fines and headlines
+1220	Football school in your homeland
+1221	Reputation and the love of the stands, the school becomes part of your legacy
+1222	Yacht
+1223	Summer photos blow up social media
+1224	A stake in your first club
+1225	The club where you started gets money and becomes stronger
+1226	from age 29 and reputation 45
+1227	Family relocation and language courses
+1228	At a new club you fit in right away: the coach and teammates are on your side from day one
+1229	Your own recovery clinic
+1230	Injuries are half as long, career a year longer
+1231	Personal training base
+1232	Faster growth, decline after 30 a quarter slower, potential +1 (until 27)
+1233	Restaurant
+1234	Income around 6% a year. Sometimes restaurants close
+1235	Your own clothing brand
+1236	The more followers, the better the sales
+1237	from 1M followers
+1238	A friend's startup
+1239	It may grow many times over, or it may burn out
+1240	Not enough money: you need {0}.
+1241	You bought out your contract from {0} for {1}.
+1242	Contract bought out. You're a free agent — choose a club on the “Career” tab.
+1243	{0}: subscription cancelled.
+1244	{0}: season paid, {1}.
+1245	Bought: {0}.
+1246	Purchase: {0} for {1}.
+1247	{0}: sold for {1} (invested {2}).
+1248	Minimum investment — {0}.
+1249	{0}: invested {1}.
+1250	Your restaurant closed. You recovered {0}.
+1251	The clothing brand didn't take off and closed.
+1252	The startup took off! Your stake is now worth {0}.
+1253	The startup went bust. The {0} you invested is gone.
+1254	Not enough money to renew: {0}.
+1255	A speeding fine in your supercar made every tabloid.
+1256	Paparazzi photographed your supercar in a disabled parking space. Awkward.
+1257	{0}K
+1258	{0}M
+1259	known in the neighbourhood
+1260	local celebrity
+1261	media player
+1262	social media star
+1263	megastar
+1264	internet icon
+1265	Social media: 1M followers
+1266	Social media: 10M followers
+1267	Social media: 100M followers
+1268	Knee slide
+1269	A classic: the stands go wild
+1270	Somersault
+1271	Spectacular, but you can land badly
+1272	Finger to the lips
+1273	Silence the away stands
+1274	Heart to the stands
+1275	Your own fans will love you even more
+1276	Robot dance
+1277	Memes guaranteed, the coach winces
+1278	Freeze like a statue
+1279	Cold and stylish
+1280	Signature celebration
+1281	You already have {0} {1}, and the cameramen are waiting to see how you celebrate. Time to pick a signature move: it'll stay with you for your whole career.
+1282	Signature move
+1283	Your signature celebration — “{0}”.
+1284	Number at the new club
+1285	At {0} your No. {1} is already worn by {2}, and he's in no hurry to give it up.
+1286	Buy No. {0}
+1287	A gift for your teammate — {0}
+1288	The number is yours and your teammate is happy
+1289	{0} gave you No. {1} for a generous gift.
+1290	Take No. {0}
+1291	Start a new story
+1292	A bold choice: the fans will appreciate it
+1293	At {0} you wear No. {1}.
+1294	You're {0}, your pace isn't what it was ({1}), but your passing and reading of the game only get better.
+1295	Your attributes have outgrown your position: as a {0} your rating would be {1}.
+1296	Position evolution
+1297	{0} The coach suggests trying a new role. Many greats extended their careers this way.
+1298	Retrain: {0}
+1299	Rating {0} ({1}{2})
+1300	{0}The coach will appreciate your willingness to change
+1301	A deeper position — a longer career.
+1302	You retrained: you're now a {0}.
+1303	Rating {0}
+1304	I won't give up my place on the pitch
+1305	You stayed in your position.
+1306	{0} has retired.
+1307	You changed lines, and comparing you with {0} no longer makes sense.
+1308	{0} has gone to another level (rating {1} vs your {2}).
+1309	{0} has fallen hopelessly behind (rating {1} vs your {2}).
+1310	{0} The press has found a new rival at your level: {1} ({2}, {3}, rating {4}).
+1311	Your arch-rival {0} moved to {1} for {2}.{3}
+1312	It's your sworn enemy: the derbies will get even hotter.
+1313	{0} left for big money at {1}.
+1314	{0}, your arch-rival, has retired. The Ballon d'Or duel ends {1}:{2}{3}.
+1315	 in your favour
+1316	 in his favour
+1317	{0} refused to share a dressing room with you and left for {1}.
+1318	The rival celebrates
+1319	{0} posted a photo with trophies captioned “Someone's looking up from below again”. Everyone knew who he meant.

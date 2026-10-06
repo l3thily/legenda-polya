@@ -1,0 +1,259 @@
+780	More energy for the club
+781	You left the national team after the flop.
+782	Miracle season
+783	{0} became champions despite being only the {1} strongest team before the season. They're making a film about you, and the giants are already calling.
+784	Sign a new contract
+785	Stay a hero
+786	+2 years, wages +20%, the fans worship you
+787	You extended your contract with the champions.
+788	Seize the moment
+789	Your price is at its peak
+790	More offers next summer
+791	You decided to sell yourself dearly.
+792	Change nothing
+793	Just play
+794	You stayed without any loud statements.
+795	Club relegated
+796	{0} were relegated, even though you were a regular. Your contract has a relegation clause.
+797	Stay and bring the club back
+798	We fell together — we'll rise together
+799	The fans won't forget
+800	You stayed to bring the club back up.
+801	Trigger the relegation clause
+802	Leave for free
+803	You'll immediately become a free agent
+804	You triggered the relegation clause.
+805	The club will get money
+806	You asked for a transfer after relegation.
+807	Two national teams want you
+808	You have dual citizenship, and both federations have called you up: {0} and {1}. Once you play at an official tournament, the choice becomes final.
+809	Play for this national team
+810	You chose your national team: {0}.
+811	Ultimatum
+812	{0} gave you 24 hours: either you sign now, or they'll never call again. {1} begs you to stay and promises the armband.
+813	Leave for {0}
+814	Stay and take the armband
+815	Loyalty to the club
+816	Captain, the fans adore you
+817	You turned down {0} and became captain of {1}.
+818	Blackmail the club
+819	Use the giant's interest
+820	50%: wages +40%. Otherwise the club takes offence
+821	The club got scared and raised your wages by 40%.
+822	The blackmail didn't work: the club and fans took offence.
+823	Sold without asking
+824	The last day of the window. {0} urgently need money, and you've already been sold to {1}, only the papers are left to sign.
+825	Go to {0}
+826	Stay out of spite
+827	The whole season on the bench, the coach is furious
+828	You refused to leave and ended up on the bench.
+829	Take it to FIFA
+830	A contract is a contract
+831	40%: you'll become a free agent. Otherwise your reputation suffers
+832	FIFA sided with you: the contract has been terminated.
+833	You lost the case, relations with the club are ruined.
+834	A star for your position
+835	The club bought a star for exactly your position. The coach says there's room for both. Nobody believes it.
+836	Fight
+837	Claw your way in
+838	Faster progress, but less playing time
+839	You decided to fight for your place.
+840	Don't waste a year
+841	You asked for a transfer.
+842	A legend in the team
+843	{0} signed a world football legend at the end of his career. You're asked to play alongside him.
+844	Play for him
+845	Give him the glory
+846	The team is noticeably stronger, fewer goals for you
+847	You became the legend's sidekick.
+848	Compete
+849	I'm the leader here
+850	50%: you're the main man. Otherwise the dressing room turns on you
+851	You proved who the leader is.
+852	The dressing room chose the legend.
+853	A sheikh bought the club
+854	{0} were bought by a Middle Eastern fund. The budget has multiplied, but the new owner wants big names.
+855	Stay and prove yourself
+856	I am the big name
+857	60%: you're part of the project. Otherwise you'll be put up for sale
+858	The owner bet on you.
+859	The owner brought in stars and put you on the transfer list.
+860	Become the face of the project
+861	Dream contract
+862	Wages ×1.5 and +2 years on the contract
+863	You became the face of the new project.
+864	Leave
+865	Money isn't everything
+866	You decided to leave the sheikh's club.
+867	The club is bankrupt
+868	{0} haven't paid wages for three months. The best players are already fleeing.
+869	Leave as a free agent
+870	Contract terminated
+871	You'll get offers right away
+872	You left the bankrupt club.
+873	Stay and save it
+874	Half the wages
+875	The fans will remember forever
+876	You stayed to save the club. The stands chant your name.
+877	Go to court
+878	Get what's yours
+879	You'll win back part of the money and leave
+880	You won back part of your wages in court and left.
+881	Your dream club is calling
+882	Cult club {0} are stuck in the second division. The fans have launched a campaign: “Bring us back up.”
+883	Bring {0} back to the elite
+884	Career at its peak
+885	Roots
+886	The federation ({0}) discovered that your grandmother comes from there and offers a passport and a place in the national team.
+887	Play for {0}
+888	You switched national teams: {0}.
+889	Stay: {0}
+890	You don't abandon your own
+891	You stayed loyal to your national team.
+892	National team boycott
+893	The national team players fell out with the federation over bonuses and the coach. The captain suggests boycotting the next camp.
+894	Decline the call-up
+895	Support your teammates
+896	A season without the national team
+897	You skip the camp in protest.
+898	Go to the camp
+899	The national team is above intrigue
+900	Your teammates won't appreciate it
+901	You went to the camp.
+902	Become the face of the protest
+903	Interviews to every channel
+904	50%: you'll become a hero. Otherwise the federation will suspend you for a year
+905	The protest won: the federation was re-elected.
+906	The federation suspended you for a year.
+907	A call from an unknown number
+908	A man from a betting company offers to “help out” in one match. Huge money, nobody will ever know. Or so he says.
+909	Report him to the police
+910	Fair play
+911	Your reputation will grow
+912	You turned the bookmaker in to the police. You were called a role model for the young.
+913	Tell him where to go
+914	None of my business
+915	You hung up.
+916	Agree
+917	€3M in cash
+918	Every year there's a chance it all comes out
+919	You took the money. Now you have to live with it.
+921	Your contract with {0} has been terminated. Clubs can sign you without a fee.
+922	LEGEND OF THE PITCH
+923	peak rating
+924	clean sheets
+925	conceded
+926	trophies
+927	Yashin trophies
+928	Ballons d'Or
+929	national team, caps/goals
+930	TROPHIES
+931	No trophies. But honest.
+932	JOURNEY
+933	records broken: {0}
+934	statue outside the stadium
+935	best Ballon d'Or finish: {0}
+936	world code: {0}
+937	Greatest of all time
+938	World football legend
+939	Star of his generation
+940	Top-level player
+941	Reliable professional
+942	Football workhorse
+943	HEAD COACH · {0}
+944	As a player: {0} · {1} trophies{2}
+945	· Yashin ×
+946	Champions Leagues
+947	coach of the year
+948	seasons
+949	jobs
+950	sackings
+951	No trophies. But experience.
+952	JOBS
+953	Couldn't draw the picture.
+954	Career summary picture
+955	Drawing…
+956	Career summary
+957	Download
+958	Close
+959	If the download didn't work, press and hold the picture to save it.
+960	Share
+961	unknown
+962	known in the league
+963	league star
+964	world star
+965	icon
+966	ACL rupture
+967	In pre-season your knee cracked. Diagnosis — a torn cruciate ligament. How you come back depends on your decision.
+968	Surgery with the best surgeon
+969	You pay {0}
+970	A long but clean recovery: ~18 matches, −1 to rating
+971	The surgery went perfectly, a long rehab lies ahead.
+972	Rush the comeback
+973	Return in a couple of months
+974	~9 matches without you, −2 to rating. Risk of relapse ~35%
+975	You risked an early comeback — the knee held up.
+976	Relapse! The season is almost lost, your career will be shorter.
+977	Conservative treatment
+978	No surgery
+979	~14 matches, −2 to rating, a slightly shorter career
+980	You chose treatment without surgery.
+981	New head coach
+982	{0} changed coach, and there's no place for you in his system yet.
+983	Work hard and prove it
+984	Quietly work in training
+985	Less playing time, but faster progress
+986	You decided to prove the new coach wrong.
+987	Go to the president
+988	Put it bluntly
+989	50/50: either the coach is reined in or the conflict hits the press
+990	The president took your side — the coach reconsidered the line-up.
+991	The conflict with the coach spilled into the press. You were put on the transfer list.
+992	Your agent is looking at options
+993	The new {0} coach sees you as a key player.
+994	Become the heart of the team
+995	The play goes through you
+996	More playing time and responsibility
+997	The new coach built the team around you.
+998	Ask for a free role
+999	Less tactics, more improvisation
+1000	Faster growth, but higher expectations
+1001	The coach gave you a free role.
+1002	Press scandal
+1003	The tabloids published photos from a late-night party two days before a match. The club awaits your response.
+1004	Apologise publicly
+1005	Admit the mistake
+1006	Your reputation will suffer slightly
+1007	You apologised to the fans.
+1008	Ignore it
+1009	No comment
+1010	50/50: the story will be forgotten or the club will punish you
+1011	The story was quickly forgotten.
+1012	The club fined you and dropped you for a month.
+1013	Sue the tabloid
+1014	Defend your name
+1015	Expensive. Win — and your reputation grows
+1016	You won the case, the tabloid apologised.
+1017	You lost the case, the story blew up even more.
+1018	Sponsorship deal
+1019	A major sports brand wants to make you the face of its new boot collection.
+1020	Mega deal
+1021	{0} a year, 4 years
+1022	Ads and shoots take time: slightly slower progress
+1023	Signed a mega sponsorship deal: {0} a year.
+1024	Modest deal
+1025	{0} a year, 3 years
+1026	No extra load
+1027	Signed a sponsorship deal: {0} a year.
+1028	Football only
+1029	All the time goes to training
+1030	You turned down sponsors for the sake of football.
+1031	Personal staff
+1032	A veteran you know advises hiring a personal nutritionist, physio and coach — that's how he played until 40.
+1033	Hire a team
+1034	{0} one-off
+1035	Career about a season longer, softer decline after 30
+1036	You now have your own staff of specialists.
+1037	No need
+1038	The club doctors are enough
+1039	You decided to rely on the club's specialists.

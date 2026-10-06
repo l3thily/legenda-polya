@@ -1,0 +1,330 @@
+0	Spain
+1	France
+2	England
+3	Portugal
+4	Netherlands
+5	Germany
+6	Italy
+7	Belgium
+8	Croatia
+9	Norway
+10	Switzerland
+11	Denmark
+12	Turkey
+13	Austria
+14	Sweden
+15	Serbia
+16	Ukraine
+17	Poland
+18	Czechia
+19	Scotland
+20	Hungary
+21	Russia
+22	Greece
+23	Wales
+24	Slovakia
+25	Georgia
+26	Ireland
+27	Slovenia
+28	Romania
+29	Bosnia and Herzegovina
+30	Albania
+31	Finland
+32	Iceland
+33	Israel
+34	North Macedonia
+35	Montenegro
+36	Northern Ireland
+37	Kosovo
+38	Bulgaria
+39	Belarus
+40	Kazakhstan
+41	Armenia
+42	Azerbaijan
+43	Luxembourg
+44	Cyprus
+45	Latvia
+46	Lithuania
+47	Faroe Islands
+48	Estonia
+49	Moldova
+50	Malta
+51	Andorra
+52	Liechtenstein
+53	Gibraltar
+54	San Marino
+55	Argentina
+56	Brazil
+57	Uruguay
+58	Colombia
+59	Ecuador
+60	Paraguay
+61	Chile
+62	Venezuela
+63	Peru
+64	Bolivia
+65	USA
+66	Mexico
+67	Canada
+68	Panama
+69	Costa Rica
+70	Jamaica
+71	Honduras
+72	Curaçao
+73	Haiti
+74	Guatemala
+75	Suriname
+76	El Salvador
+77	Trinidad and Tobago
+78	Nicaragua
+79	Dominican Republic
+80	Cuba
+81	Guyana
+82	Bermuda
+83	Puerto Rico
+84	Grenada
+85	Saint Kitts and Nevis
+86	Belize
+87	Antigua and Barbuda
+88	Saint Lucia
+89	Saint Vincent and the Grenadines
+90	Barbados
+91	Dominica
+92	Aruba
+93	Bahamas
+94	Cayman Islands
+95	Montserrat
+96	British Virgin Islands
+97	US Virgin Islands
+98	Anguilla
+99	Turks and Caicos
+100	Morocco
+101	Senegal
+102	Ivory Coast
+103	Egypt
+104	Nigeria
+105	Algeria
+106	Cameroon
+107	Mali
+108	Ghana
+109	Tunisia
+110	DR Congo
+111	South Africa
+112	Burkina Faso
+113	Cape Verde
+114	Guinea
+115	Gabon
+116	Angola
+117	Zambia
+118	Uganda
+119	Benin
+120	Equatorial Guinea
+121	Mauritania
+122	Kenya
+123	Tanzania
+124	Mozambique
+125	Libya
+126	Comoros
+127	Gambia
+128	Madagascar
+129	Sudan
+130	Togo
+131	Zimbabwe
+132	Congo
+133	Sierra Leone
+134	Namibia
+135	Guinea-Bissau
+136	Niger
+137	Rwanda
+138	Malawi
+139	Burundi
+140	Ethiopia
+141	Liberia
+142	Botswana
+143	Central African Republic
+144	Lesotho
+145	Eswatini
+146	South Sudan
+147	Chad
+148	Mauritius
+149	São Tomé and Príncipe
+150	Djibouti
+151	Eritrea
+152	Somalia
+153	Seychelles
+154	Japan
+155	South Korea
+156	Iran
+157	Australia
+158	Uzbekistan
+159	Saudi Arabia
+160	Qatar
+161	Iraq
+162	Jordan
+163	UAE
+164	Oman
+165	China
+166	Indonesia
+167	Bahrain
+168	Syria
+169	Palestine
+170	Vietnam
+171	Thailand
+172	Tajikistan
+173	Kyrgyzstan
+174	Malaysia
+175	North Korea
+176	Lebanon
+177	Kuwait
+178	Philippines
+179	India
+180	Turkmenistan
+181	Hong Kong
+182	Singapore
+183	Yemen
+184	Myanmar
+185	Afghanistan
+186	Taiwan
+187	Bangladesh
+188	Nepal
+189	Cambodia
+190	Mongolia
+191	Laos
+192	Maldives
+193	Sri Lanka
+194	Guam
+195	Macau
+196	Brunei
+197	East Timor
+198	Bhutan
+199	New Zealand
+200	New Caledonia
+201	Fiji
+202	Solomon Islands
+203	Tahiti
+204	Papua New Guinea
+205	Vanuatu
+206	Samoa
+207	Cook Islands
+208	Tonga
+209	American Samoa
+210	Arsenal
+211	Manchester City
+212	Liverpool
+213	Chelsea
+214	Newcastle
+215	Aston Villa
+216	Manchester United
+217	Tottenham
+218	Brighton
+219	Nottingham Forest
+220	Crystal Palace
+221	Bournemouth
+222	Brentford
+223	Fulham
+224	Everton
+225	West Ham
+226	Leeds
+227	Sunderland
+228	Coventry City
+229	Ipswich Town
+230	Real Madrid
+231	Barcelona
+232	Atlético
+233	Villarreal
+234	Athletic
+235	Betis
+236	Real Sociedad
+237	Celta
+238	Valencia
+239	Sevilla
+240	Girona
+241	Osasuna
+242	Rayo Vallecano
+243	Espanyol
+244	Mallorca
+245	Getafe
+246	Alavés
+247	Elche
+248	Levante
+249	Racing Santander
+250	Inter
+251	Napoli
+252	Milan
+253	Juventus
+254	Atalanta
+255	Roma
+256	Como
+257	Lazio
+258	Bologna
+259	Fiorentina
+260	Torino
+261	Udinese
+262	Genoa
+263	Sassuolo
+264	Cagliari
+265	Parma
+266	Venezia
+267	Palermo
+268	Lecce
+269	Verona
+270	Bayern
+271	Borussia Dortmund
+272	Bayer
+273	RB Leipzig
+274	Stuttgart
+275	Eintracht Frankfurt
+276	Freiburg
+277	Hoffenheim
+278	Wolfsburg
+279	Borussia Mönchengladbach
+280	Mainz
+281	Union Berlin
+282	Werder
+283	Augsburg
+284	Köln
+285	Hamburg
+286	Heidenheim
+287	Schalke 04
+288	PSG
+289	Marseille
+290	Monaco
+291	Lille
+292	Lyon
+293	Strasbourg
+294	Nice
+295	Lens
+296	Rennes
+297	Toulouse
+298	Brest
+299	Nantes
+300	Paris FC
+301	Auxerre
+302	Angers
+303	Saint-Étienne
+304	Le Havre
+305	Lorient
+306	Sporting
+307	Benfica
+308	Porto
+309	Braga
+310	Vitória Guimarães
+311	Famalicão
+312	Gil Vicente
+313	Estoril
+314	Moreirense
+315	Rio Ave
+316	Estrela
+317	Arouca
+318	Casa Pia
+319	Santa Clara
+320	Nacional
+321	Tondela
+322	Alverca
+323	AVS
+324	PSV
+325	Ajax
+326	Feyenoord
+327	AZ
+328	Twente
+329	Utrecht
