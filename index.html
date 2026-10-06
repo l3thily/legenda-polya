@@ -5130,7 +5130,7 @@ const GOALS={
   g20s:['Забить 20 голов за сезон',1,'out',()=>anyS(x=>x.club.g>=20)],
   a12s:['Отдать 12 голевых передач за сезон',1,'out',()=>anyS(x=>x.club.a>=12)],
   cs15s:['Провести 15 сухих матчей за сезон',1,'back',()=>anyS(x=>x.club.cs>=15)],
-  euroPlay:['Сыграть в еврокубках',1,null,()=>anyS(x=>x.comps.some(c=>EUROCUPS.includes(c.n)))],
+  euroPlay:['Сыграть в еврокубках',1,'uefa',()=>anyS(x=>x.comps.some(c=>EUROCUPS.includes(c.n)))],
   derby3:['Выиграть 5 дерби за карьеру',1,'derby',()=>G.seasons.reduce((a,x)=>a+(x.derby?x.derby.w:0),0)>=5],
   fol1:['Набрать миллион подписчиков',1,null,P=>(P.fol||0)>=1],
   apps150:['Сыграть 150 матчей за клубы',1,null,P=>P.tot.apps>=150],
@@ -5139,7 +5139,7 @@ const GOALS={
   // tier 2
   league:['Выиграть чемпионат страны',2,null,()=>hasT(t=>LG_NAMES().includes(t.n))],
   double:['Сделать золотой дубль: чемпионат и кубок за один сезон',2,null,()=>anyS(x=>x.trophies.some(n=>LG_NAMES().includes(n))&&x.trophies.some(n=>CUP_NAMES().includes(n)))],
-  smallEuro:['Выиграть Лигу Европы или Лигу конференций',2,null,()=>hasT(t=>t.n==='Лига Европы'||t.n==='Лига конференций')],
+  smallEuro:['Выиграть Лигу Европы или Лигу конференций',2,'uefa',()=>hasT(t=>t.n==='Лига Европы'||t.n==='Лига конференций')],
   bdo10:['Попасть в топ-10 голосования за Золотой мяч',2,null,P=>P.bdoBest!=null&&P.bdoBest<=10],
   topScorer:['Стать лучшим бомбардиром лиги',2,'out',()=>hasA(a=>/^Лучший бомбардир · /.test(a.n))],
   tos:['Попасть в команду сезона своей лиги',2,null,()=>hasA(a=>/^Команда сезона · /.test(a.n))],
@@ -5149,7 +5149,7 @@ const GOALS={
   finalGoal:['Забить в финале',2,'out',()=>anyS(x=>x.finG>0)],
   loyal8:['Провести 8 сезонов подряд в одном клубе',2,null,()=>clubStreak()>=8],
   wcPlay:['Сыграть на чемпионате мира',2,'nat72',()=>anyS(x=>x.tourn.some(t=>/^Чемпионат мира/.test(t.n)&&t.called&&t.st!=='не прошла отбор'))],
-  uclSemi:['Дойти до 1/4 финала Лиги чемпионов',2,'club74',()=>anyS(x=>x.comps.some(c=>c.n==='Лига чемпионов'&&/1\/[24] финала|Финал|Победитель/.test(c.st)))],
+  uclSemi:['Дойти до 1/4 финала Лиги чемпионов',2,['uefa','club74'],()=>anyS(x=>x.comps.some(c=>c.n==='Лига чемпионов'&&/1\/[24] финала|Финал|Победитель/.test(c.st)))],
   cs100:['Провести 100 сухих матчей за карьеру',2,'back',P=>P.tot.cs>=100],
   // tier 3
   ucl:['Выиграть Лигу чемпионов',3,null,()=>hasT(t=>t.n==='Лига чемпионов')],
@@ -5172,7 +5172,8 @@ const GOALS={
   caps:['Сыграть 100 матчей за сборную',2,null,P=>P.caps>=100],
   tro10:['Выиграть 10 трофеев',3,null,P=>P.trophies.length>=10],
 };
-const goalFits=(k,pos,ctx={})=>{const f=GOALS[k][2],nm=/^nat(\d+)$/.exec(f||'');if(nm)return (ctx.nat||0)>=+nm[1];const cm=/^club(\d+)$/.exec(f||'');if(cm)return (ctx.club||0)>=+cm[1];if(f==='derby')return !!ctx.derby;return !f||(f==='out'&&!isGK(pos)&&!isDEF(pos))||(f==='back'&&(isGK(pos)||isDEF(pos)))||(f==='gk'&&isGK(pos))||(f==='nogk'&&!isGK(pos))};
+const goalFits=(k,pos,ctx={})=>{const f0=GOALS[k][2];if(Array.isArray(f0))return f0.every(f=>goalFits1(f,pos,ctx));return goalFits1(f0,pos,ctx)};
+const goalFits1=(f,pos,ctx={})=>{const nm=/^nat(\d+)$/.exec(f||'');if(nm)return (ctx.nat||0)>=+nm[1];const cm=/^club(\d+)$/.exec(f||'');if(cm)return (ctx.club||0)>=+cm[1];if(f==='derby')return !!ctx.derby;if(f==='uefa')return !!ctx.uefa;return !f||(f==='out'&&!isGK(pos)&&!isDEF(pos))||(f==='back'&&(isGK(pos)||isDEF(pos)))||(f==='gk'&&isGK(pos))||(f==='nogk'&&!isGK(pos))};
 const POOLS={1:['cupDom','capt','natYoung','g20s','a12s','cs15s','euroPlay','derby3','fol1','apps150','bigMove','avg75'],2:['league','double','smallEuro','bdo10','topScorer','tos','caps50','g150','money50','finalGoal','loyal8','wcPlay','uclSemi','cs100'],3:['ucl','bdo','yashin','intlTitle','poty','homeTitle','treble','g300','tro12']};
 /* weekday themes: the medium goal leans to the theme */
 const THEMES=[['Воскресный уикенд',['league','double','tos','loyal8']],['Трансферный понедельник',['money50','bdo10','caps50']],['Вечер Лиги чемпионов',['uclSemi','smallEuro','finalGoal']],['Вечер Лиги чемпионов',['uclSemi','smallEuro','finalGoal']],['Еврокубковый четверг',['smallEuro','finalGoal','wcPlay']],['Пятничное дерби',['league','tos','topScorer','cs100']],['Субботний тур',['league','double','g150','topScorer','cs100']]];
@@ -5197,11 +5198,11 @@ function dailySetup(day=dayKey()){
   const clubs=lg.clubs.slice().sort((a,b)=>a.str-b.str),club=clubs[Math.floor(r()*clubs.length)];
   const posK=Object.keys(POS),pos=posK[Math.floor(r()*posK.length)];
   const wd=new Date(Date.UTC(+day.slice(0,4),+day.slice(4,6)-1,+day.slice(6,8))).getUTCDay(),th=THEMES[wd];
-  const nat=S_NATS.find(x=>x.name===COUNTRIES[lg.cc][0]),ctx={nat:nat?nat.str:0,club:club.str,derby:DERBIES.some(d=>d.split('|').includes(club.name))};
+  const nat=S_NATS.find(x=>x.name===COUNTRIES[lg.cc][0]),ctx={uefa:UEFA_CC.includes(lg.cc),nat:nat?nat.str:0,club:club.str,derby:DERBIES.some(d=>d.split('|').includes(club.name))};
   const fit=t=>POOLS[t].filter(k=>goalFits(k,pos,ctx));
   const g1=cyclePick(fit(1),n,'a',1),g3=cyclePick(fit(3),n,'c',3);
   const p2=fit(2),themed=p2.filter(k=>th[1].includes(k)),g2=themed.length&&r()<.6?themed[n%themed.length]:cyclePick(p2,n,'b',2);
-  return {day,theme:th[0],f:{lg:lg.id,club:club.name,pos,nat:COUNTRIES[lg.cc][0],rus:'random'},goals:[g1,g2,g3]};
+  return {day,theme:th[0],f:{lg:lg.id,club:club.name,pos,nat:COUNTRIES[lg.cc][0],rus:lg.cc==='RUS'?'on':'random'},goals:[g1,g2,g3]};
 }
 const GOAL_PTS={1:15,2:35,3:70};
 function startChallenge(kind,id){
