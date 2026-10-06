@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HOST, PORT = "127.0.0.1", int(os.environ.get("PORT", "8095"))
 DATA = os.environ.get("DATA", "/var/lib/legenda-polya/rooms.json")
-ORIGINS = {"https://l3thily.github.io", "https://legenda-polya.88-218-121-40.sslip.io"}
+ORIGINS = {"https://legendapolya.com", "https://l3thily.github.io", "https://legenda-polya.88-218-121-40.sslip.io"}
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED = 500, 8, 120_000, 120
 # inactive rooms are removed: lobby nobody started, finished games, abandoned games
