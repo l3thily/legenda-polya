@@ -29,5 +29,5 @@ HEAD
 cat i18n/index.built.html
 printf '\n</html>\n'
 } > dist/index.html
-cp static/* dist/ 2>/dev/null || true
+cp -R static/. dist/
 echo "built dist/index.html ($(wc -c < dist/index.html) bytes)"

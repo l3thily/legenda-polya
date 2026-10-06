@@ -3,6 +3,7 @@ Description=Legenda polya — room server for multiplayer lobby (127.0.0.1:8095)
 After=network.target
 
 [Service]
+EnvironmentFile=-/etc/legenda-polya-api.env
 ExecStart=/usr/bin/python3 /opt/legenda-polya-api/server.py
 Environment=PORT=8095 DATA=/var/lib/legenda-polya/rooms.json
 DynamicUser=yes

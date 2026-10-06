@@ -8,6 +8,7 @@
 Только стандартная библиотека. Слушает 127.0.0.1:8095, наружу через nginx (/api/) и Caddy.
 """
 import json
+import re
 import os
 import secrets
 import threading
@@ -17,6 +18,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 HOST, PORT = "127.0.0.1", int(os.environ.get("PORT", "8095"))
 DATA = os.environ.get("DATA", "/var/lib/legenda-polya/rooms.json")
 ORIGINS = {"https://legendapolya.com", "https://l3thily.github.io", "https://legenda-polya.88-218-121-40.sslip.io"}
+# Yandex Games serves the build from its own CDN domains
+YG_ORIGIN = re.compile(r"^https://([a-z0-9-]+\.)*(games\.s3\.yandex\.net|yandex\.(ru|com|by|kz|uz|com\.tr)|playhop\.com)$")
 ORIGINS |= set(filter(None, os.environ.get("EXTRA_ORIGINS", "").split(",")))  # local testing
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED, MAX_CHAT = 500, 8, 120_000, 120, 80
@@ -28,6 +31,12 @@ CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
 
 lock = threading.Lock()
+STATS_FILE = os.path.join(os.path.dirname(DATA), "stats.json")
+stats: dict = {}  # day (Moscow) -> counters; nothing about people: no IP, no ids
+online: dict = {}  # throwaway tab token -> last ping time, memory only, forgotten after ONLINE_TTL
+ONLINE_TTL = 150
+STATS_KEY = os.environ.get("STATS_KEY", "")
+TG_TOKEN, TG_CHAT = os.environ.get("TG_TOKEN", ""), os.environ.get("TG_CHAT", "")
 SCORES_FILE = os.path.join(os.path.dirname(DATA), "scores.json")
 scores: dict = {}  # board -> [entries], best first: global hall of fame, daily challenge, scenarios
 changed = threading.Condition(lock)  # long-poll: GET ?v=<version>&wait=<s> returns as soon as the room changes
@@ -58,6 +67,80 @@ def persist_scores():
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(scores, f, ensure_ascii=False)
     os.replace(tmp, SCORES_FILE)
+
+
+def msk_day(t=None):
+    return time.strftime("%Y-%m-%d", time.gmtime((t or time.time()) + 3 * 3600))
+
+
+def load_stats():
+    global stats
+    try:
+        with open(STATS_FILE, encoding="utf-8") as f:
+            stats = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        stats = {}
+
+
+def persist_stats():
+    tmp = STATS_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(stats, f)
+    os.replace(tmp, STATS_FILE)
+
+
+def online_now(now):
+    for k in [k for k, t in online.items() if now - t > ONLINE_TTL]:
+        del online[k]
+    return len(online)
+
+
+def day_stats(day):
+    return stats.setdefault(day, {"visitors": 0, "visits": 0, "careers": 0, "seasons": 0, "rooms": 0, "en": 0, "peak": 0})
+
+
+def stats_text(days=7):
+    keys = sorted(stats)[-days:]
+    if not keys:
+        return "Легенда поля: статистики пока нет."
+    now = int(time.time())
+    lines = [f"⚽ Легенда поля · онлайн сейчас: {online_now(now)}", ""]
+    for d in reversed(keys):
+        x = stats[d]
+        lines.append(f"{d[8:10]}.{d[5:7]}: {x['visitors']} уникальных · {x['visits']} визитов · пик онлайн {x['peak']} · "
+                     f"{x['careers']} карьер · {x['seasons']} сезонов · {x['rooms']} в комнатах · EN {x['en']}")
+    week = [stats[d] for d in keys]
+    lines += ["", f"За {len(week)} дн.: {sum(x['visitors'] for x in week)} уникальных за день (сумма), {sum(x['visits'] for x in week)} визитов"]
+    return "\n".join(lines)
+
+
+def tg_send(text):
+    if not TG_TOKEN or not TG_CHAT:
+        return False
+    import urllib.request
+    body = json.dumps({"chat_id": TG_CHAT, "text": text, "disable_web_page_preview": True}).encode()
+    req = urllib.request.Request(f"https://api.telegram.org/bot{TG_TOKEN}/sendMessage", data=body, headers={"Content-Type": "application/json"})
+    try:
+        urllib.request.urlopen(req, timeout=20).read()
+        return True
+    except Exception as e:  # noqa: BLE001 — report failures in the journal, never crash the server
+        print("telegram: " + str(e)[:200], flush=True)
+        return False
+
+
+def reporter():
+    # every day at 09:00 Moscow time: yesterday and the week before
+    sent = None
+    while True:
+        time.sleep(60)
+        now = time.time()
+        msk = time.gmtime(now + 3 * 3600)
+        today = msk_day(now)
+        if msk.tm_hour == 9 and sent != today:
+            with lock:
+                text = stats_text(8)
+            if tg_send(text):
+                sent = today
 
 
 def board_ok(b):
@@ -197,7 +280,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def cors(self):
         origin = self.headers.get("Origin")
-        if origin in ORIGINS:
+        if origin in ORIGINS or (origin and YG_ORIGIN.match(origin)):
             self.send_header("Access-Control-Allow-Origin", origin)
             self.send_header("Vary", "Origin")
             self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -232,6 +315,15 @@ class Handler(BaseHTTPRequestHandler):
         parts = [p for p in self.path.split("?")[0].split("/") if p]
         if parts == ["api", "health"]:
             return self.reply(200, {"ok": True, "rooms": len(rooms)})
+        if parts == ["api", "online"]:
+            with lock:
+                return self.reply(200, {"online": online_now(int(time.time()))})
+        if parts == ["api", "stats"]:
+            q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
+            if not STATS_KEY or not secrets.compare_digest(q.get("key", ""), STATS_KEY):
+                return self.reply(403, {"error": "forbidden"})
+            with lock:
+                return self.reply(200, {"text": stats_text(int(q.get("days", "7") or 7)), "days": dict(sorted(stats.items())[-30:]), "online": online_now(int(time.time()))})
         if parts == ["api", "scores"]:
             q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
             b = q.get("board", "all")
@@ -274,6 +366,26 @@ class Handler(BaseHTTPRequestHandler):
         now = int(time.time())
         with lock:
             cleanup(now)
+            if parts == ["api", "ping"]:
+                # anonymous counters: a browser says "first visit today" itself; the tab token only keeps the online count
+                tab = clip(data.get("tab"), 32)
+                d = day_stats(msk_day(now))
+                if tab:
+                    if tab not in online:
+                        d["visits"] += 1
+                    online[tab] = now
+                if data.get("new"):
+                    d["visitors"] += 1
+                    if data.get("lang") == "en":
+                        d["en"] += 1
+                ev = data.get("ev")
+                if ev in ("careers", "seasons", "rooms"):
+                    d[ev] += 1
+                d["peak"] = max(d["peak"], online_now(now))
+                for old in sorted(stats)[:-120]:
+                    del stats[old]
+                persist_stats()
+                return self.reply(200, {"online": len(online)})
             if parts == ["api", "scores"]:
                 board, sid = clip(data.get("board"), 24), clip(data.get("id"), 24)
                 if not board_ok(board) or not sid:
@@ -426,10 +538,12 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     load()
     load_scores()
+    load_stats()
     with lock:
         if cleanup(int(time.time())):
             persist()
     threading.Thread(target=janitor, daemon=True).start()
+    threading.Thread(target=reporter, daemon=True).start()
     httpd = ThreadingHTTPServer((HOST, PORT), Handler)
     print(f"legenda-polya api on {HOST}:{PORT}", flush=True)
     httpd.serve_forever()

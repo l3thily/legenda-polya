@@ -3,3 +3,6 @@ dist/
 i18n/node_modules/
 i18n/index.built.html
 i18n/todo.json
+dist-yg/
+platforms/.cache/
+platforms/*.zip
