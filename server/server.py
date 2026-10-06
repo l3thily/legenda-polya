@@ -146,7 +146,7 @@ def reporter():
 def board_ok(b):
     if b == "all" or (b.startswith("sc-") and 3 < len(b) <= 24 and b[3:].isalnum()):
         return True
-    if b.startswith("day-") and len(b) == 12 and b[4:].isdigit():
+    if (b.startswith("day-") or b.startswith("top-")) and len(b) == 12 and b[4:].isdigit():
         today = time.strftime("%Y%m%d", time.gmtime())
         yday = time.strftime("%Y%m%d", time.gmtime(time.time() - 86400))
         tmrw = time.strftime("%Y%m%d", time.gmtime(time.time() + 86400))
@@ -396,9 +396,10 @@ class Handler(BaseHTTPRequestHandler):
                 lst = [x for x in scores.get(board, []) if x["id"] != sid] + [e]
                 lst.sort(key=lambda x: -x["score"])
                 scores[board] = lst[:100]
-                days = sorted(k for k in scores if k.startswith("day-"))
-                for old in days[:-14]:
-                    del scores[old]
+                for prefix in ("day-", "top-"):
+                    days = sorted(k for k in scores if k.startswith(prefix))
+                    for old in days[:-14]:
+                        del scores[old]
                 persist_scores()
                 rank = next((i + 1 for i, x in enumerate(scores[board]) if x["id"] == sid), None)
                 return self.reply(200, {"board": board, "rank": rank, "scores": scores[board][:20]})
