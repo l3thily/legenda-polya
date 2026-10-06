@@ -392,7 +392,7 @@ class Handler(BaseHTTPRequestHandler):
                     return self.reply(400, {"error": "неверная таблица"})
                 e = {"id": sid, "nick": clip(data.get("nick"), 24) or "Игрок", "score": round(num(data.get("score"), 0, 3000), 1),
                      "tier": clip(data.get("tier"), 40), "pos": clip(data.get("pos"), 6), "tro": int(num(data.get("tro"), 0, 500)),
-                     "bdo": int(num(data.get("bdo"), 0, 50)), "goal": bool(data.get("goal")), "hard": bool(data.get("hard")), "t": now}
+                     "bdo": int(num(data.get("bdo"), 0, 50)), "goal": int(num(data.get("goal"), 0, 3)), "hard": bool(data.get("hard")), "t": now}
                 lst = [x for x in scores.get(board, []) if x["id"] != sid] + [e]
                 lst.sort(key=lambda x: -x["score"])
                 scores[board] = lst[:100]
