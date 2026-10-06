@@ -3655,7 +3655,7 @@ function dlTick(){
 }
 
 /* ================= multiplayer rooms ================= */
-const API='https://legenda-polya.88-218-121-40.sslip.io/api';
+const API=(()=>{try{if(/(^|\.)legendapolya\.com$/.test(location.host))return '/api'}catch(e){}return 'https://legenda-polya.88-218-121-40.sslip.io/api'})();
 const MP_KEY='legenda-polya-room';
 const MP={sess:null,room:null,err:null,busy:false,lastStatus:null,tick:0,pushT:null};
 try{MP.sess=JSON.parse(localStorage.getItem(MP_KEY)||'null')}catch(e){MP.sess=null}
