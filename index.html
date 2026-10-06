@@ -68,18 +68,22 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .chal-grid{display:grid;gap:16px;margin-top:20px}.chal-grid .day h2{font-size:clamp(30px,5vw,44px);margin:4px 0 8px;color:var(--gold)}
 .scen{display:grid;gap:8px}.scen-i{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px}.scen-i span,.scen-i em{grid-column:1;font-size:13px;color:var(--muted)}.scen-i em{font-style:normal;color:var(--sky)}.scen-i button{grid-column:2;grid-row:1/4}
 .lb{list-style:none;counter-reset:lb;margin:10px 0 0;padding:0;display:grid;gap:4px}.lb li{counter-increment:lb;display:grid;grid-template-columns:28px 1fr auto;gap:0 8px;align-items:center;border-bottom:1px solid var(--line);padding:5px 0}.lb li::before{content:counter(lb);grid-row:1/3;color:var(--dim);font:700 13px var(--mono)}.lb li span{grid-column:2;font-size:12px;color:var(--muted)}.lb li em{grid-column:3;grid-row:1/3;font-style:normal;color:var(--gold)}.lb li.me b{color:var(--gold)}
-.adbar{position:fixed;left:0;right:0;bottom:env(safe-area-inset-bottom,0px);z-index:40;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 40px 6px 12px;background:rgba(7,13,18,.94);border-top:1px solid var(--line);backdrop-filter:blur(8px)}
+.adbar{position:fixed;left:0;right:0;bottom:env(safe-area-inset-bottom,0px);z-index:40;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 40px 6px 12px;background:#070D12;border-top:1px solid var(--line)}
 .adbar .ad-house img{display:block;max-height:90px;max-width:min(728px,100%);width:auto;height:auto;border-radius:8px}.adbar .adsbygoogle{width:100%;max-width:728px;height:90px}
 .ad-mark{margin:0;font-size:10px;line-height:1.2;color:var(--dim)}.ad-x{position:absolute;right:8px;top:8px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line2);background:var(--card);color:var(--muted);font-size:15px;line-height:1;cursor:pointer}
 body.has-ad{padding-bottom:120px}
-@media (max-width:760px){.adbar{bottom:calc(64px + env(safe-area-inset-bottom,0px))}.adbar .ad-house img{max-height:60px}.adbar .adsbygoogle{height:60px}body.has-ad{padding-bottom:150px}}
+@media (max-width:760px){.adbar{bottom:calc(64px + env(safe-area-inset-bottom,0px));padding:5px 36px 4px 8px}.adbar .sp-card{padding:6px 8px;gap:8px}.adbar .sp-ic svg{width:28px;height:28px}.adbar .sp-t b{font-size:16px}.adbar .sp-t span{display:none}.adbar .sp-go{padding:8px 10px;font-size:11px}.ad-x{top:50%;transform:translateY(-50%);right:6px}.adbar .ad-house img{max-height:60px}.adbar .adsbygoogle{height:60px}body.has-ad{padding-bottom:140px}}
 .load{display:grid;gap:6px;justify-items:start;margin:4px 0 6px}.load .seg{margin-top:0}
 .online{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 8px;border:1px solid rgba(47,210,124,.45);border-radius:999px;color:var(--turf);letter-spacing:.04em;text-transform:none}.online i{width:7px;height:7px;border-radius:50%;background:var(--turf);box-shadow:0 0 8px var(--turf)}.online b{color:var(--text)}
-.sp-card{display:flex;align-items:center;gap:12px;width:100%;max-width:728px;text-decoration:none;color:var(--text);background:linear-gradient(90deg,rgba(42,171,238,.14),rgba(14,26,34,.9));border:1px solid rgba(42,171,238,.45);border-radius:14px;padding:8px 12px}
-.sp-card:hover{border-color:#2AABEE}.sp-ic svg{width:36px;height:36px;display:block}.sp-t{display:grid;gap:0;min-width:0;flex:1}.sp-t b{font-family:var(--disp);font-size:20px;letter-spacing:.02em;text-transform:uppercase}.sp-t span{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sp-t em{font-style:normal;font-size:12px;color:#7cc8f0}.sp-go{pointer-events:none}
-.sp-card.big{max-width:none;padding:14px 16px}.sp-card.big .sp-ic svg{width:48px;height:48px}.sp-card.big .sp-t span{white-space:normal}
+.sp-card{display:flex;align-items:center;gap:12px;width:100%;max-width:728px;min-width:0;text-decoration:none;color:var(--text);background:linear-gradient(90deg,rgba(42,171,238,.14),rgba(14,26,34,.9));border:1px solid rgba(42,171,238,.45);border-radius:14px;padding:8px 12px}
+.sp-card:hover{border-color:#2AABEE}.sp-ic svg{width:36px;height:36px;display:block}.sp-t{display:grid;gap:0;min-width:0;flex:1}.sp-t b{font-family:var(--disp);font-size:20px;letter-spacing:.02em;text-transform:uppercase}.sp-t span{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sp-t em{font-style:normal;font-size:12px;color:#7cc8f0}.sp-go{flex:none;pointer-events:none;font:800 12px/1 var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:linear-gradient(180deg,var(--gold2),var(--gold));border-radius:10px;padding:9px 12px}
+.sp-card.big{max-width:none;padding:14px 16px}.sp-card.big .sp-ic svg{width:48px;height:48px}.sp-card.big .sp-go{padding:11px 16px;font-size:13px}.sp-card.big .sp-t span{white-space:normal}
 .podium{list-style:none;margin:0;padding:0;display:grid;gap:6px}.podium li{display:grid;grid-template-columns:34px 1fr auto;gap:0 10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 12px}.podium .m{grid-row:1/3;font-size:22px}.podium li span:not(.m){grid-column:2;font-size:12px;color:var(--muted)}.podium em{grid-column:3;grid-row:1/3;font-style:normal;color:var(--gold);font-size:18px}.podium .p1{border-color:rgba(242,193,78,.6);background:rgba(242,193,78,.07)}
 .moved{max-width:720px;margin:40px auto;text-align:left}.moved h1{font-size:clamp(40px,7vw,72px);line-height:.95;margin:6px 0 14px}.moved h1 em{color:var(--gold);font-style:normal}
+.splash{min-height:100vh;display:grid;place-content:center;justify-items:center;gap:10px;color:var(--muted)}.splash b{font:900 42px/1 var(--disp);letter-spacing:.02em;text-transform:uppercase;color:var(--text)}.splash span{font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.splash i{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--gold2),var(--gold) 45%,var(--gold3));box-shadow:0 0 30px rgba(242,193,78,.35);animation:spl 1.2s var(--ease) infinite alternate}
+@keyframes spl{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+@media (max-width:600px){.seg .tab{padding-inline:10px;font-size:13px}}
 .cookie{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:60;max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5);font-size:14px}
 .cookie p{margin:0}.cookie a,.foot a{color:var(--sky)}
 .foot{flex-wrap:wrap}
@@ -626,7 +630,7 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 }
 
 /* setup: mode switch */
-.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;margin-top:26px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid var(--line)}
+.seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;max-width:100%;overflow-x:auto;scrollbar-width:none;gap:4px;padding:4px;margin-top:26px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid var(--line)}
 .seg .tab{min-height:42px;padding:8px 18px}
 .seg .tab[aria-current="true"]{background:linear-gradient(180deg,rgba(242,193,78,.22),rgba(242,193,78,.08));box-shadow:inset 0 0 0 1px rgba(242,193,78,.45)}
 .seg .tab[aria-current="true"]::after{display:none}
@@ -763,7 +767,7 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 @media (max-width:600px){.kits{grid-template-columns:repeat(2,1fr);padding:14px}.shelf{grid-template-columns:repeat(3,1fr)}.tro-i .ic svg{width:44px;height:44px}.clips{padding:12px}}
 </style>
 
-<div id="app"></div>
+<div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
 
 <script>
 'use strict';
@@ -797,9 +801,16 @@ function trProse(s){
   return null;
 }
 /* names and the game's vocabulary → English; Russian prose left over from old saves stays as it is, a name typed in Cyrillic is transliterated */
+/* results are cached: the same club and player names come back on every render */
+const TRC=new Map();
 function trText(s){
   if(!EN||!s||!CYR.test(s))return s;
-  if(/[а-яё]{2}/.test(s)){const p=trProse(s);if(p!=null)return p}
+  const c=TRC.get(s);if(c!==undefined)return c;
+  const r=trText0(s);if(TRC.size>20000)TRC.clear();TRC.set(s,r);return r;
+}
+const PROSE=/(^|[^А-Яа-яЁё])[а-яё]{2,}/;
+function trText0(s){
+  if(PROSE.test(s)){const p=trProse(s);if(p!=null)return p}
   const M=trMap(),parts=s.split(/(\s+)/),w=[];for(let i=0;i<parts.length;i+=2)w.push(parts[i]);
   const out=w.slice();let i=0;
   while(i<w.length){
@@ -5300,7 +5311,7 @@ function outsideRu(){
     return !RU_TZ.test(tz)&&!/(^|,)ru(-|,|$)/.test(langs)}catch(e){return false}
 }
 const TG_IC='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#2AABEE"/><path d="M5.4 11.8l11.6-4.5c.5-.2 1 .1.8.9l-2 9.3c-.1.7-.6.8-1.1.5l-3-2.2-1.5 1.4c-.2.2-.3.3-.6.3l.2-3.1 5.6-5.1c.2-.2 0-.4-.4-.2l-6.9 4.4-3-.9c-.6-.2-.7-.6.1-.9z" fill="#fff"/></svg>';
-function sponsorCard(h,cls=''){return `<a class="sp-card ${cls}" href="${esc(h.url)}" target="_blank" rel="noopener sponsored"><span class="sp-ic">${TG_IC}</span><span class="sp-t"><b>${esc(h.title)}</b><span>${esc(h.sub)}</span><em>${esc(h.handle||'')}</em></span><span class="btn primary mini sp-go">${esc(h.cta||'Перейти')}</span></a>`}
+function sponsorCard(h,cls=''){return `<a class="sp-card ${cls}" href="${esc(h.url)}" target="_blank" rel="noopener sponsored"><span class="sp-ic">${TG_IC}</span><span class="sp-t"><b>${esc(h.title)}</b><span>${esc(h.sub)}</span><em>${esc(h.handle||'')}</em></span><span class="sp-go">${esc(h.cta||'Перейти')}</span></a>`}
 function bannerHtml(){
   try{const t=localStorage.getItem('legenda-polya-adtest')==='1'&&localStorage.getItem('legenda-polya-banner');if(t)Object.assign(BANNER,JSON.parse(t))}catch(e){}
   const h=BANNER.house,a0=BANNER.adsense;

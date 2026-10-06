@@ -33,4 +33,5 @@ cat i18n/index.built.html
 printf '\n</html>\n'
 } > dist/index.html
 cp -R static/. dist/
+python3 platforms/split_js.py dist/index.html
 echo "built dist/index.html ($(wc -c < dist/index.html) bytes)"
