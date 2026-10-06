@@ -3296,7 +3296,7 @@ function viewHome(){
     ${slots.length?`<p class="eyebrow" style="margin:26px 0 10px">Другие карьеры</p><ul class="slots">${slots.map(m=>slotCard(m,`<button class="btn mini" data-a="slotLoad" data-id="${esc(m.id)}">Открыть</button>`)).join('')}</ul>`:''}
     </section>
     ${todayTop()}
-    ${!YG&&BANNER.house&&BANNER.house.card?`<section class="panel"><div class="sec-h"><h2>Спонсоры</h2><span class="small muted">те, кто поддерживает игру</span></div>${sponsorCard(BANNER.house,'big')}</section>`:''}
+    ${!YG&&BANNER.house&&BANNER.house.card?`<section class="panel"><div class="sec-h"><h2>Спонсоры</h2><span class="small muted">те, кто поддерживает игру</span></div>${sponsorCard(BANNER.house,'big')}<p class="small muted" style="margin:10px 0 0">Хотите свой бренд здесь? Пишите в Telegram: <a href="https://t.me/${AD_CONTACT.tg}" target="_blank" rel="noopener">@${AD_CONTACT.tg}</a></p></section>`:''}
     <section class="panel"><div class="sec-h"><h2>Величайшие</h2><span class="small muted">все ваши завершённые карьеры в этом браузере, по очкам наследия</span></div>${greatsTable(20)}</section>`;
 }
 
@@ -5087,9 +5087,10 @@ function consentBanner(){
 }
 /* the privacy page (static/privacy.html) stays on the server; the link comes back when ads go live (AdSense requires it) */
 const SHOW_PRIVACY=false;
+const AD_CONTACT={tg:'nowayarkady'}; // Telegram for advertisers
 function siteFoot(){
   if(YG)return '';
-  return `<footer class="foot"><span class="age-mark" title="Возрастная категория">12+</span>${SHOW_PRIVACY?'<a class="small" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>':''}${adsOn()?'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>':''}<button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
+  return `<footer class="foot"><span class="age-mark" title="Возрастная категория">12+</span><a class="small" href="https://t.me/${AD_CONTACT.tg}" target="_blank" rel="noopener">Реклама в игре: @${AD_CONTACT.tg}</a>${SHOW_PRIVACY?'<a class="small" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>':''}${adsOn()?'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>':''}<button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
 }
 
 /* ================= challenges: daily, scenarios, hardcore, leaderboards ================= */
