@@ -5100,9 +5100,11 @@ function consentBanner(){
   if(YG||!adsOn()||(consentGet()&&!UI.cookies))return '';
   return `<div class="cookie" role="dialog" aria-live="polite" aria-label="Cookie"><p><b>${EN?`Cookies and ads.`:`Cookie и реклама.`}</b> ${EN?`Your game saves are stored only in your browser. If you allow it, the site will show ads from the Yandex Advertising Network, which uses cookies and anonymised device data. Without your consent no ads are loaded. Details in the`:`Сохранения игры хранятся только в вашем браузере. Если разрешите, на сайте будет показываться реклама Рекламной сети Яндекса: она использует cookie и обезличенные данные устройства. Без согласия реклама не загружается. Подробнее — в`} <a href="privacy.html" target="_blank" rel="noopener">${EN?`privacy policy`:`политике конфиденциальности`}</a>.</p><div class="go" style="margin:10px 0 0"><button class="btn primary" data-a="consentAll">${EN?`Allow`:`Разрешить`}</button><button class="btn ghost" data-a="consentMin">${EN?`Necessary only`:`Только необходимые`}</button></div></div>`;
 }
+/* the privacy page (static/privacy.html) stays on the server; the link comes back when ads go live (AdSense requires it) */
+const SHOW_PRIVACY=false;
 function siteFoot(){
   if(YG)return '';
-  return `<footer class="foot"><span class="age-mark" title="${EN?`Age rating`:`Возрастная категория`}">12+</span><a class="small" href="privacy.html" target="_blank" rel="noopener">${EN?`Privacy policy`:`Политика конфиденциальности`}</a>${adsOn()?(EN?"<button class=\"btn ghost mini\" data-a=\"consentReset\">Cookie settings</button>":'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>'):''}<button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
+  return `<footer class="foot"><span class="age-mark" title="${EN?`Age rating`:`Возрастная категория`}">12+</span>${SHOW_PRIVACY?(EN?"<a class=\"small\" href=\"privacy.html\" target=\"_blank\" rel=\"noopener\">Privacy policy</a>":'<a class="small" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>'):''}${adsOn()?(EN?"<button class=\"btn ghost mini\" data-a=\"consentReset\">Cookie settings</button>":'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>'):''}<button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
 }
 
 /* ================= challenges: daily, scenarios, hardcore, leaderboards ================= */
