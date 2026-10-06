@@ -771,6 +771,11 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 
 <script>
 'use strict';
+/* storage that never throws: some in-app browsers, iframes and privacy modes block localStorage — the game then keeps
+   its data in memory for this tab instead of dying on a black screen */
+const memStore=()=>{const m=new Map();return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>{m.set(k,String(v))},removeItem:k=>{m.delete(k)},clear:()=>m.clear(),key:i=>[...m.keys()][i]??null,get length(){return m.size}}};
+const LS=(()=>{try{const s=window.localStorage;s.setItem('legenda-polya-probe','1');s.removeItem('legenda-polya-probe');return s}catch(e){return memStore()}})();
+const SS=(()=>{try{const s=window.sessionStorage;s.getItem('x');return s}catch(e){return memStore()}})();
 /* ================= language =================
    The source is Russian. The build (i18n/i18n.js) rewrites interface strings as EN?`…`:`…`; game data (clubs, nations,
    people, tournaments, awards) stays Russian in the state and is translated on screen by trText with I18N_NAMES. */
@@ -779,7 +784,7 @@ const PLATFORM=(()=>{try{return window.__PLATFORM||'web'}catch(e){return 'web'}}
 const YG=PLATFORM==='yg';
 const LANG_KEY='legenda-polya-lang';
 const LANG=(()=>{let q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
-  try{if(q==='ru'||q==='en'){localStorage.setItem(LANG_KEY,q);return q}const s=localStorage.getItem(LANG_KEY);if(s==='ru'||s==='en')return s}catch(e){}
+  try{if(q==='ru'||q==='en'){LS.setItem(LANG_KEY,q);return q}const s=LS.getItem(LANG_KEY);if(s==='ru'||s==='en')return s}catch(e){}
   try{const n=String(navigator.language||'ru').slice(0,2).toLowerCase();return ['ru','uk','be','kk','ky','uz','tg','hy','az','ka'].includes(n)?'ru':'en'}catch(e){return 'ru'}})();
 const EN=LANG==='en';
 const LANG_OTHER=EN?'Русский':'English'; // i18n:skip — the other language is always named in its own language
@@ -848,7 +853,7 @@ if(EN&&typeof MutationObserver!=='undefined'&&typeof document!=='undefined'){
   new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trNode(m.target);else m.addedNodes.forEach(trNode)}})
     .observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TR_ATTR});
 }
-function setLang(l){try{localStorage.setItem(LANG_KEY,l)}catch(e){}try{const u=new URL(location.href);u.searchParams.delete('lang');location.href=u.toString()}catch(e){location.reload()}}
+function setLang(l){try{LS.setItem(LANG_KEY,l)}catch(e){}try{const u=new URL(location.href);u.searchParams.delete('lang');location.href=u.toString()}catch(e){location.reload()}}
 /* ================= utils ================= */
 /* two seeded streams: RW drives the world (same world code = same world), RPR drives everything about the player */
 function mkRng(seed){const o={s:seed>>>0};o.f=()=>{o.s=(o.s+0x6D2B79F5)>>>0;let t=o.s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296};return o}
@@ -1067,8 +1072,8 @@ function genCode(){const w=['GOL','DERBI','FINAL','KUBOK','ULTRAS','TIFO','KAPIT
 const normCode=c=>String(c||'').trim().toUpperCase().replace(/\s+/g,'-').slice(0,24);
 const SAVE='legenda-polya-v1';
 const SLOTS_KEY='legenda-polya-slots',ACTIVE_KEY='legenda-polya-active',slotKey=id=>'legenda-polya-slot-'+id,MAX_SLOTS=15;
-function slotsGet(){try{const a=JSON.parse(localStorage.getItem(SLOTS_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
-function slotsSet(a){try{localStorage.setItem(SLOTS_KEY,JSON.stringify(a))}catch(e){}}
+function slotsGet(){try{const a=JSON.parse(LS.getItem(SLOTS_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function slotsSet(a){try{LS.setItem(SLOTS_KEY,JSON.stringify(a))}catch(e){}}
 /* a career enters the save list only after real progress: a season played (coach: a job taken), a room, or a player career turned coach */
 function hasProgress(g){g=g||G;if(!g||(!g.P&&!g.C))return false;if(g.room||g.ex)return true;if(g.C)return g.C.seasons.length>0||g.C.jobs.length>0;return g.seasons.length>0}
 /* S.mk (match counters of the running season) is scratch: ~270 KB per season, never needed once the season is over */
@@ -1079,7 +1084,7 @@ function save(){
   if(!G.slot)G.slot=Date.now().toString(36),SAVED=saveJSON(G);
   if(SV.job&&SV.job.id!==G.slot)flushSave();
   SV.job={id:G.slot,json:SAVED};clearTimeout(SV.t);SV.t=setTimeout(flushSave,60);
-  try{localStorage.setItem(ACTIVE_KEY,G.slot)}catch(e){}
+  try{LS.setItem(ACTIVE_KEY,G.slot)}catch(e){}
   if(!hasProgress())return;
   if(isCoach()){const C0=G.C;slotsSet([{id:G.slot,upd:Date.now(),name:C0.name,pos:'ТРЕНЕР',club:C0.job==='club'?C(C0.clubId).name:C0.job==='nation'?'Сборная: '+N(C0.natId).name:'без работы',age:C0.age,ovr:Math.round(C0.rep),season:`${G.year}/${String(G.year+1).slice(2)}`,room:null,retired:G.phase==='retired',tier:G.phase==='retired'?coachTier():null},...slotsGet().filter(x=>x.id!==G.slot)]);return}
   const P=G.P,meta={id:G.slot,upd:Date.now(),name:P.name,pos:POS[P.pos].s,club:C(P.clubId).name,age:P.age,ovr:Math.round(P.ovr),season:`${G.year}/${String(G.year+1).slice(2)}`,room:G.room?G.room.code:null,retired:G.phase==='retired',tier:G.phase==='retired'?legacyTier():null};
@@ -1089,44 +1094,44 @@ function save(){
 const SV={job:null,t:0};
 function flushSave(){
   const j=SV.job;clearTimeout(SV.t);if(!j)return;SV.job=null;
-  try{localStorage.setItem(slotKey(j.id),lzPack(j.json));if(UI.saveErr){UI.saveErr=false;render()}}
+  try{LS.setItem(slotKey(j.id),lzPack(j.json));if(UI.saveErr){UI.saveErr=false;render()}}
   catch(e){if(!UI.saveErr){UI.saveErr=true;render()}}
 }
-const slotRaw=id=>{if(SV.job&&SV.job.id===id)return SV.job.json;try{return lzUnpack(localStorage.getItem(slotKey(id)))}catch(e){return null}};
+const slotRaw=id=>{if(SV.job&&SV.job.id===id)return SV.job.json;try{return lzUnpack(LS.getItem(slotKey(id)))}catch(e){return null}};
 addEventListener('pagehide',flushSave);
 document.addEventListener('visibilitychange',()=>{const h=document.visibilityState==='hidden';if(h)flushSave();sndHold('tab',h)});
 /* leaving a career that has no progress yet: it is thrown away instead of taking a save slot */
 function dropEmpty(){
   if(!G||!G.slot||hasProgress())return;
   if(SV.job&&SV.job.id===G.slot)SV.job=null;
-  try{localStorage.removeItem(slotKey(G.slot));if(localStorage.getItem(ACTIVE_KEY)===G.slot)localStorage.removeItem(ACTIVE_KEY)}catch(e){}
+  try{LS.removeItem(slotKey(G.slot));if(LS.getItem(ACTIVE_KEY)===G.slot)LS.removeItem(ACTIVE_KEY)}catch(e){}
   slotsSet(slotsGet().filter(x=>x.id!==G.slot));
 }
 /* once: careers saved before this rule that never got past the start, and orphaned slot data */
 function slotsTidy(){
   try{
-    if(localStorage.getItem('legenda-polya-tidy1'))return;
-    const act=localStorage.getItem(ACTIVE_KEY),keep=[];
+    if(LS.getItem('legenda-polya-tidy1'))return;
+    const act=LS.getItem(ACTIVE_KEY),keep=[];
     for(const m of slotsGet()){
       let ok=true;
       if(m.id!==act&&!m.room&&!m.retired){try{const raw=slotRaw(m.id);if(!raw)ok=false;else if(raw.length<400000)ok=hasProgress(JSON.parse(raw))}catch(e){}}
-      if(ok)keep.push(m);else localStorage.removeItem(slotKey(m.id));
+      if(ok)keep.push(m);else LS.removeItem(slotKey(m.id));
     }
     slotsSet(keep);
     const ids=new Set(keep.map(m=>m.id));if(act)ids.add(act);
-    for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith('legenda-polya-slot-')&&!ids.has(k.slice(19)))localStorage.removeItem(k)}
-    localStorage.setItem('legenda-polya-tidy1','1');
+    for(let i=LS.length-1;i>=0;i--){const k=LS.key(i);if(k&&k.startsWith('legenda-polya-slot-')&&!ids.has(k.slice(19)))LS.removeItem(k)}
+    LS.setItem('legenda-polya-tidy1','1');
   }catch(e){}
 }
 function loadSlot(id){try{const raw=slotRaw(id);if(!raw)return false;if(G&&G.slot!==id)dropEmpty();flushSave();G=migrate(JSON.parse(raw));G.slot=id;SAVED=saveJSON(G);RUN=null;MATCH=null;UI.wait=null;
   if(G.room&&G.room.token){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave();MP.room=null}
-  try{localStorage.setItem(ACTIVE_KEY,id)}catch(e){}return true}catch(e){return false}}
-function deleteSlot(id){if(SV.job&&SV.job.id===id)SV.job=null;try{localStorage.removeItem(slotKey(id))}catch(e){}slotsSet(slotsGet().filter(x=>x.id!==id));if(G&&G.slot===id){G=null;RUN=null;MATCH=null;try{localStorage.removeItem(ACTIVE_KEY)}catch(e){}}}
+  try{LS.setItem(ACTIVE_KEY,id)}catch(e){}return true}catch(e){return false}}
+function deleteSlot(id){if(SV.job&&SV.job.id===id)SV.job=null;try{LS.removeItem(slotKey(id))}catch(e){}slotsSet(slotsGet().filter(x=>x.id!==id));if(G&&G.slot===id){G=null;RUN=null;MATCH=null;try{LS.removeItem(ACTIVE_KEY)}catch(e){}}}
 function migrate(g){if(g&&g.rng){RW=mkRng(g.rng.w);RPR=mkRng(g.rng.p)}if(g&&g.P){const P=g.P;if(P.rep==null)P.rep=clamp(10+P.trophies.length*2+P.awards.length*3+P.tot.g/15,0,100);if(P.roleMod==null)P.roleMod=0;if(P.growMod==null)P.growMod=0}if(g&&g.clubs){if(!g.derby)g.derby=buildDerbies(g);if(!g.rec)g.rec=buildRecords();else{const f=buildRecords();Object.keys(f).forEach(k=>{if(!g.rec[k])g.rec[k]=f[k]})}}if(g&&g.P){const P=g.P;if(!P.at)P.at=makeAttrs(P.ovr,P.pos);if(!P.focus)P.focus='bal';if(!P.rel)P.rel=freshRel();if(!P.clubRel)P.clubRel={};if(!P.st)P.st={ucl:0,wc:0,euro:0,hat:0,clubG:{}};if(!P.recs)P.recs=[];if(!P.ms)P.ms=[];if(!P.best)P.best={};if(!P.perks)P.perks=[];if(P.num==null)P.num=NUM_BY_POS[P.pos]||9;if(P.fol==null)P.fol=r2(.003+Math.pow(P.rep/100,2)*12);if(P.gross==null)P.gross=r2(P.earn/1e6);if(P.spent==null)P.spent=0;if(!P.subs)P.subs={};if(!P.own)P.own={};if(!P.inv)P.inv=[];if(!P.posHist)P.posHist=[];if(P.pos0==null&&!P.posHist.length)P.pos0=P.pos}if(g&&g.set&&!g.set.rusMode)g.set.rusMode=g.set.russia?'on':'random';return g}
 function load(){
   // one-time move of the old single save into the first slot
-  try{const old=localStorage.getItem(SAVE);if(old&&!slotsGet().length){const g=JSON.parse(old);if(g&&g.P){const id=g.slot||Date.now().toString(36);g.slot=id;localStorage.setItem(slotKey(id),JSON.stringify(g));localStorage.setItem(ACTIVE_KEY,id);slotsSet([{id,upd:Date.now(),name:g.P.name,pos:g.P.pos,club:(g.clubs[g.P.clubId]||{}).name,age:g.P.age,ovr:Math.round(g.P.ovr),season:`${g.year}/${String(g.year+1).slice(2)}`,room:g.room?g.room.code:null,retired:g.phase==='retired'}])}}localStorage.removeItem(SAVE)}catch(e){}
-  try{const id=localStorage.getItem(ACTIVE_KEY);if(!id)return null;const raw=slotRaw(id);if(!raw)return null;const g=JSON.parse(raw);g.slot=id;return g}catch(e){return null}
+  try{const old=LS.getItem(SAVE);if(old&&!slotsGet().length){const g=JSON.parse(old);if(g&&g.P){const id=g.slot||Date.now().toString(36);g.slot=id;LS.setItem(slotKey(id),JSON.stringify(g));LS.setItem(ACTIVE_KEY,id);slotsSet([{id,upd:Date.now(),name:g.P.name,pos:g.P.pos,club:(g.clubs[g.P.clubId]||{}).name,age:g.P.age,ovr:Math.round(g.P.ovr),season:`${g.year}/${String(g.year+1).slice(2)}`,room:g.room?g.room.code:null,retired:g.phase==='retired'}])}}LS.removeItem(SAVE)}catch(e){}
+  try{const id=LS.getItem(ACTIVE_KEY);if(!id)return null;const raw=slotRaw(id);if(!raw)return null;const g=JSON.parse(raw);g.slot=id;return g}catch(e){return null}
 }
 
 const C=id=>G.clubs[id];
@@ -2361,7 +2366,7 @@ function perkPanel(){
 /* ================= achievements (kept across careers, in this browser) ================= */
 const ACH_KEY='legenda-polya-ach';
 let ACH={};
-try{ACH=JSON.parse(localStorage.getItem(ACH_KEY)||'{}')||{}}catch(e){ACH={}}
+try{ACH=JSON.parse(LS.getItem(ACH_KEY)||'{}')||{}}catch(e){ACH={}}
 const WON=(n)=>S.trophies.includes(n);
 const ACHS=[
   ['first','Первый трофей','Выиграть любой трофей',()=>S.trophies.length>0],
@@ -2414,7 +2419,7 @@ const ACHS=[
 function checkAch(){
   let got=[];
   ACHS.forEach(([id,n,,f])=>{if(ACH[id])return;let ok=false;try{ok=f()}catch(e){}if(ok){ACH[id]={p:G.P.name,y:S?S.label:''};got.push(n)}});
-  if(got.length){try{localStorage.setItem(ACH_KEY,JSON.stringify(ACH))}catch(e){}if(S)got.forEach(n=>S.records.push(`Достижение: ${n}`))}
+  if(got.length){try{LS.setItem(ACH_KEY,JSON.stringify(ACH))}catch(e){}if(S)got.forEach(n=>S.records.push(`Достижение: ${n}`))}
 }
 function achPanel(){
   const n=ACHS.filter(a=>ACH[a[0]]).length;
@@ -3139,7 +3144,7 @@ function filmstrip(){
 
 /* ================= sound (synthesised, no files) and confetti ================= */
 function sndHold(why,on){SND.holds=SND.holds||{};if(on)SND.holds[why]=1;else delete SND.holds[why];SND.hold=Object.keys(SND.holds).length>0;try{if(SND.ctx){if(SND.hold)SND.ctx.suspend();else if(SND.on)SND.ctx.resume()}}catch(e){}}
-const SND={on:(()=>{try{return localStorage.getItem('legenda-polya-snd')!=='0'}catch(e){return true}})(),ctx:null};
+const SND={on:(()=>{try{return LS.getItem('legenda-polya-snd')!=='0'}catch(e){return true}})(),ctx:null};
 function actx(){if(!SND.on||SND.hold)return null;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;if(!SND.ctx)SND.ctx=new A();if(SND.ctx.state==='suspended')SND.ctx.resume();return SND.ctx}catch(e){return null}}
 function tone(c,f,t,d,type,v,f2){const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g).connect(c.destination);o.start(t);o.stop(t+d+.05);return o}
 function noise(c,t,d,v,freq,q,rise){const n=Math.floor(c.sampleRate*d),b=c.createBuffer(1,n,c.sampleRate),ch=b.getChannelData(0);for(let i=0;i<n;i++)ch[i]=Math.random()*2-1;
@@ -3256,14 +3261,14 @@ function* farewellGen(){
 
 /* ================= greatest of all your careers (this browser) ================= */
 const GREAT_KEY='legenda-polya-greats';
-function greatsGet(){try{const a=JSON.parse(localStorage.getItem(GREAT_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function greatsGet(){try{const a=JSON.parse(LS.getItem(GREAT_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
 function greatEntry(){
   if(isCoach()){const C0=G.C;return {id:G.slot,k:'c',name:C0.name,pos:'ТРЕНЕР',tier:coachTier(),score:r1(coachLegacyScore()),tro:C0.trophies.length,bdo:C0.coty,main:`${C0.seasons.length} сез., ${C0.jobs.length} клубов`,years:`${C0.seasons.length?C0.seasons[C0.seasons.length-1].label.slice(0,4):G.year}–${G.year}`,d:Date.now()}}
   const P=G.P,mp=mainPos(),gk=mp==='GK';
   return {id:G.slot,k:'p',name:P.name,pos:POS[mp].s,tier:legacyTier(),score:r1(legacyScore()),tro:P.trophies.length,bdo:P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,
     main:gk?`${P.tot.cs} сухих`:['CB','LB','RB'].includes(mp)?`${P.tot.apps+P.caps} матчей`:`${P.tot.g+P.ig} голов`,years:`${G.seasons.length?G.seasons[G.seasons.length-1].year:G.year}–${G.year}`,d:Date.now()};
 }
-function greatRecord(){try{if(!G||(!G.P&&!G.C))return;const e=greatEntry(),a=greatsGet().filter(x=>x.id!==e.id);a.push(e);localStorage.setItem(GREAT_KEY,JSON.stringify(a))}catch(e){}}
+function greatRecord(){try{if(!G||(!G.P&&!G.C))return;const e=greatEntry(),a=greatsGet().filter(x=>x.id!==e.id);a.push(e);LS.setItem(GREAT_KEY,JSON.stringify(a))}catch(e){}}
 /* careers that ended before this table existed are added from their save slots */
 function greatsBackfill(){
   const have=new Set(greatsGet().map(x=>x.id)),keep={G,S,RW:RW.s,RPR:RPR.s};
@@ -3700,11 +3705,11 @@ function dlTick(){
 }
 
 /* ================= multiplayer rooms ================= */
-const API=(()=>{try{const o=localStorage.getItem('legenda-polya-api');if(o)return o}catch(e){}try{if(/(^|\.)legendapolya\.com$/.test(location.host))return '/api'}catch(e){}return 'https://legenda-polya.88-218-121-40.sslip.io/api'})();
+const API=(()=>{try{const o=LS.getItem('legenda-polya-api');if(o)return o}catch(e){}try{if(/(^|\.)legendapolya\.com$/.test(location.host))return '/api'}catch(e){}return 'https://legenda-polya.88-218-121-40.sslip.io/api'})();
 const MP_KEY='legenda-polya-room';
 const MP={sess:null,room:null,err:null,busy:false,lastStatus:null,tick:0,pushT:null};
-try{MP.sess=JSON.parse(localStorage.getItem(MP_KEY)||'null')}catch(e){MP.sess=null}
-function mpSave(){try{MP.sess?localStorage.setItem(MP_KEY,JSON.stringify(MP.sess)):localStorage.removeItem(MP_KEY)}catch(e){}}
+try{MP.sess=JSON.parse(LS.getItem(MP_KEY)||'null')}catch(e){MP.sess=null}
+function mpSave(){try{MP.sess?LS.setItem(MP_KEY,JSON.stringify(MP.sess)):LS.removeItem(MP_KEY)}catch(e){}}
 async function api(path,body){
   let r;
   try{r=await fetch(API+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store'})}
@@ -5063,15 +5068,15 @@ function render(){
    Block ids come from partner.yandex.ru; with empty ids nothing is loaded at all. */
 const ADS_CFG={full:'',fullDesk:'',rew:''};
 const CONSENT_KEY='legenda-polya-consent';
-const adsHost=()=>{try{return /(^|\.)legendapolya\.com$/.test(location.host)||localStorage.getItem('legenda-polya-adtest')==='1'}catch(e){return false}};
-const adsOn=()=>adsHost()&&!!(ADS_CFG.full||ADS_CFG.fullDesk||ADS_CFG.rew||(()=>{try{return localStorage.getItem('legenda-polya-adtest')==='1'}catch(e){return false}})());
-const consentGet=()=>{try{return localStorage.getItem(CONSENT_KEY)}catch(e){return null}};
-function consentSet(v){try{localStorage.setItem(CONSENT_KEY,v)}catch(e){}UI.cookies=false;if(v==='all')adsLoad();render()}
+const adsHost=()=>{try{return /(^|\.)legendapolya\.com$/.test(location.host)||LS.getItem('legenda-polya-adtest')==='1'}catch(e){return false}};
+const adsOn=()=>adsHost()&&!!(ADS_CFG.full||ADS_CFG.fullDesk||ADS_CFG.rew||(()=>{try{return LS.getItem('legenda-polya-adtest')==='1'}catch(e){return false}})());
+const consentGet=()=>{try{return LS.getItem(CONSENT_KEY)}catch(e){return null}};
+function consentSet(v){try{LS.setItem(CONSENT_KEY,v)}catch(e){}UI.cookies=false;if(v==='all')adsLoad();render()}
 const ADS={loaded:false,lastFull:0};
 /* Yandex Games: the platform is the data operator and shows its own ads, no cookie banner of ours */
 const YGS={sdk:null};
 if(YG){try{(window.YaGames?window.YaGames.init():Promise.reject()).then(sdk=>{YGS.sdk=sdk;ADS.loaded=true;
-  try{const l=sdk.environment.i18n.lang;if(!localStorage.getItem(LANG_KEY)&&l&&(l==='ru')!==(LANG==='ru')){localStorage.setItem(LANG_KEY,['ru','be','uk','kk','uz'].includes(l)?'ru':'en');location.reload();return}}catch(e){}
+  try{const l=sdk.environment.i18n.lang;if(!LS.getItem(LANG_KEY)&&l&&(l==='ru')!==(LANG==='ru')){LS.setItem(LANG_KEY,['ru','be','uk','kk','uz'].includes(l)?'ru':'en');location.reload();return}}catch(e){}
   try{sdk.features.LoadingAPI&&sdk.features.LoadingAPI.ready()}catch(e){}
   render()}).catch(()=>{})}catch(e){}}
 const isTouch=()=>{try{return matchMedia('(pointer:coarse)').matches}catch(e){return false}};
@@ -5304,7 +5309,7 @@ const BANNER={
   // or an image: {img:'banners/sponsor.png',url:'https://…',alt:'…',adv:'Рекламодатель, ИНН …',erid:'…'}
   adsense:{client:'ca-pub-3786708907323389',slot:''} // the slot id appears after the site is approved (AdSense → Ads → By ad unit)
 };
-const bannerHost=()=>{try{return !YG&&(/(^|\.)legendapolya\.com$|l3thily\.github\.io|sslip\.io$/.test(location.host)||localStorage.getItem('legenda-polya-adtest')==='1')}catch(e){return false}};
+const bannerHost=()=>{try{return !YG&&(/(^|\.)legendapolya\.com$|l3thily\.github\.io|sslip\.io$/.test(location.host)||LS.getItem('legenda-polya-adtest')==='1')}catch(e){return false}};
 const RU_TZ=/^(Europe\/(Moscow|Kaliningrad|Samara|Volgograd|Kirov|Astrakhan|Saratov|Ulyanovsk|Simferopol)|Asia\/(Yekaterinburg|Omsk|Novosibirsk|Barnaul|Tomsk|Novokuznetsk|Krasnoyarsk|Irkutsk|Chita|Yakutsk|Khandyga|Vladivostok|Ust-Nera|Magadan|Sakhalin|Srednekolymsk|Kamchatka|Anadyr))$/;
 function outsideRu(){
   try{const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'',langs=(navigator.languages||[navigator.language||'']).join(',').toLowerCase();
@@ -5313,7 +5318,7 @@ function outsideRu(){
 const TG_IC='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#2AABEE"/><path d="M5.4 11.8l11.6-4.5c.5-.2 1 .1.8.9l-2 9.3c-.1.7-.6.8-1.1.5l-3-2.2-1.5 1.4c-.2.2-.3.3-.6.3l.2-3.1 5.6-5.1c.2-.2 0-.4-.4-.2l-6.9 4.4-3-.9c-.6-.2-.7-.6.1-.9z" fill="#fff"/></svg>';
 function sponsorCard(h,cls=''){return `<a class="sp-card ${cls}" href="${esc(h.url)}" target="_blank" rel="noopener sponsored"><span class="sp-ic">${TG_IC}</span><span class="sp-t"><b>${esc(h.title)}</b><span>${esc(h.sub)}</span><em>${esc(h.handle||'')}</em></span><span class="sp-go">${esc(h.cta||'Перейти')}</span></a>`}
 function bannerHtml(){
-  try{const t=localStorage.getItem('legenda-polya-adtest')==='1'&&localStorage.getItem('legenda-polya-banner');if(t)Object.assign(BANNER,JSON.parse(t))}catch(e){}
+  try{const t=LS.getItem('legenda-polya-adtest')==='1'&&LS.getItem('legenda-polya-banner');if(t)Object.assign(BANNER,JSON.parse(t))}catch(e){}
   const h=BANNER.house,a0=BANNER.adsense;
   if(a0.client&&a0.slot&&outsideRu())return `<p class="ad-mark">Advertisement</p><ins class="adsbygoogle" style="display:block" data-ad-client="${esc(a0.client)}" data-ad-slot="${esc(a0.slot)}" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
   if(h&&h.card&&h.url)return sponsorCard(h)+`<p class="ad-mark">${esc(h.label||'Реклама')}${h.erid?' · erid: '+esc(h.erid):''}</p>`;
@@ -5325,9 +5330,9 @@ function bannerHtml(){
 function bannerMount(){
   if(typeof document==='undefined'||!document.body||!bannerHost()||document.getElementById('adbar'))return;
   const html=bannerHtml();if(!html)return;
-  try{if(sessionStorage.getItem('legenda-polya-adx'))return}catch(e){}
+  try{if(SS.getItem('legenda-polya-adx'))return}catch(e){}
   const d=document.createElement('aside');d.id='adbar';d.className='adbar';d.setAttribute('aria-label','Реклама');d.innerHTML=html+'<button class="ad-x" type="button" aria-label="Скрыть рекламу">×</button>';document.body.appendChild(d);document.body.classList.add('has-ad');
-  d.querySelector('.ad-x').onclick=()=>{d.remove();document.body.classList.remove('has-ad');try{sessionStorage.setItem('legenda-polya-adx','1')}catch(e){}};
+  d.querySelector('.ad-x').onclick=()=>{d.remove();document.body.classList.remove('has-ad');try{SS.setItem('legenda-polya-adx','1')}catch(e){}};
   if(d.querySelector('.adsbygoogle')){const sc=document.createElement('script');sc.async=true;sc.crossOrigin='anonymous';sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+encodeURIComponent(BANNER.adsense.client);document.head.appendChild(sc);try{(window.adsbygoogle=window.adsbygoogle||[]).push({})}catch(e){}}
 }
 
@@ -5335,13 +5340,13 @@ function bannerMount(){
    No ids, no personal data: the browser itself says "first visit today" once a day; a throwaway token per tab
    (kept in this tab only) lets the server count who is online right now — it forgets it after 2.5 minutes. */
 const STAT={tab:null,online:null,queue:[],t:null};
-function statTab(){if(STAT.tab)return STAT.tab;try{STAT.tab=sessionStorage.getItem('legenda-polya-tab')}catch(e){}
-  if(!STAT.tab){STAT.tab=Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2,8);try{sessionStorage.setItem('legenda-polya-tab',STAT.tab)}catch(e){}}return STAT.tab}
+function statTab(){if(STAT.tab)return STAT.tab;try{STAT.tab=SS.getItem('legenda-polya-tab')}catch(e){}
+  if(!STAT.tab){STAT.tab=Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2,8);try{SS.setItem('legenda-polya-tab',STAT.tab)}catch(e){}}return STAT.tab}
 function statPing(ev){
   if(typeof document==='undefined'||!document.body)return;
   if(ev){STAT.queue.push(ev);clearTimeout(STAT.t);STAT.t=setTimeout(()=>statPing(),1500);return}
   if(document.visibilityState==='hidden')return;
-  let neu=0;try{const d=new Date().toISOString().slice(0,10);if(localStorage.getItem('legenda-polya-seen')!==d){localStorage.setItem('legenda-polya-seen',d);neu=1}}catch(e){}
+  let neu=0;try{const d=new Date().toISOString().slice(0,10);if(LS.getItem('legenda-polya-seen')!==d){LS.setItem('legenda-polya-seen',d);neu=1}}catch(e){}
   const evs=STAT.queue.splice(0);
   api('/ping',{tab:statTab(),new:neu,lang:LANG,ev:evs[0]||null}).then(r=>{const first=!STAT.online&&r.online;STAT.online=r.online;if(first&&!document.querySelector('[data-online]')&&(UI.tab==='home'||UI.tab==='multi'||!G))render();const el=document.querySelectorAll('[data-online]');el.forEach(x=>x.textContent=String(r.online))}).catch(()=>{});
   evs.slice(1).forEach(e=>api('/ping',{tab:statTab(),ev:e}).catch(()=>{}));
@@ -5355,10 +5360,10 @@ const onlineBadge=()=>STAT.online?`<span class="online" title="Сейчас иг
 const MOVED_TO='https://legendapolya.com';
 const OLD_SITES=['https://l3thily.github.io','https://legenda-polya.88-218-121-40.sslip.io'];
 const SAVE_KEYS=k=>k.startsWith('legenda-polya')&&!/-(tab|adtest|banner|api|adx|seen|consent|tidy1)$/.test(k);
-function oldSite(){try{return OLD_SITES.includes(location.origin)&&!localStorage.getItem('legenda-polya-stay')}catch(e){return false}}
+function oldSite(){try{return OLD_SITES.includes(location.origin)&&!LS.getItem('legenda-polya-stay')}catch(e){return false}}
 function movedTarget(){try{return MOVED_TO+'/'+location.search+location.hash}catch(e){return MOVED_TO}}
-function moveDump(){const o={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(SAVE_KEYS(k))o[k]=localStorage.getItem(k)}}catch(e){}return o}
-function moveHasSaves(){try{return slotsGet().length>0||!!localStorage.getItem(SAVE)||greatsGet().length>0}catch(e){return false}}
+function moveDump(){const o={};try{for(let i=0;i<LS.length;i++){const k=LS.key(i);if(SAVE_KEYS(k))o[k]=LS.getItem(k)}}catch(e){}return o}
+function moveHasSaves(){try{return slotsGet().length>0||!!LS.getItem(SAVE)||greatsGet().length>0}catch(e){return false}}
 function moveView(){
   return `<section class="moved"><p class="eyebrow">Легенда поля</p><h1 class="disp">Игра переехала на <em>legendapolya.com</em></h1>
     <p class="lead">Новый адрес — быстрее и надёжнее. Ваши карьеры, достижения и рекорды хранятся в этом браузере: нажмите кнопку, и мы перенесём их на новый сайт.</p>
@@ -5376,14 +5381,14 @@ function moveGo(){
 }
 /* new site: accept saves from the old addresses only, merge without overwriting */
 function moveImport(data){
-  const get=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}},set=(k,v)=>{try{localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v))}catch(e){}};
+  const get=k=>{try{return JSON.parse(LS.getItem(k)||'null')}catch(e){return null}},set=(k,v)=>{try{LS.setItem(k,typeof v==='string'?v:JSON.stringify(v))}catch(e){}};
   let slots=0;
   for(const [k,v] of Object.entries(data||{})){
     if(!SAVE_KEYS(k)||typeof v!=='string')continue;
     if(k===SLOTS_KEY){const mine=slotsGet(),ids=new Set(mine.map(m=>m.id));let add=[];try{add=JSON.parse(v).filter(m=>m&&m.id&&!ids.has(m.id))}catch(e){}slots+=add.length;set(k,mine.concat(add))}
     else if(k===GREAT_KEY){const mine=greatsGet(),ids=new Set(mine.map(m=>m.id));let add=[];try{add=JSON.parse(v).filter(m=>m&&!ids.has(m.id))}catch(e){}set(k,mine.concat(add))}
     else if(k===ACH_KEY){const mine=get(k)||{};let o={};try{o=JSON.parse(v)||{}}catch(e){}set(k,Object.assign({},o,mine))}
-    else{try{if(localStorage.getItem(k)==null)localStorage.setItem(k,v)}catch(e){}}
+    else{try{if(LS.getItem(k)==null)LS.setItem(k,v)}catch(e){}}
   }
   return slots;
 }
@@ -5408,7 +5413,7 @@ document.addEventListener('click',e=>{
   else if(a==='consentMin'){consentSet('min')}
   else if(a==='consentReset'){if(consentGet()==='all'&&ADS.loaded){consentSet('min');location.reload()}else{UI.cookies=true;render()}}
   else if(a==='adRew'){if(!RUN&&G&&G.P&&G.adRewY!==G.year)adsRewarded(()=>{const b=adBonus();G.P.earn+=b*1e6;G.adRewY=G.year;UI.shopMsg=`Рекламная интеграция: +${fmtM(b)}.`;save();render()})}
-  else if(a==='snd'){SND.on=!SND.on;try{localStorage.setItem('legenda-polya-snd',SND.on?'1':'0')}catch(err){}render();if(SND.on)sfx('coin')}
+  else if(a==='snd'){SND.on=!SND.on;try{LS.setItem('legenda-polya-snd',SND.on?'1':'0')}catch(err){}render();if(SND.on)sfx('coin')}
   else if(a==='lvSkip'){if(UI.live)UI.live.n=1e9;liveTick()}
   else if(a==='paperOk'){G.paperSeen=G.seasons[0].label;save();render()}
   else if(a==='shop'){shopAct(b.dataset.k,b.dataset.id)}
@@ -5419,7 +5424,7 @@ document.addEventListener('click',e=>{
   else if(a==='opt'){chooseOpt(+b.dataset.i)}
   else if(a==='new'){UI.confirmNew=true;render()}
   else if(a==='newNo'){UI.confirmNew=false;render()}
-  else if(a==='newYes'){UI.confirmNew=false;dropEmpty();G=null;RUN=null;MATCH=null;UI.wait=null;UI.tab='career';try{localStorage.removeItem(ACTIVE_KEY)}catch(err){}render();window.scrollTo(0,0)}
+  else if(a==='newYes'){UI.confirmNew=false;dropEmpty();G=null;RUN=null;MATCH=null;UI.wait=null;UI.tab='career';try{LS.removeItem(ACTIVE_KEY)}catch(err){}render();window.scrollTo(0,0)}
   else if(a==='slotLoad'){if(loadSlot(b.dataset.id)){UI.tab='career';render();window.scrollTo(0,0)}}
   else if(a==='slotDel'){UI.delSlot=b.dataset.id;render()}
   else if(a==='slotDelYes'){deleteSlot(UI.delSlot);UI.delSlot=null;render()}
