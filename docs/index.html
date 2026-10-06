@@ -5351,7 +5351,7 @@ function statPing(ev){
   if(document.visibilityState==='hidden')return;
   let neu=0;try{const d=new Date().toISOString().slice(0,10);if(localStorage.getItem('legenda-polya-seen')!==d){localStorage.setItem('legenda-polya-seen',d);neu=1}}catch(e){}
   const evs=STAT.queue.splice(0);
-  api('/ping',{tab:statTab(),new:neu,lang:LANG,ev:evs[0]||null}).then(r=>{STAT.online=r.online;const el=document.querySelectorAll('[data-online]');el.forEach(x=>x.textContent=String(r.online))}).catch(()=>{});
+  api('/ping',{tab:statTab(),new:neu,lang:LANG,ev:evs[0]||null}).then(r=>{const first=!STAT.online&&r.online;STAT.online=r.online;if(first&&!document.querySelector('[data-online]')&&(UI.tab==='home'||UI.tab==='multi'||!G))render();const el=document.querySelectorAll('[data-online]');el.forEach(x=>x.textContent=String(r.online))}).catch(()=>{});
   evs.slice(1).forEach(e=>api('/ping',{tab:statTab(),ev:e}).catch(()=>{}));
 }
 const onlineBadge=()=>STAT.online?`<span class="online" title="${EN?`Playing right now`:`Сейчас играют`}"><i></i>${EN?`online:`:`онлайн:`} <b data-online>${STAT.online}</b></span>`:'';
