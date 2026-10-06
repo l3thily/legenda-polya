@@ -28,6 +28,8 @@ CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
 
 lock = threading.Lock()
+SCORES_FILE = os.path.join(os.path.dirname(DATA), "scores.json")
+scores: dict = {}  # board -> [entries], best first: global hall of fame, daily challenge, scenarios
 changed = threading.Condition(lock)  # long-poll: GET ?v=<version>&wait=<s> returns as soon as the room changes
 rooms: dict = {}
 
@@ -39,6 +41,41 @@ def load():
             rooms = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         rooms = {}
+
+
+def load_scores():
+    global scores
+    try:
+        with open(SCORES_FILE, encoding="utf-8") as f:
+            scores = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        scores = {}
+
+
+def persist_scores():
+    os.makedirs(os.path.dirname(SCORES_FILE), exist_ok=True)
+    tmp = SCORES_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(scores, f, ensure_ascii=False)
+    os.replace(tmp, SCORES_FILE)
+
+
+def board_ok(b):
+    if b == "all" or (b.startswith("sc-") and 3 < len(b) <= 24 and b[3:].isalnum()):
+        return True
+    if b.startswith("day-") and len(b) == 12 and b[4:].isdigit():
+        today = time.strftime("%Y%m%d", time.gmtime())
+        yday = time.strftime("%Y%m%d", time.gmtime(time.time() - 86400))
+        tmrw = time.strftime("%Y%m%d", time.gmtime(time.time() + 86400))
+        return b[4:] in (today, yday, tmrw)
+    return False
+
+
+def num(v, lo, hi):
+    try:
+        return max(lo, min(hi, float(v)))
+    except (TypeError, ValueError):
+        return lo
 
 
 def persist():
@@ -195,6 +232,11 @@ class Handler(BaseHTTPRequestHandler):
         parts = [p for p in self.path.split("?")[0].split("/") if p]
         if parts == ["api", "health"]:
             return self.reply(200, {"ok": True, "rooms": len(rooms)})
+        if parts == ["api", "scores"]:
+            q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
+            b = q.get("board", "all")
+            with lock:
+                return self.reply(200, {"board": b, "scores": scores.get(b, [])[:20]})
         if parts == ["api", "rooms"]:
             # open lobbies anyone can join: newest first
             with lock:
@@ -232,6 +274,22 @@ class Handler(BaseHTTPRequestHandler):
         now = int(time.time())
         with lock:
             cleanup(now)
+            if parts == ["api", "scores"]:
+                board, sid = clip(data.get("board"), 24), clip(data.get("id"), 24)
+                if not board_ok(board) or not sid:
+                    return self.reply(400, {"error": "неверная таблица"})
+                e = {"id": sid, "nick": clip(data.get("nick"), 24) or "Игрок", "score": round(num(data.get("score"), 0, 3000), 1),
+                     "tier": clip(data.get("tier"), 40), "pos": clip(data.get("pos"), 6), "tro": int(num(data.get("tro"), 0, 500)),
+                     "bdo": int(num(data.get("bdo"), 0, 50)), "goal": bool(data.get("goal")), "hard": bool(data.get("hard")), "t": now}
+                lst = [x for x in scores.get(board, []) if x["id"] != sid] + [e]
+                lst.sort(key=lambda x: -x["score"])
+                scores[board] = lst[:100]
+                days = sorted(k for k in scores if k.startswith("day-"))
+                for old in days[:-14]:
+                    del scores[old]
+                persist_scores()
+                rank = next((i + 1 for i, x in enumerate(scores[board]) if x["id"] == sid), None)
+                return self.reply(200, {"board": board, "rank": rank, "scores": scores[board][:20]})
             if parts == ["api", "rooms"]:
                 if len(rooms) >= MAX_ROOMS:
                     return self.reply(503, {"error": "Слишком много комнат, попробуйте позже"})
@@ -367,6 +425,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     load()
+    load_scores()
     with lock:
         if cleanup(int(time.time())):
             persist()
