@@ -27,6 +27,7 @@ CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
 
 lock = threading.Lock()
+changed = threading.Condition(lock)  # long-poll: GET ?v=<version>&wait=<s> returns as soon as the room changes
 rooms: dict = {}
 
 
@@ -75,6 +76,11 @@ def janitor():
                 print("cleanup: " + " ".join(dead), flush=True)
 
 
+def bump(room):
+    room["v"] = room.get("v", 0) + 1
+    changed.notify_all()
+
+
 def new_code(n=5):
     while True:
         code = "".join(secrets.choice(ALPHABET) for _ in range(n))
@@ -93,7 +99,7 @@ def clean_setup(s):
 
 def public(room):
     return {
-        "code": room["code"], "status": room["status"], "seed": room.get("seed"), "rus": room["rus"],
+        "code": room["code"], "v": room.get("v", 0), "status": room["status"], "seed": room.get("seed"), "rus": room["rus"],
         "host": room["host"], "started": room.get("started"),
         "players": [{**{k: p[k] for k in ("id", "name", "ready", "setup", "progress")},
                      "year": p.get("year"), "readyYear": p.get("readyYear")} for p in room["players"].values()],
@@ -166,11 +172,22 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["api", "health"]:
             return self.reply(200, {"ok": True, "rooms": len(rooms)})
         if len(parts) == 3 and parts[:2] == ["api", "rooms"]:
+            q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
+            try:
+                since, wait = int(q.get("v", "-1")), min(max(float(q.get("wait", "0")), 0), 25)
+            except ValueError:
+                since, wait = -1, 0
+            code = parts[2].upper()
             with lock:
-                room = rooms.get(parts[2].upper())
-                if not room:
-                    return self.reply(404, {"error": "Комната не найдена"})
-                return self.reply(200, public(room))
+                deadline = time.time() + wait
+                while True:
+                    room = rooms.get(code)
+                    if not room:
+                        return self.reply(404, {"error": "Комната не найдена"})
+                    left = deadline - time.time()
+                    if room.get("v", 0) != since or left <= 0:
+                        return self.reply(200, public(room))
+                    changed.wait(left)
         self.reply(404, {"error": "not found"})
 
     def do_POST(self):
@@ -208,6 +225,7 @@ class Handler(BaseHTTPRequestHandler):
                 pid, token = add_player(room, data.get("name"))
                 room["feed"].append({"t": now, "pid": pid, "text": f"{room['players'][pid]['name']} заходит в комнату"})
                 room["updated"] = now
+                bump(room)
                 persist()
                 return self.reply(200, {"code": room["code"], "pid": pid, "token": token, "room": public(room)})
             me = room["players"].get(str(data.get("pid")))
@@ -282,6 +300,7 @@ class Handler(BaseHTTPRequestHandler):
                     for old in sorted(worlds)[:-3]:
                         del worlds[old]
                     room["updated"] = now
+                    bump(room)
                     persist()
                 return self.reply(200, {"year": year, "snap": worlds[str(year)]})
             elif action == "leave":
@@ -295,6 +314,7 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 return self.reply(404, {"error": "not found"})
             room["updated"] = now
+            bump(room)
             persist()
             return self.reply(200, public(room))
 

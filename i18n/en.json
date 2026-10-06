@@ -2419,5 +2419,12 @@
 "{0} больше не вызывается.":"{0} is no longer called up.",
 "Меньше 18 игроков оставлять нельзя.":"You can't leave fewer than 18 players.",
 "О":"Pts",
-"Возрастная категория":"Age rating"
+"Возрастная категория":"Age rating",
+"Переход в «{0}» за {1}":"Transfer to {0} for {1}",
+"Свободный переход в «{0}»":"Free transfer to {0}",
+"трофей: {0}":"trophy: {0}",
+"награда: {0}":"award: {0}",
+"рекорд: {0} — {1}":"record: {0} — {1}",
+"{0} заходит в комнату":"{0} joins the room",
+"Мир создан. Карьеры начались!":"The world is created. Careers have begun!"
 }
