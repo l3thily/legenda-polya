@@ -79,6 +79,7 @@ body.has-ad{padding-bottom:120px}
 .sp-card:hover{border-color:#2AABEE}.sp-ic svg{width:36px;height:36px;display:block}.sp-t{display:grid;gap:0;min-width:0;flex:1}.sp-t b{font-family:var(--disp);font-size:20px;letter-spacing:.02em;text-transform:uppercase}.sp-t span{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sp-t em{font-style:normal;font-size:12px;color:#7cc8f0}.sp-go{pointer-events:none}
 .sp-card.big{max-width:none;padding:14px 16px}.sp-card.big .sp-ic svg{width:48px;height:48px}.sp-card.big .sp-t span{white-space:normal}
 .podium{list-style:none;margin:0;padding:0;display:grid;gap:6px}.podium li{display:grid;grid-template-columns:34px 1fr auto;gap:0 10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 12px}.podium .m{grid-row:1/3;font-size:22px}.podium li span:not(.m){grid-column:2;font-size:12px;color:var(--muted)}.podium em{grid-column:3;grid-row:1/3;font-style:normal;color:var(--gold);font-size:18px}.podium .p1{border-color:rgba(242,193,78,.6);background:rgba(242,193,78,.07)}
+.moved{max-width:720px;margin:40px auto;text-align:left}.moved h1{font-size:clamp(40px,7vw,72px);line-height:.95;margin:6px 0 14px}.moved h1 em{color:var(--gold);font-style:normal}
 .cookie{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:60;max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5);font-size:14px}
 .cookie p{margin:0}.cookie a,.foot a{color:var(--sky)}
 .foot{flex-wrap:wrap}
@@ -5029,7 +5030,8 @@ function viewWorld(){
 function render(){
   const app=document.getElementById('app');
   let body;
-  if(UI.tab==='home')body=viewHome();
+  if(UI.moved)body=moveView();
+  else if(UI.tab==='home')body=viewHome();
   else if(UI.tab==='multi')body=viewMulti();
   else if(UI.tab==='saves')body=viewSaves();
   else if(!G||(!G.P&&!G.C))body=viewSetup();
@@ -5334,6 +5336,54 @@ function statPing(ev){
   evs.slice(1).forEach(e=>api('/ping',{tab:statTab(),ev:e}).catch(()=>{}));
 }
 const onlineBadge=()=>STAT.online?`<span class="online" title="Сейчас играют"><i></i>онлайн: <b data-online>${STAT.online}</b></span>`:'';
+
+/* ================= the game moved to legendapolya.com =================
+   Old addresses (GitHub Pages, the sslip mirror) send players to the new domain. Saves live per site in the browser,
+   so a player who has careers there carries them over: the old page opens the new site and hands the saves over by
+   postMessage; the new site merges them with what it already has (nothing is overwritten). */
+const MOVED_TO='https://legendapolya.com';
+const OLD_SITES=['https://l3thily.github.io','https://legenda-polya.88-218-121-40.sslip.io'];
+const SAVE_KEYS=k=>k.startsWith('legenda-polya')&&!/-(tab|adtest|banner|api|adx|seen|consent|tidy1)$/.test(k);
+function oldSite(){try{return OLD_SITES.includes(location.origin)&&!localStorage.getItem('legenda-polya-stay')}catch(e){return false}}
+function movedTarget(){try{return MOVED_TO+'/'+location.search+location.hash}catch(e){return MOVED_TO}}
+function moveDump(){const o={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(SAVE_KEYS(k))o[k]=localStorage.getItem(k)}}catch(e){}return o}
+function moveHasSaves(){try{return slotsGet().length>0||!!localStorage.getItem(SAVE)||greatsGet().length>0}catch(e){return false}}
+function moveView(){
+  return `<section class="moved"><p class="eyebrow">Легенда поля</p><h1 class="disp">Игра переехала на <em>legendapolya.com</em></h1>
+    <p class="lead">Новый адрес — быстрее и надёжнее. Ваши карьеры, достижения и рекорды хранятся в этом браузере: нажмите кнопку, и мы перенесём их на новый сайт.</p>
+    <div class="go"><button class="btn primary" data-a="moveGo">Перенести сохранения и открыть</button><a class="btn ghost" href="${MOVED_TO}/">Открыть без сохранений</a></div>
+    ${UI.moveMsg?`<p class="note">${esc(UI.moveMsg)}</p>`:''}</section>`;
+}
+function moveGo(){
+  const w=window.open(MOVED_TO+'/?import=1','_blank');
+  if(!w){location.href=MOVED_TO+'/';return}
+  const data=moveDump();UI.moveMsg='Открываем новый сайт…';render();
+  const onMsg=e=>{if(e.origin!==MOVED_TO||!e.data)return;
+    if(e.data.type==='lp-ready')w.postMessage({type:'lp-import',data},MOVED_TO);
+    if(e.data.type==='lp-imported'){window.removeEventListener('message',onMsg);UI.moveMsg=`Готово: перенесено карьер — ${e.data.slots}. Играйте на новом сайте, эту вкладку можно закрыть.`;render()}};
+  window.addEventListener('message',onMsg);
+}
+/* new site: accept saves from the old addresses only, merge without overwriting */
+function moveImport(data){
+  const get=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}},set=(k,v)=>{try{localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v))}catch(e){}};
+  let slots=0;
+  for(const [k,v] of Object.entries(data||{})){
+    if(!SAVE_KEYS(k)||typeof v!=='string')continue;
+    if(k===SLOTS_KEY){const mine=slotsGet(),ids=new Set(mine.map(m=>m.id));let add=[];try{add=JSON.parse(v).filter(m=>m&&m.id&&!ids.has(m.id))}catch(e){}slots+=add.length;set(k,mine.concat(add))}
+    else if(k===GREAT_KEY){const mine=greatsGet(),ids=new Set(mine.map(m=>m.id));let add=[];try{add=JSON.parse(v).filter(m=>m&&!ids.has(m.id))}catch(e){}set(k,mine.concat(add))}
+    else if(k===ACH_KEY){const mine=get(k)||{};let o={};try{o=JSON.parse(v)||{}}catch(e){}set(k,Object.assign({},o,mine))}
+    else{try{if(localStorage.getItem(k)==null)localStorage.setItem(k,v)}catch(e){}}
+  }
+  return slots;
+}
+function moveListen(){
+  try{if(location.origin!==MOVED_TO||!new URLSearchParams(location.search).has('import')||!window.opener)return}catch(e){return}
+  window.addEventListener('message',e=>{if(!OLD_SITES.includes(e.origin)||!e.data||e.data.type!=='lp-import')return;
+    const n=moveImport(e.data.data);try{e.source.postMessage({type:'lp-imported',slots:n},e.origin)}catch(err){}
+    try{history.replaceState(null,'',location.pathname)}catch(err){}
+    location.reload()});
+  OLD_SITES.forEach(o=>{try{window.opener.postMessage({type:'lp-ready'},o)}catch(e){}});
+}
 /* ================= events ================= */
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b)return;
@@ -5373,6 +5423,7 @@ document.addEventListener('click',e=>{
   else if(a==='mpInvite'){mpInvite(b)}
   else if(a==='chalStart'){startChallenge(b.dataset.v,b.dataset.id)}
   else if(a==='lbSend'){lbSend()}
+  else if(a==='moveGo'){moveGo()}
   else if(a==='load'){if(G&&G.P&&!RUN){G.P.load=b.dataset.v;save();render()}}
   else if(a==='shareRes'){shareResult(b)}
   else if(a==='mpSwitchNo'){UI.mpSwitch=false;render()}
@@ -5431,6 +5482,8 @@ function updPrev(){const f=UI.form,el=document.getElementById('cardPrev');if(el)
 
 /* ================= boot ================= */
 function start(data){
+  moveListen();
+  if(oldSite()&&!YG){if(!moveHasSaves()){location.replace(movedTarget());return}UI.moved=true}
   if(data&&data.Gs)G=migrate(JSON.parse(data.Gs));else if(data&&data.G)G=migrate(data.G);else{slotsTidy();const s=load();if(s&&(s.P||s.C)&&s.clubs)G=migrate(s)}
   if(G)SAVED=saveJSON(G);
   if(G&&G.room&&G.room.token&&!MP.sess){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave()}
