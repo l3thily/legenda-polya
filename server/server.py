@@ -17,8 +17,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 HOST, PORT = "127.0.0.1", int(os.environ.get("PORT", "8095"))
 DATA = os.environ.get("DATA", "/var/lib/legenda-polya/rooms.json")
 ORIGINS = {"https://legendapolya.com", "https://l3thily.github.io", "https://legenda-polya.88-218-121-40.sslip.io"}
+ORIGINS |= set(filter(None, os.environ.get("EXTRA_ORIGINS", "").split(",")))  # local testing
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED = 500, 8, 120_000, 120
+MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED, MAX_CHAT = 500, 8, 120_000, 120, 80
 # inactive rooms are removed: lobby nobody started, finished games, abandoned games
 LOBBY_TTL = 12 * 3600
 DONE_TTL = 2 * 24 * 3600
@@ -97,6 +98,26 @@ def clean_setup(s):
     return {k: clip(s.get(k), 40) for k in ("nat", "nat2", "pos", "lg", "club", "num")}
 
 
+# room achievements: the first player whose feed line matches wins it for the whole room
+FIRSTS = [
+    ("trophy", "трофей: "),
+    ("ucl", "трофей: Лига чемпионов"),
+    ("wc", "трофей: Чемпионат мира"),
+    ("bdo", "награда: Золотой мяч"),
+    ("boot", "награда: Золотая бутса"),
+    ("record", "рекорд: "),
+    ("move", "Переход в "),
+]
+
+
+def note_firsts(room, me, line, now):
+    firsts = room.setdefault("firsts", {})
+    for key, prefix in FIRSTS:
+        if key in firsts or not line.startswith(prefix):
+            continue
+        firsts[key] = {"pid": me["id"], "name": me["name"], "t": now, "text": clip(line, 120)}
+
+
 def public(room):
     return {
         "code": room["code"], "v": room.get("v", 0), "status": room["status"], "seed": room.get("seed"), "rus": room["rus"],
@@ -104,6 +125,9 @@ def public(room):
         "players": [{**{k: p[k] for k in ("id", "name", "ready", "setup", "progress")},
                      "year": p.get("year"), "readyYear": p.get("readyYear")} for p in room["players"].values()],
         "feed": room["feed"][-60:],
+        "chat": room.get("chat", [])[-50:],
+        "firsts": room.get("firsts", {}),
+        "public": bool(room.get("public")),
         "awards": {y: a for y, a in sorted(room.get("awards", {}).items())[-3:]},
         "matches": dict(list(room.get("matches", {}).items())[-150:]),
     }
@@ -171,6 +195,15 @@ class Handler(BaseHTTPRequestHandler):
         parts = [p for p in self.path.split("?")[0].split("/") if p]
         if parts == ["api", "health"]:
             return self.reply(200, {"ok": True, "rooms": len(rooms)})
+        if parts == ["api", "rooms"]:
+            # open lobbies anyone can join: newest first
+            with lock:
+                lst = [{"code": r["code"], "host": (r["players"].get(r["host"]) or {}).get("name", ""),
+                        "players": len(r["players"]), "rus": r["rus"], "updated": r["updated"]}
+                       for r in rooms.values()
+                       if r.get("public") and r["status"] == "lobby" and 0 < len(r["players"]) < MAX_PLAYERS]
+            lst.sort(key=lambda x: -x["updated"])
+            return self.reply(200, {"rooms": lst[:20]})
         if len(parts) == 3 and parts[:2] == ["api", "rooms"]:
             q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
             try:
@@ -205,7 +238,7 @@ class Handler(BaseHTTPRequestHandler):
                 code = new_code()
                 room = {"code": code, "created": now, "updated": now, "status": "lobby", "seed": None,
                         "rus": data.get("rus") if data.get("rus") in RUS_MODES else "random",
-                        "host": None, "players": {}, "feed": []}
+                        "host": None, "players": {}, "feed": [], "public": bool(data.get("public"))}
                 pid, token = add_player(room, data.get("name"))
                 room["host"] = pid
                 rooms[code] = room
@@ -240,7 +273,19 @@ class Handler(BaseHTTPRequestHandler):
                     me["ready"] = bool(data["ready"])
                 if "rus" in data and me["id"] == room["host"] and data["rus"] in RUS_MODES and room["status"] == "lobby":
                     room["rus"] = data["rus"]
+                if "public" in data and me["id"] == room["host"]:
+                    room["public"] = bool(data["public"])
                 maybe_start(room)
+            elif action == "chat":
+                text = clip(data.get("text"), 200)
+                if not text:
+                    return self.reply(400, {"error": "пустое сообщение"})
+                if now - me.get("lastChat", 0) < 1:
+                    return self.reply(429, {"error": "Не так быстро"})
+                me["lastChat"] = now
+                chat = room.setdefault("chat", [])
+                chat.append({"t": now, "pid": me["id"], "name": me["name"], "text": text})
+                room["chat"] = chat[-MAX_CHAT:]
             elif action == "start":
                 if me["id"] != room["host"]:
                     return self.reply(403, {"error": "Начать может только хост"})
@@ -253,6 +298,7 @@ class Handler(BaseHTTPRequestHandler):
                         me["year"] = prog["year"]
                 for line in (data.get("feed") or [])[:8]:
                     room["feed"].append({"t": now, "pid": me["id"], "text": f"{me['name']}: {clip(line, 200)}"})
+                    note_firsts(room, me, clip(line, 200), now)
                 room["feed"] = room["feed"][-MAX_FEED:]
             elif action == "season":
                 # "I want to play season <year>": clients start it once every active teammate is ready or ahead

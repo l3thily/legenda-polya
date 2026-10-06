@@ -55,6 +55,14 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .topact{display:flex;gap:6px;align-items:center}
 .lng{font:700 12px/1 var(--mono);letter-spacing:.06em;min-width:40px;padding-inline:8px}
 .foot{display:flex;gap:12px;align-items:center;justify-content:center;margin:28px 0 8px;color:var(--dim)}
+.chat-log{list-style:none;margin:0;padding:0;max-height:260px;overflow:auto;display:grid;gap:6px}
+.chat-log li{display:grid;gap:1px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:7px 10px}
+.chat-log li.me{border-color:rgba(242,193,78,.45)}
+.emo{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0}
+.chat-f{display:flex;gap:8px}.chat-f input{flex:1;min-width:0;background:rgba(11,21,28,.8);border:1px solid var(--line2);border-radius:12px;padding:10px 12px;color:var(--text);font:inherit}
+.qr{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.qr-img{width:180px;height:180px;background:#fff;border-radius:12px;padding:6px}.qr-img svg{width:100%;height:100%}
+.firsts{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}.first{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:2px;color:var(--dim)}.first.on{border-color:rgba(242,193,78,.55);color:var(--text)}.first span{font-size:13px}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--muted)}
 .cookie{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:60;max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5);font-size:14px}
 .cookie p{margin:0}.cookie a,.foot a{color:var(--sky)}
 .foot{flex-wrap:wrap}
@@ -3641,7 +3649,7 @@ function dlTick(){
 }
 
 /* ================= multiplayer rooms ================= */
-const API=(()=>{try{if(/(^|\.)legendapolya\.com$/.test(location.host))return '/api'}catch(e){}return 'https://legenda-polya.88-218-121-40.sslip.io/api'})();
+const API=(()=>{try{const o=localStorage.getItem('legenda-polya-api');if(o)return o}catch(e){}try{if(/(^|\.)legendapolya\.com$/.test(location.host))return '/api'}catch(e){}return 'https://legenda-polya.88-218-121-40.sslip.io/api'})();
 const MP_KEY='legenda-polya-room';
 const MP={sess:null,room:null,err:null,busy:false,lastStatus:null,tick:0,pushT:null};
 try{MP.sess=JSON.parse(localStorage.getItem(MP_KEY)||'null')}catch(e){MP.sess=null}
@@ -3659,7 +3667,7 @@ const mpAuth=()=>({pid:MP.sess.pid,token:MP.sess.token});
 const mpMe=()=>MP.room&&MP.sess?MP.room.players.find(p=>p.id===MP.sess.pid):null;
 function mpSetup(){const f=UI.form;return {nat:f.nat,nat2:f.nat2||'',pos:f.pos,lg:f.lg,club:f.club,num:String(f.num||'')}}
 async function mpRun(fn){if(MP.busy)return;MP.busy=true;MP.err=null;try{await fn()}catch(e){MP.err=e.message;if(e.status===404||e.status===403){MP.sess=null;MP.room=null;mpSave()}}MP.busy=false;render()}
-function mpCreate(){return mpRun(async()=>{const d=await api('/rooms',{name:UI.form.name,rus:UI.form.rus});MP.sess={code:d.code,pid:d.pid,token:d.token};mpSave();MP.room=await api(`/rooms/${d.code}/update`,{...mpAuth(),setup:mpSetup()})})}
+function mpCreate(){return mpRun(async()=>{const d=await api('/rooms',{name:UI.form.name,rus:UI.form.rus,public:!!UI.mpPublic});MP.sess={code:d.code,pid:d.pid,token:d.token};mpSave();MP.room=await api(`/rooms/${d.code}/update`,{...mpAuth(),setup:mpSetup()})})}
 function mpJoin(){return mpRun(async()=>{const code=String(UI.mpCode||'').trim().toUpperCase();if(!code)throw new Error('Введите код комнаты');const d=await api(`/rooms/${code}/join`,{name:UI.form.name});MP.sess={code:d.code,pid:d.pid,token:d.token};mpSave();MP.room=await api(`/rooms/${d.code}/update`,{...mpAuth(),setup:mpSetup()})})}
 function mpReady(){return mpRun(async()=>{const me=mpMe();MP.room=await api(`/rooms/${MP.sess.code}/update`,{...mpAuth(),name:UI.form.name,setup:mpSetup(),ready:!(me&&me.ready)})})}
 function mpStartNow(){return mpRun(async()=>{MP.room=await api(`/rooms/${MP.sess.code}/start`,mpAuth())})}
@@ -3757,7 +3765,7 @@ function mpLiveHtml(){
   const ready=lobby&&me?`<div class="go"><button class="btn ${me.ready?'':'primary'}" data-a="mpReady">${me.ready?'Не готов':'Готов'}</button>${r.host===MP.sess.pid?`<button class="btn ghost" data-a="mpStart">Начать сейчас</button>`:''}<span class="small muted">${r.players.length<2?'Игра стартует, когда в комнате двое и все готовы.':'Игра стартует, когда все нажмут «Готов».'}</span></div>`:'';
   return `<ul class="roster">${rows}</ul>${wc}${sorted}${ready}${MP.err?`<p class="err">${esc(MP.err)}</p>`:''}${feed}`;
 }
-function mpRenderLive(){const el=document.getElementById('roomLive');if(el)el.innerHTML=mpLiveHtml()}
+function mpRenderLive(){const el=document.getElementById('roomLive');if(el)el.innerHTML=mpLiveHtml();mpChatLive();const fe=document.getElementById('roomFirsts');if(fe)fe.innerHTML=mpFirstsHtml()}
 function viewMulti(){
   const f=UI.form;
   if(!MP.sess)return `<section class="mp">
@@ -3769,12 +3777,14 @@ function viewMulti(){
       <div class="panel"><div class="sec-h"><h2>Создать</h2></div>
         <div class="field"><label for="m-name">Ник в комнате</label><input id="m-name" maxlength="24" value="${esc(f.name)}"></div>
         <div class="field" style="margin-top:10px"><label for="m-rus">Россия в международном футболе</label><select id="m-rus">${[['random','Отстранена, может вернуться'],['off','Отстранена навсегда'],['on','Допущена']].map(([v,l])=>`<option value="${v}" ${f.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>
+        <label class="chk" style="margin-top:12px"><input type="checkbox" id="m-pub" ${UI.mpPublic?'checked':''}> Открытая комната: её увидят все в списке ниже</label>
         <div class="go"><button class="btn primary" data-a="mpCreate" ${MP.busy?'disabled':''}>Создать комнату</button></div></div>
       <div class="panel"><div class="sec-h"><h2>Войти</h2></div>
         <div class="field"><label for="m-name2">Ник в комнате</label><input id="m-name2" maxlength="24" value="${esc(f.name)}"></div>
         <div class="field" style="margin-top:10px"><label for="m-code">Код комнаты</label><input id="m-code" maxlength="5" autocapitalize="characters" autocomplete="off" value="${esc(UI.mpCode||'')}" placeholder="например, K7QX2"></div>
         <div class="go"><button class="btn primary" data-a="mpJoin" ${MP.busy?'disabled':''}>Войти</button></div></div>
     </div>
+    <div class="panel" style="margin-top:16px"><div class="sec-h"><h2>Открытые комнаты</h2><span class="small muted">ждут игроков прямо сейчас</span></div><div id="pubRooms">${mpPubHtml()}</div></div>
   </section>`;
   const r=MP.room,lobby=!r||r.status==='lobby',mine=G&&G.room&&G.room.code===MP.sess.code;
   const lg=S_LEAGUES.find(l=>l.id===f.lg),nats=S_NATS.slice().sort((a,b)=>trText(a.name).localeCompare(trText(b.name),LANG));
@@ -3793,8 +3803,11 @@ function viewMulti(){
     :`<div class="panel"><p>Игра в комнате уже идёт${G&&G.P?'. Карьера в комнате будет в отдельном слоте, текущая сохранится.':'.'} Игрок возьмётся из настроек в лобби${mpMe()&&mpMe().setup&&mpMe().setup.club?`: «${esc(mpMe().name)}», «${esc(mpMe().setup.club)}»`:''}.</p><div class="go"><button class="btn primary" data-a="mpBegin">Начать карьеру в комнате</button></div></div>`):'';
   return `<section class="mp">
     <div class="sec-h"><div><p class="eyebrow">Комната · ${lobby?'лобби':'игра идёт'}</p><h1 class="disp" style="font-size:clamp(48px,9vw,90px);color:var(--amber)">${esc(MP.sess.code)}</h1></div>
-      <div class="go" style="margin:0"><button class="btn" data-a="mpCopy">Скопировать код</button><button class="btn ghost" data-a="mpLeave">Выйти</button></div></div>
-    <div class="grid2"><div class="panel"><div class="sec-h"><h2>Игроки</h2><span class="small muted">${r?r.players.length:0} из 8</span></div><div id="roomLive">${mpLiveHtml()}</div></div>${setup}</div>
+      <div class="go" style="margin:0"><button class="btn" data-a="mpInvite">Пригласить</button><button class="btn ghost" data-a="mpQr">QR</button><button class="btn ghost" data-a="mpCopy">Код</button><button class="btn ghost" data-a="mpLeave">Выйти</button></div></div>
+    ${UI.mpSwitch&&UI.mpCode&&UI.mpCode!==MP.sess.code?`<div class="note">Вас пригласили в комнату <b class="num">${esc(UI.mpCode)}</b>. Сейчас вы в комнате ${esc(MP.sess.code)}. <button class="btn mini primary" data-a="mpSwitchGo">Перейти в ${esc(UI.mpCode)}</button> <button class="btn mini ghost" data-a="mpSwitchNo">Остаться</button></div>`:''}
+    ${UI.mpQr?mpQrHtml():''}
+    <div class="grid2"><div class="panel"><div class="sec-h"><h2>Игроки</h2><span class="small muted">${r?r.players.length:0} из 8</span></div><div id="roomLive">${mpLiveHtml()}</div></div>${setup||mpChatHtml()}</div>
+    ${setup?mpChatHtml():''}<div id="roomFirsts">${mpFirstsHtml()}</div>
     ${startedBlock}
   </section>${!lobby?roomSummary():''}`;
 }
@@ -3929,7 +3942,51 @@ function roomSummary(){
 function roomPanel(){
   if(!G||!G.room)return '';
   if(!MP.sess||MP.sess.code!==G.room.code)return `<section class="panel"><div class="sec-h"><h2>Комната ${esc(G.room.code)}</h2></div><p class="muted small">Связь с комнатой потеряна на этом устройстве.</p></section>`;
-  return `<section class="panel"><div class="sec-h"><h2>Комната ${esc(G.room.code)}</h2><button class="btn ghost" data-a="tab" data-v="multi">Открыть лобби</button></div><div id="roomLive">${mpLiveHtml()}</div></section>`;
+  return `<section class="panel"><div class="sec-h"><h2>Комната ${esc(G.room.code)}</h2><button class="btn ghost" data-a="tab" data-v="multi">Открыть лобби</button></div><div id="roomLive">${mpLiveHtml()}</div></section>${mpChatHtml()}`;
+}
+
+
+/* ---- room chat, invites, open rooms, room achievements ---- */
+const EMO=['⚽','🔥','👏','😂','😱','🏆','💪','🤝'];
+const chatTime=t=>{const d=new Date(t*1000);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+function mpChatLog(){
+  const c=(MP.room&&MP.room.chat)||[];
+  if(!c.length)return '<p class="small dim">Сообщений пока нет. Поздоровайтесь с соперниками!</p>';
+  return c.slice(-40).map(m=>`<li class="${MP.sess&&m.pid===MP.sess.pid?'me':''}"><b>${esc(m.name)}</b> <span class="dim small">${chatTime(m.t)}</span><span lang="${/[А-Яа-яЁё]/.test(m.text)?'ru':'en'}">${esc(m.text)}</span></li>`).join('');
+}
+function mpChatHtml(){
+  if(!MP.sess||!MP.room)return '';
+  return `<div class="panel chat"><div class="sec-h"><h2>Чат комнаты</h2></div><ul class="chat-log" id="chatLog">${mpChatLog()}</ul>
+    <div class="emo">${EMO.map(e=>`<button class="btn ghost mini" data-a="mpEmo" data-v="${e}" aria-label="${e}">${e}</button>`).join('')}</div>
+    <form class="chat-f" id="chatForm"><input id="m-chat" maxlength="200" autocomplete="off" placeholder="Сообщение…" aria-label="Сообщение"><button class="btn primary" type="submit">Отправить</button></form></div>`;
+}
+function mpChatLive(){const el=document.getElementById('chatLog');if(!el)return;const atEnd=el.scrollHeight-el.scrollTop-el.clientHeight<40;el.innerHTML=mpChatLog();if(atEnd)el.scrollTop=el.scrollHeight}
+function mpSay(text){text=String(text||'').trim().slice(0,200);if(!text||!MP.sess)return;api(`/rooms/${MP.sess.code}/chat`,{...mpAuth(),text}).then(r=>{MP.room=r;mpChatLive()}).catch(e=>{MP.err=e.message;mpRenderLive()})}
+const inviteUrl=()=>{try{const u=new URL(location.href);u.search='';u.hash='';u.searchParams.set('room',MP.sess.code);return u.toString()}catch(e){return 'https://legendapolya.com/?room='+(MP.sess?MP.sess.code:'')}};
+function mpInvite(b){
+  const url=inviteUrl(),text=`Заходи в мою комнату в «Легенде поля»: код ${MP.sess.code}`;
+  if(navigator.share){navigator.share({title:'Легенда поля',text,url}).catch(()=>{});return}
+  try{navigator.clipboard.writeText(url).then(()=>{b.textContent='Ссылка скопирована'},()=>{b.textContent=url})}catch(e){b.textContent=url}
+}
+let QR_LIB=null;
+function qrLib(){if(!QR_LIB)QR_LIB=new Promise((res,rej)=>{const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';sc.onload=()=>res(window.qrcode);sc.onerror=rej;document.head.appendChild(sc)});return QR_LIB}
+function mpQrHtml(){
+  if(typeof window.qrcode!=='function'){qrLib().then(()=>render()).catch(()=>{UI.mpQr=false;render()});return '<div class="panel qr"><p class="muted">Готовлю QR…</p></div>'}
+  const q=window.qrcode(0,'M');q.addData(inviteUrl());q.make();
+  return `<div class="panel qr"><div class="qr-img">${q.createSvgTag({cellSize:5,margin:2,scalable:true})}</div><p class="small muted">Наведите камеру телефона, чтобы зайти в комнату ${esc(MP.sess.code)}.</p><div class="go"><button class="btn ghost mini" data-a="mpQr">Скрыть</button></div></div>`;
+}
+MP.pub=null;MP.pubAt=0;
+function mpPubLoad(){if(Date.now()-MP.pubAt<8000)return;MP.pubAt=Date.now();api('/rooms').then(d=>{MP.pub=d.rooms||[];const el=document.getElementById('pubRooms');if(el)el.innerHTML=mpPubHtml()}).catch(()=>{MP.pub=[];const el=document.getElementById('pubRooms');if(el)el.innerHTML=mpPubHtml()})}
+function mpPubHtml(){
+  if(MP.pub==null){setTimeout(mpPubLoad,0);return '<p class="small muted">Загружаю…</p>'}
+  if(!MP.pub.length)return '<p class="small muted">Открытых комнат сейчас нет. Создайте свою и отметьте «Открытая комната».</p>';
+  return `<ul class="roster">${MP.pub.map(r=>`<li><div><b class="num">${esc(r.code)}</b><span>хост: ${esc(r.host)} · игроков: ${r.players} из 8</span></div><button class="btn mini primary" data-a="mpJoinCode" data-v="${esc(r.code)}">Войти</button></li>`).join('')}</ul>`;
+}
+const FIRST_N={trophy:'Первый трофей',ucl:'Первая Лига чемпионов',wc:'Первый чемпионат мира',bdo:'Первый Золотой мяч',boot:'Первая Золотая бутса',record:'Первый мировой рекорд',move:'Первый трансфер'};
+function mpFirstsHtml(){
+  const f=MP.room&&MP.room.firsts||{},ks=Object.keys(FIRST_N).filter(k=>f[k]);
+  if(!MP.room||MP.room.status!=='started')return '';
+  return `<section class="panel"><div class="sec-h"><h2>Достижения комнаты</h2><span class="small muted">кто успел первым</span></div><div class="firsts">${Object.keys(FIRST_N).map(k=>`<div class="first ${f[k]?'on':''}"><b>${FIRST_N[k]}</b><span>${f[k]?esc(f[k].name):'ещё никто'}</span></div>`).join('')}</div>${ks.length?'':''}</section>`;
 }
 
 /* ================= COACH CAREER ================= */
@@ -5017,6 +5074,12 @@ document.addEventListener('click',e=>{
   else if(a==='shareClose'){UI.share=null;render()}
   else if(a==='shareNative'){const f=new File([UI.share.blob],'legenda.png',{type:'image/png'});navigator.share({files:[f],title:EN?'Legend of the Pitch':'Легенда поля'}).catch(()=>{})}
   else if(a==='mpCreate'){mpCreate()}
+  else if(a==='mpInvite'){mpInvite(b)}
+  else if(a==='mpSwitchNo'){UI.mpSwitch=false;render()}
+  else if(a==='mpSwitchGo'){UI.mpSwitch=false;const code=UI.mpCode;MP.sess=null;MP.room=null;mpSave();UI.mpCode=code;mpJoin()}
+  else if(a==='mpQr'){UI.mpQr=!UI.mpQr;render()}
+  else if(a==='mpEmo'){mpSay(b.dataset.v)}
+  else if(a==='mpJoinCode'){UI.mpCode=b.dataset.v;mpJoin()}
   else if(a==='mpJoin'){mpJoin()}
   else if(a==='mpReady'){mpReady()}
   else if(a==='mpStart'){mpStartNow()}
@@ -5039,6 +5102,7 @@ document.addEventListener('input',e=>{
   else if(id==='m-name'||id==='m-name2'){f.name=e.target.value;mpPushSetupSoon()}
   else if(id==='m-num'){f.num=e.target.value;mpPushSetupSoon()}
   else if(id==='m-code'){UI.mpCode=e.target.value.toUpperCase()}
+  else if(id==='m-pub'){UI.mpPublic=e.target.checked}
 });
 document.addEventListener('change',e=>{
   const id=e.target.id,f=UI.form;
@@ -5060,7 +5124,7 @@ document.addEventListener('change',e=>{
   else if(id==='m-club'){f.club=e.target.value;mpPushSetupSoon()}
   else if(id==='m-rus'){if(MP.sess&&MP.room&&MP.room.host===MP.sess.pid)mpHostRus(e.target.value);else f.rus=e.target.value}
 });
-document.addEventListener('submit',e=>{if(e.target.id==='setupForm'){e.preventDefault();startCareer()}else if(e.target.id==='coachForm'){e.preventDefault();startCoach(false)}});
+document.addEventListener('submit',e=>{if(e.target.id==='chatForm'){e.preventDefault();const i=document.getElementById('m-chat');if(i){mpSay(i.value);i.value=''}return}if(e.target.id==='setupForm'){e.preventDefault();startCareer()}else if(e.target.id==='coachForm'){e.preventDefault();startCoach(false)}});
 function updPrev(){const f=UI.form,el=document.getElementById('cardPrev');if(el)el.innerHTML=playerCard({ovr:'??',pos:POS[f.pos].s,age:17,num:f.num,name:f.name||'Игрок',club:f.club,nat:f.nat,posFull:POS[f.pos].n})}
 
 /* ================= boot ================= */
@@ -5070,6 +5134,7 @@ function start(data){
   if(G&&G.room&&G.room.token&&!MP.sess){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave()}
   if(data&&data.UI)Object.assign(UI,data.UI);
   else if(!G&&slotsGet().length)UI.tab='home';
+  try{const q=new URLSearchParams(location.search).get('room');if(q&&/^[A-Z0-9]{4,6}$/i.test(q)){UI.mpCode=q.toUpperCase();UI.tab='multi';if(MP.sess&&MP.sess.code!==UI.mpCode)UI.mpSwitch=true;history.replaceState(null,'',location.pathname)}}catch(e){}
   adsLoad();
   render();
 }
