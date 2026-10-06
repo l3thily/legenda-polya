@@ -55,6 +55,10 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .topact{display:flex;gap:6px;align-items:center}
 .lng{font:700 12px/1 var(--mono);letter-spacing:.06em;min-width:40px;padding-inline:8px}
 .foot{display:flex;gap:12px;align-items:center;justify-content:center;margin:28px 0 8px;color:var(--dim)}
+.cookie{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:60;max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5);font-size:14px}
+.cookie p{margin:0}.cookie a,.foot a{color:var(--sky)}
+.foot{flex-wrap:wrap}
+@media (max-width:760px){.cookie{bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
 .age-mark{font:700 12px/1 var(--mono);border:1.5px solid currentColor;border-radius:6px;padding:4px 6px}
 .btn.snd{width:44px;padding:0;color:var(--muted)}
 .btn.snd[aria-pressed="true"]{color:var(--gold)}
@@ -2105,6 +2109,7 @@ function chooseOpt(i){
   save();render();
 }
 function doRetire(why){
+  setTimeout(()=>adsFull(true),1800);
   G.P.retired={why,age:G.seasons[0]?G.seasons[0].age:G.P.age,year:G.year};
   G.pending=[];G.phase='retired';
   if(!S)S=G.seasons[0]||null;
@@ -2119,7 +2124,7 @@ function doRetire(why){
 /* ================= season driver ================= */
 function beginSeason(){UI.confirmRetire=false;UI.err=null;RUN=seasonGen();stepSeason()}
 function stepSeason(inp){
-  try{const r=RUN.next(inp);if(r.done){RUN=null;MATCH=null;mpProgress();if(G&&G.phase!=='retired'&&G.seasons[0]&&G.seasons[0].trophies.length&&!G.ceremony)setTimeout(confetti,200);setTimeout(()=>sfx('page'),150)}else{MATCH=r.value;if(MATCH.kind==='sync')setTimeout(()=>mpAwardsSync(MATCH),0);if(MATCH.kind==='await')setTimeout(()=>mpAwaitMatch(MATCH),0)}}
+  try{const r=RUN.next(inp);if(r.done){RUN=null;MATCH=null;mpProgress();if(G&&G.seasons.length%3===0&&G.phase!=='retired')setTimeout(()=>adsFull(false),1200);if(G&&G.phase!=='retired'&&G.seasons[0]&&G.seasons[0].trophies.length&&!G.ceremony)setTimeout(confetti,200);setTimeout(()=>sfx('page'),150)}else{MATCH=r.value;if(MATCH.kind==='sync')setTimeout(()=>mpAwardsSync(MATCH),0);if(MATCH.kind==='await')setTimeout(()=>mpAwaitMatch(MATCH),0)}}
   catch(err){console.error(err);RUN=null;MATCH=null;if(SAVED)G=migrate(JSON.parse(SAVED));UI.err='В симуляции сезона что-то сломалось. Сезон откатился к началу, попробуйте сыграть его ещё раз.'}
   render();
   const el=document.querySelector(MATCH?'.bigm':'.hero');if(el)el.scrollIntoView({block:'start'});
@@ -3245,8 +3250,7 @@ function viewHome(){
     </div>
     ${slots.length?`<p class="eyebrow" style="margin:26px 0 10px">Другие карьеры</p><ul class="slots">${slots.map(m=>slotCard(m,`<button class="btn mini" data-a="slotLoad" data-id="${esc(m.id)}">Открыть</button>`)).join('')}</ul>`:''}
     </section>
-    <section class="panel"><div class="sec-h"><h2>Величайшие</h2><span class="small muted">все ваши завершённые карьеры в этом браузере, по очкам наследия</span></div>${greatsTable(20)}</section>
-    <footer class="foot"><span class="age-mark" title="Возрастная категория">12+</span><button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
+    <section class="panel"><div class="sec-h"><h2>Величайшие</h2><span class="small muted">все ваши завершённые карьеры в этом браузере, по очкам наследия</span></div>${greatsTable(20)}</section>`;
 }
 
 /* ================= museum of a career ================= */
@@ -3760,13 +3764,14 @@ function viewMulti(){
     <p class="eyebrow">Мультиплеер</p><h1 class="disp hero-t" style="font-size:clamp(46px,8vw,86px)">Одна комната,<br><em>один мир</em></h1>
     <p class="lead">Создай комнату и скинь код друзьям. Каждый настраивает своего игрока и жмёт «Готов». Когда готовы все, карьеры стартуют в одном и том же мире. В комнате видно, кто куда перешёл, кто что выиграл и у кого больше Золотых мячей.</p>
     ${MP.err?`<p class="err">${esc(MP.err)}</p>`:''}
+    <p class="small muted">Ник и игровые результаты видят другие игроки комнаты. Не указывайте настоящее имя и другие личные данные.</p>
     <div class="grid2" style="margin-top:22px">
       <div class="panel"><div class="sec-h"><h2>Создать</h2></div>
-        <div class="field"><label for="m-name">Ваше имя в комнате</label><input id="m-name" maxlength="24" value="${esc(f.name)}"></div>
+        <div class="field"><label for="m-name">Ник в комнате</label><input id="m-name" maxlength="24" value="${esc(f.name)}"></div>
         <div class="field" style="margin-top:10px"><label for="m-rus">Россия в международном футболе</label><select id="m-rus">${[['random','Отстранена, может вернуться'],['off','Отстранена навсегда'],['on','Допущена']].map(([v,l])=>`<option value="${v}" ${f.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>
         <div class="go"><button class="btn primary" data-a="mpCreate" ${MP.busy?'disabled':''}>Создать комнату</button></div></div>
       <div class="panel"><div class="sec-h"><h2>Войти</h2></div>
-        <div class="field"><label for="m-name2">Ваше имя в комнате</label><input id="m-name2" maxlength="24" value="${esc(f.name)}"></div>
+        <div class="field"><label for="m-name2">Ник в комнате</label><input id="m-name2" maxlength="24" value="${esc(f.name)}"></div>
         <div class="field" style="margin-top:10px"><label for="m-code">Код комнаты</label><input id="m-code" maxlength="5" autocapitalize="characters" autocomplete="off" value="${esc(UI.mpCode||'')}" placeholder="например, K7QX2"></div>
         <div class="go"><button class="btn primary" data-a="mpJoin" ${MP.busy?'disabled':''}>Войти</button></div></div>
     </div>
@@ -4881,6 +4886,7 @@ function viewLife(){
       <div class="social"><p class="eyebrow">Соцсети</p><b class="disp big num">${fmtFol(P.fol)}</b><p class="small muted" style="margin:2px 0 10px">подписчиков · ${hypeLabel(P.fol)}</p>${spark}
         <p class="small dim" style="margin:10px 0 0">Подписчики растут от голов, трофеев, наград и громких историй. Хайп добавляет голоса жюри и деньги спонсоров, но звёзд соцсетей тренеры любят меньше.${P.cel&&CELS[P.cel]?` Ваше празднование — «${CELS[P.cel].n.toLowerCase()}».`:''}</p></div>
     </section>
+    ${!busy&&adsRewOk()&&G.phase!=='retired'&&G.adRewY!==G.year?`<section class="panel"><div class="sec-h"><h2>Рекламная интеграция</h2><span class="small muted">раз за межсезонье</span></div><p class="small muted">Снимитесь в рекламе: посмотрите короткий ролик — получите ${fmtM(adBonus())} на счёт.</p><div class="go"><button class="btn primary" data-a="adRew">Смотреть рекламу · +${fmtM(adBonus())}</button></div></section>`:''}
     ${busy?'<p class="err">Сезон идёт. Тратить деньги можно между сезонами.</p>':''}${UI.shopMsg?`<p class="note">${esc(UI.shopMsg)}</p>`:''}
     <section class="panel"><div class="sec-h"><h2>Личный штаб</h2><span class="small muted">оплата каждый сезон, отменить можно в любой момент</span></div><div class="shop">${subs}</div></section>
     <section class="panel"><div class="sec-h"><h2>Покупки</h2><span class="small muted">один раз и навсегда</span></div><div class="shop">${items}</div></section>
@@ -4935,10 +4941,46 @@ function render(){
   else if(UI.tab==='museum'&&G.P&&!isCoach())body=viewMuseum();
   else body=viewCareer();
   const enter=UI.shown!==UI.tab;UI.shown=UI.tab;
-  app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}</main>`+(G&&(G.P||G.C)?shareModal():'');
+  app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}${siteFoot()}</main>${consentBanner()}`+(G&&(G.P||G.C)?shareModal():'');
   try{afterRender()}catch(e){console.error(e)}
 }
 
+
+/* ================= ads & cookies =================
+   Ads run only on the own domain and only after the visitor agreed to advertising cookies (consent first, 152-ФЗ).
+   Yandex Advertising Network (РСЯ): a fullscreen block after a career and every few seasons, a rewarded block for an in-game bonus.
+   Block ids come from partner.yandex.ru; with empty ids nothing is loaded at all. */
+const ADS_CFG={full:'',fullDesk:'',rew:''};
+const CONSENT_KEY='legenda-polya-consent';
+const adsHost=()=>{try{return /(^|\.)legendapolya\.com$/.test(location.host)||localStorage.getItem('legenda-polya-adtest')==='1'}catch(e){return false}};
+const adsOn=()=>adsHost()&&!!(ADS_CFG.full||ADS_CFG.fullDesk||ADS_CFG.rew||(()=>{try{return localStorage.getItem('legenda-polya-adtest')==='1'}catch(e){return false}})());
+const consentGet=()=>{try{return localStorage.getItem(CONSENT_KEY)}catch(e){return null}};
+function consentSet(v){try{localStorage.setItem(CONSENT_KEY,v)}catch(e){}UI.cookies=false;if(v==='all')adsLoad();render()}
+const ADS={loaded:false,lastFull:0};
+const isTouch=()=>{try{return matchMedia('(pointer:coarse)').matches}catch(e){return false}};
+function adsLoad(){
+  if(ADS.loaded||!adsOn()||consentGet()!=='all'||typeof document==='undefined'||!document.head)return;
+  ADS.loaded=true;window.yaContextCb=window.yaContextCb||[];
+  const sc=document.createElement('script');sc.src='https://yandex.ru/ads/system/context.js';sc.async=true;document.head.appendChild(sc);
+}
+function adsFull(force){
+  if(!ADS.loaded)return;const t=isTouch(),id=t?ADS_CFG.full:(ADS_CFG.fullDesk||ADS_CFG.full);if(!id)return;
+  if(!force&&Date.now()-ADS.lastFull<240000)return;ADS.lastFull=Date.now();
+  window.yaContextCb.push(()=>{try{window.Ya.Context.AdvManager.render({blockId:id,type:'fullscreen',platform:t?'touch':'desktop'})}catch(e){}});
+}
+const adsRewOk=()=>ADS.loaded&&!!ADS_CFG.rew&&isTouch();
+function adsRewarded(onReward){
+  if(!adsRewOk())return;
+  window.yaContextCb.push(()=>{try{window.Ya.Context.AdvManager.render({blockId:ADS_CFG.rew,type:'rewarded',platform:'touch',onRewarded:ok=>{if(ok)onReward()}})}catch(e){}});
+}
+const adBonus=()=>Math.max(.2,annual()*.05);
+function consentBanner(){
+  if(!adsOn()||(consentGet()&&!UI.cookies))return '';
+  return `<div class="cookie" role="dialog" aria-live="polite" aria-label="Cookie"><p><b>Cookie и реклама.</b> Сохранения игры хранятся только в вашем браузере. Если разрешите, на сайте будет показываться реклама Рекламной сети Яндекса: она использует cookie и обезличенные данные устройства. Без согласия реклама не загружается. Подробнее — в <a href="privacy.html" target="_blank" rel="noopener">политике конфиденциальности</a>.</p><div class="go" style="margin:10px 0 0"><button class="btn primary" data-a="consentAll">Разрешить</button><button class="btn ghost" data-a="consentMin">Только необходимые</button></div></div>`;
+}
+function siteFoot(){
+  return `<footer class="foot"><span class="age-mark" title="Возрастная категория">12+</span><a class="small" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>${adsOn()?'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>':''}<button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
+}
 /* ================= events ================= */
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b)return;
@@ -4948,6 +4990,10 @@ document.addEventListener('click',e=>{
   else if(a==='home'){UI.tab='home';render();window.scrollTo(0,0)}
   else if(a==='farewell'){if(!RUN&&G&&G.P&&!G.P.farewell){RUN=farewellGen();stepSeason()}}
   else if(a==='lang'){setLang(EN?'ru':'en')}
+  else if(a==='consentAll'){consentSet('all')}
+  else if(a==='consentMin'){consentSet('min')}
+  else if(a==='consentReset'){if(consentGet()==='all'&&ADS.loaded){consentSet('min');location.reload()}else{UI.cookies=true;render()}}
+  else if(a==='adRew'){if(!RUN&&G&&G.P&&G.adRewY!==G.year)adsRewarded(()=>{const b=adBonus();G.P.earn+=b*1e6;G.adRewY=G.year;UI.shopMsg=`Рекламная интеграция: +${fmtM(b)}.`;save();render()})}
   else if(a==='snd'){SND.on=!SND.on;try{localStorage.setItem('legenda-polya-snd',SND.on?'1':'0')}catch(err){}render();if(SND.on)sfx('coin')}
   else if(a==='lvSkip'){if(UI.live)UI.live.n=1e9;liveTick()}
   else if(a==='paperOk'){G.paperSeen=G.seasons[0].label;save();render()}
@@ -5024,6 +5070,7 @@ function start(data){
   if(G&&G.room&&G.room.token&&!MP.sess){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave()}
   if(data&&data.UI)Object.assign(UI,data.UI);
   else if(!G&&slotsGet().length)UI.tab='home';
+  adsLoad();
   render();
 }
 try{window.claude&&window.claude.hot&&window.claude.hot.snapshot&&window.claude.hot.snapshot(()=>({Gs:SAVED,UI:{tab:UI.tab,tblLg:UI.tblLg,form:UI.form}}))}catch(e){}

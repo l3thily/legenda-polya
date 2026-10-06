@@ -2426,5 +2426,18 @@
 "награда: {0}":"award: {0}",
 "рекорд: {0} — {1}":"record: {0} — {1}",
 "{0} заходит в комнату":"{0} joins the room",
-"Мир создан. Карьеры начались!":"The world is created. Careers have begun!"
+"Мир создан. Карьеры начались!":"The world is created. Careers have begun!",
+"раз за межсезонье":"once per off-season",
+"Снимитесь в рекламе: посмотрите короткий ролик — получите {0} на счёт.":"Star in an ad: watch a short video and get {0} on your balance.",
+"Смотреть рекламу · +{0}":"Watch the ad · +{0}",
+"Cookie и реклама.":"Cookies and ads.",
+"Сохранения игры хранятся только в вашем браузере. Если разрешите, на сайте будет показываться реклама Рекламной сети Яндекса: она использует cookie и обезличенные данные устройства. Без согласия реклама не загружается. Подробнее — в":"Your game saves are stored only in your browser. If you allow it, the site will show ads from the Yandex Advertising Network, which uses cookies and anonymised device data. Without your consent no ads are loaded. Details in the",
+"политике конфиденциальности":"privacy policy",
+"Разрешить":"Allow",
+"Только необходимые":"Necessary only",
+"Политика конфиденциальности":"Privacy policy",
+"Настройки cookie":"Cookie settings",
+"Рекламная интеграция: +{0}.":"Ad integration: +{0}.",
+"Ник и игровые результаты видят другие игроки комнаты. Не указывайте настоящее имя и другие личные данные.":"Other players in the room see your nickname and game results. Don't use your real name or other personal data.",
+"Ник в комнате":"Nickname in the room"
 }
