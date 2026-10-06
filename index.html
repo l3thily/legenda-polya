@@ -2667,7 +2667,7 @@ async function careerImage(){
   y=wrap(path.join(' → ')||'—',90,y+56,W-180,`600 34px ${B}`,'#E6EDF3',46,3);
   const extra=[P.recs.length?`рекордов побито: ${P.recs.length}`:'',(P.legacy||[]).find(l=>l.h.some(h=>/Статуя|Statue/.test(h)))?'статуя у стадиона':'',P.bdoBest&&!gk?`лучшее место в Золотом мяче: ${P.bdoBest}`:''].filter(Boolean);
   if(extra.length&&y+64<H-190)wrap(extra.join(' · '),90,y+64,W-180,`600 30px ${B}`,'#8FA5B9',42,Math.max(1,Math.floor((H-190-(y+64))/42)+1));
-  txt('l3thily.github.io/legenda-polya',W/2,H-110,`700 32px ${M}`,'#8FA5B9','center');
+  txt('legendapolya.com',W/2,H-110,`700 32px ${M}`,'#8FA5B9','center');
   if(G.code)txt(`код мира: ${G.code}`,W/2,H-66,`700 26px ${M}`,'#5E7890','center');
   return cv;
 }
@@ -2706,7 +2706,7 @@ async function coachImage(){
   tro.forEach(([n,k])=>{y+=54;txt(n,90,y,`600 36px ${B}`,'#E6EDF3');txt(k>1?`×${k}`:'',W-90,y,`700 36px ${M}`,'#F2C14E','right')});
   y+=80;txt('МЕСТА РАБОТЫ',90,y,`900 44px ${D}`,'#F2C14E');
   y=wrap(C0.jobs.map(j=>j.club.replace('Сборная: ','сб. ')).join(' → ')||'—',90,y+56,W-180,`600 34px ${B}`,'#E6EDF3',46,4);
-  txt('l3thily.github.io/legenda-polya',W/2,H-110,`700 32px ${M}`,'#8FA5B9','center');
+  txt('legendapolya.com',W/2,H-110,`700 32px ${M}`,'#8FA5B9','center');
   if(G.code)txt(`код мира: ${G.code}`,W/2,H-66,`700 26px ${M}`,'#5E7890','center');
   return cv;
 }
@@ -3714,7 +3714,7 @@ function mpSave(){try{MP.sess?LS.setItem(MP_KEY,JSON.stringify(MP.sess)):LS.remo
 async function api(path,body){
   let r;
   try{r=await fetch(API+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store'})}
-  catch(e){throw new Error('Нет связи с сервером комнат. Мультиплеер работает на сайте l3thily.github.io/legenda-polya')}
+  catch(e){throw new Error('Нет связи с сервером комнат. Мультиплеер работает на сайте legendapolya.com')}
   let d={};try{d=await r.json()}catch(e){}
   if(!r.ok){const er=new Error(d.error||('Ошибка сервера '+r.status));er.status=r.status;throw er}
   return d;
