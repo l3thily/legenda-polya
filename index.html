@@ -765,6 +765,47 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
   .status>.act{margin-top:18px}
 }
 @media (max-width:600px){.kits{grid-template-columns:repeat(2,1fr);padding:14px}.shelf{grid-template-columns:repeat(3,1fr)}.tro-i .ic svg{width:44px;height:44px}.clips{padding:12px}}
+.lvwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);gap:14px;align-items:start}
+.lvwrap:has(.lvsk[hidden]){grid-template-columns:1fr}
+.lvsk{margin:0;display:grid;gap:6px;position:sticky;top:12px}
+.lvsk figcaption{font-size:12.5px;color:var(--muted);line-height:1.35}
+.lvsk figcaption .num{color:var(--gold2);margin-right:4px}
+.sk{display:block;width:100%;height:auto;border-radius:10px}
+.sk path.sk-p,.sk path.sk-r,.sk path.sk-s{fill:none;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:skDraw .6s linear forwards}
+.sk .sk-p{stroke:#E6EDF3;stroke-width:.7;stroke-opacity:.75}.sk .sk-r{stroke:#F2C14E;stroke-width:.8;stroke-opacity:.8}.sk .sk-s{stroke-width:1.3}
+.sk .sk-x{opacity:0;animation:skIn .3s ease forwards}
+.sk.st path{animation:none!important;stroke-dashoffset:0!important}.sk.st .sk-x{opacity:1}
+@keyframes skDraw{to{stroke-dashoffset:0}}@keyframes skIn{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.sk path{animation:none!important;stroke-dashoffset:0!important}.sk .sk-x{opacity:1}}
+@media (max-width:720px){.lvwrap{grid-template-columns:1fr}.lvsk{order:-1;position:static;max-width:340px;justify-self:center;width:100%}}
+.frame .f-sk{display:block;margin:4px 0 2px;opacity:.95}
+.chrono{list-style:none;margin:0;padding:0;position:relative}
+.chrono::before{content:"";position:absolute;left:83px;top:8px;bottom:8px;width:2px;background:var(--line2)}
+.chrono>li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:22px;padding:10px 0;position:relative}
+.chrono>li::before{content:"";position:absolute;left:79px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--dim)}
+.chrono>li.big::before{border-color:var(--gold);background:var(--gold);box-shadow:0 0 12px rgba(242,193,78,.6)}
+.chrono>li.end::before{border-color:var(--sky);background:var(--sky)}
+.ch-y{text-align:right;display:grid;gap:2px;align-content:start}.ch-y b{font-size:15px}.ch-y span{font-size:12px;color:var(--dim)}
+.ch-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}.ch-h b{font-size:15px}.ch-st{font-size:12px;color:var(--dim)}
+.ch-b>ul{list-style:none;margin:7px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.ch-b>ul li{font-size:12.5px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.05);color:var(--muted)}
+.ch-b li.ev-tro,.ch-b li.ev-aw{background:rgba(242,193,78,.14);color:var(--gold2)}
+.ch-b li.ev-move,.ch-b li.ev-start,.ch-b li.ev-nat{background:rgba(108,198,255,.1);color:var(--sky)}
+.ch-b li.ev-inj{background:rgba(255,94,91,.1);color:#FFC9C7}
+.ch-b li.ev-rec,.ch-b li.ev-bdo,.ch-b li.ev-cap{color:var(--gold2)}
+.ch-km{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}
+@media (max-width:520px){.chrono::before{left:55px}.chrono>li{grid-template-columns:44px minmax(0,1fr);gap:22px}.chrono>li::before{left:51px}.ch-km{grid-template-columns:1fr;max-width:300px}}
+.streak{display:grid;gap:10px}
+.streak-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.streak-h b{font-family:var(--disp);font-weight:900;font-size:40px;color:var(--gold);line-height:1}
+.streak-days{display:flex;gap:6px;flex-wrap:wrap}
+.streak-days span{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:11px;color:var(--dim);background:rgba(255,255,255,.05)}
+.streak-days span.on{background:rgba(242,193,78,.2);color:var(--gold2);box-shadow:inset 0 0 0 1px rgba(242,193,78,.55)}
+.streak-days span.today{outline:1px dashed var(--dim);outline-offset:2px}
+.streak-gifts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(170px,100%),1fr));gap:6px}
+.streak-gifts div{border:1px dashed var(--line2);border-radius:10px;padding:8px 10px;font-size:12.5px;color:var(--dim);display:grid;gap:2px}
+.streak-gifts div b{color:var(--muted);font-size:13px}
+.streak-gifts div.on{border-style:solid;border-color:rgba(242,193,78,.55);color:var(--gold2)}.streak-gifts div.on b{color:var(--gold)}
+.streak-chip{display:inline-flex;align-items:center;gap:6px;margin:18px 0 0;padding:6px 12px;border-radius:999px;background:rgba(242,193,78,.12);color:var(--gold2);font-size:13.5px;border:0;cursor:pointer;font:inherit}
 </style>
 
 <div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
@@ -1335,14 +1376,15 @@ function* liveMatch(A,B,st,o,pre){
   let q=skip?0:qBase*(mod.q||1);
   const sc=[0,0],lines=[],tot={g:0,a:0,rt:0};
   const cel=P.cel&&CELS[P.cel]?`, празднование — ${CELS[P.cel].n.toLowerCase()}`:'';
-  const push=(m,t,k)=>lines.push({m,t,k:k||'',s:`${sc[0]}:${sc[1]}`});
-  const myGoal=(m,how,forced)=>{
+  const push=(m,t,k,d)=>{const l={m,t,k:k||'',s:`${sc[0]}:${sc[1]}`};if(d)l.d=d+':'+(hashStr(id+'|'+lines.length+'|'+m)%99991+1);lines.push(l)};
+  const kmSet=force=>{const l=lines[lines.length-1];if(l&&l.d&&(force||!S.km))S.km={d:l.d,t:l.t,c:o.log,st,m:l.m,s:l.s,op:op.name}};
+  const myGoal=(m,how,forced,sk)=>{
     sc[0]++;
-    if(forced==='g'||(!forced&&!skip&&rng()<pz.g*gm*q)){tot.g++;push(m,`ГОЛ! ${how||rpick(['Вы забиваете','Ваш удар — и мяч в сетке','Вы замыкаете навес','Ваш удар в касание','Вы добиваете после отскока'])}${cel}.`,'gl me')}
-    else if(forced==='a'||(!forced&&!skip&&rng()<pz.a*am*q/(1-Math.min(.9,pz.g*gm*q)))){tot.a++;push(m,`ГОЛ! ${mate()} забивает после вашей передачи.`,'gl as')}
-    else push(m,`ГОЛ! ${rpick(['Забивает','Отличный удар —','Головой забивает','С пенальти не ошибается'])} ${mate()}.`,'gl');
+    if(forced==='g'||(!forced&&!skip&&rng()<pz.g*gm*q)){tot.g++;push(m,`ГОЛ! ${how||rpick(['Вы забиваете','Ваш удар — и мяч в сетке','Вы замыкаете навес','Ваш удар в касание','Вы добиваете после отскока'])}${cel}.`,'gl me',sk||'me');kmSet(false)}
+    else if(forced==='a'||(!forced&&!skip&&rng()<pz.a*am*q/(1-Math.min(.9,pz.g*gm*q)))){tot.a++;push(m,`ГОЛ! ${mate()} забивает после вашей передачи.`,'gl as',sk||'ast')}
+    else push(m,`ГОЛ! ${rpick(['Забивает','Отличный удар —','Головой забивает','С пенальти не ошибается'])} ${mate()}.`,'gl','gen');
   };
-  const opGoal=m=>{sc[1]++;push(m,nem&&rng()<.4?`Гол соперника. Забивает ${nem.name} — и смотрит прямо на вас.`:rpick([`Гол соперника: ${op.name} ${sc[1]===1?'открывает счёт':'забивает ещё'}.`,'Пропускаем. Удар из-за штрафной в девятку.','Гол соперника после углового.','Пропускаем на контратаке.']),'gl op')};
+  const opGoal=m=>{sc[1]++;push(m,nem&&rng()<.4?`Гол соперника. Забивает ${nem.name} — и смотрит прямо на вас.`:rpick([`Гол соперника: ${op.name} ${sc[1]===1?'открывает счёт':'забивает ещё'}.`,'Пропускаем. Удар из-за штрафной в девятку.','Гол соперника после углового.','Пропускаем на контратаке.']),'gl op','op')};
   const FILL=gk?['Вы тащите удар в упор!','Вы забираете навес на выходе.','Соперник бьёт мимо.','Жёлтая карточка сопернику.','Угловой у ваших ворот — отбились.','Вы быстро вводите мяч — атака!']
     :grp==='DEF'?['Вы выигрываете борьбу наверху.','Ваш подкат спасает команду.','Жёлтая карточка сопернику.','Штанга! Соперник был близок.','Удар соперника — мимо.','Вы подключаетесь к атаке, но навес неточный.']
     :['Ваш удар — чуть выше перекладины.','Вы обыгрываете двоих, но теряете мяч.','Штанга! Соперник был близок.','Жёлтая карточка сопернику.','Вратарь соперника тащит ваш удар.','Удар соперника — мимо.','Вы проходите по флангу, но прострел перехватывают.'];
@@ -1382,20 +1424,20 @@ function* liveMatch(A,B,st,o,pre){
     else if(grp==='DEF'&&rng()<.6)km={type:'def',body:`${ctx} ${sc[0]}:${sc[1]}. Соперник выходит в контратаку три в два, и вы — последний защитник.`,
       opts:[{label:'Подкат',sub:'Чисто в мяч',detail:'Решает защита',p:pc(.4+(at.def-70)*.013)},{label:'Тактический фол',sub:'Остановить любой ценой',detail:'Почти наверняка жёлтая, опасный штрафной',p:pc(.78),foul:1},{label:'Бежать назад',sub:'Закрыть пас',detail:'Решает скорость',p:pc(.34+(at.pac-70)*.014)}]};
     else if(grp==='DEF')km={type:'att',body:`${ctx} ${sc[0]}:${sc[1]}. Угловой. Вы идёте в штрафную соперника.`,
-      opts:[{label:'Выпрыгнуть выше всех',sub:'Удар головой',detail:'Решает физика',p:pc(.2+(at.phy-70)*.012),how:'Вы выпрыгиваете выше всех и забиваете головой'},{label:'Сыграть на скидку',sub:'Сбросить партнёру',detail:'Решает пас',p:pc(.24+(at.pas-70)*.01),pass:1},{label:'Остаться на страховке',sub:'Не рисковать',detail:'Без шанса забить, но и без контратаки',p:0,safe:1}]};
+      opts:[{label:'Выпрыгнуть выше всех',sub:'Удар головой',detail:'Решает физика',p:pc(.2+(at.phy-70)*.012),how:'Вы выпрыгиваете выше всех и забиваете головой',sk:'head'},{label:'Сыграть на скидку',sub:'Сбросить партнёру',detail:'Решает пас',p:pc(.24+(at.pas-70)*.01),pass:1,sk:'headpass'},{label:'Остаться на страховке',sub:'Не рисковать',detail:'Без шанса забить, но и без контратаки',p:0,safe:1}]};
     else if(rng()<.35)km={type:'att',body:`${ctx} ${sc[0]}:${sc[1]}. Фол в 22 метрах от ворот. Мяч ставите вы, в стенке пятеро, вратарь сместился к ближней штанге.`,
-      opts:[{label:'Через стенку в девятку',sub:'Подкрутка',detail:'Решает удар',p:pc(.18+(at.sho-70)*.013),how:'Вы перекручиваете стенку — мяч в девятке'},{label:'Под прыгающую стенку',sub:'Хитрость',detail:'Шанс меньше, но вратарь не ждёт',p:pc(.15+(at.pas-70)*.008),how:'Стенка прыгает, а вы бьёте низом под неё — гол'},{label:'Пушечный удар',sub:'Сила',detail:'Решает физика',p:pc(.14+(at.phy-70)*.012),how:'Пушечный удар — вратарь даже не дёрнулся'},{label:'Разыграть',sub:'Отдать на набегающего',detail:'Решает пас',p:pc(.28+(at.pas-70)*.01),pass:1,how:'Вы разыгрываете штрафной, партнёр забивает'}]};
+      opts:[{label:'Через стенку в девятку',sub:'Подкрутка',detail:'Решает удар',p:pc(.18+(at.sho-70)*.013),how:'Вы перекручиваете стенку — мяч в девятке',sk:'fk'},{label:'Под прыгающую стенку',sub:'Хитрость',detail:'Шанс меньше, но вратарь не ждёт',p:pc(.15+(at.pas-70)*.008),how:'Стенка прыгает, а вы бьёте низом под неё — гол',sk:'fkl'},{label:'Пушечный удар',sub:'Сила',detail:'Решает физика',p:pc(.14+(at.phy-70)*.012),how:'Пушечный удар — вратарь даже не дёрнулся',sk:'fkp'},{label:'Разыграть',sub:'Отдать на набегающего',detail:'Решает пас',p:pc(.28+(at.pas-70)*.01),pass:1,how:'Вы разыгрываете штрафной, партнёр забивает',sk:'fkpass'}]};
     else km={type:'att',body:`${ctx} ${sc[0]}:${sc[1]}. Вы получаете мяч в штрафной, перед вами только вратарь.`,
-      opts:[{label:'Бить сразу',sub:'В дальний угол',detail:'Решает удар',p:pc(.32+(at.sho-70)*.013),how:'Вы бьёте в дальний угол — гол'},{label:'Обвести вратаря',sub:'Красиво',detail:'Решает скорость. Получится — это покажут во всех обзорах',p:pc(.24+(at.pac-70)*.013),how:'Вы обводите вратаря и закатываете в пустые ворота',rt:.3},{label:'Отдать партнёру',sub:'Он открыт',detail:'Решает пас',p:pc(.36+(at.pas-70)*.011),pass:1}]};
+      opts:[{label:'Бить сразу',sub:'В дальний угол',detail:'Решает удар',p:pc(.32+(at.sho-70)*.013),how:'Вы бьёте в дальний угол — гол',sk:'shot'},{label:'Обвести вратаря',sub:'Красиво',detail:'Решает скорость. Получится — это покажут во всех обзорах',p:pc(.24+(at.pac-70)*.013),how:'Вы обводите вратаря и закатываете в пустые ворота',rt:.3,sk:'round'},{label:'Отдать партнёру',sub:'Он открыт',detail:'Решает пас',p:pc(.36+(at.pas-70)*.011),pass:1,sk:'ast'}]};
     const i=yield frame(`Ключевой момент · ${M}'`,km.body,km.opts.map(({label,sub,detail})=>({label,sub,detail})),f0);
     const c=km.opts[i]||km.opts[0];f0=lines.length;
     const ok=c.safe?true:rng()<c.p;
     if(km.type==='att'){
       if(c.safe)push(M,'Вы остаётесь на страховке. Угловой разыгран — без опасности.','');
-      else if(ok){myGoal(M,c.how,c.pass?'a':'g');tot.rt+=.45+(c.rt||0);S.keyHero=true;if(c.rt)S.news.push(`Ваш гол в финале (${o.log}) крутят во всех обзорах.`)}
-      else{push(M,c.pass?'Вы отдаёте, но пас перехватывают.':rpick(['Мимо! Вы хватаетесь за голову.','Вратарь тащит! Невероятный сейв.','Штанга! Мяч отскакивает в поле.']),'miss');tot.rt-=.25}
+      else if(ok){myGoal(M,c.how,c.pass?'a':'g',c.sk);kmSet(true);tot.rt+=.45+(c.rt||0);S.keyHero=true;if(c.rt)S.news.push(`Ваш гол в финале (${o.log}) крутят во всех обзорах.`)}
+      else{push(M,c.pass?'Вы отдаёте, но пас перехватывают.':rpick(['Мимо! Вы хватаетесь за голову.','Вратарь тащит! Невероятный сейв.','Штанга! Мяч отскакивает в поле.']),'miss',c.pass?null:'miss');tot.rt-=.25}
     }else{
-      if(ok){if(!c.foul)S.keyHero=true;push(M,c.foul?'Вы фолите на центре поля. Жёлтая карточка, но атака остановлена.':gk?'СЕЙВ! Вы спасаете команду.':'Вы спасаете команду — мяч выбит.',c.foul?'card':'save');tot.rt+=c.foul?.05:.45}
+      if(ok){if(!c.foul)S.keyHero=true;push(M,c.foul?'Вы фолите на центре поля. Жёлтая карточка, но атака остановлена.':gk?'СЕЙВ! Вы спасаете команду.':'Вы спасаете команду — мяч выбит.',c.foul?'card':'save',c.foul?null:gk?'save':'tackle');if(!c.foul)kmSet(true);tot.rt+=c.foul?.05:.45}
       else if(c.foul){push(M,'Жёлтая карточка. Штрафной…','card');if(rng()<.3)opGoal(M+1);else push(M+1,'Штрафной — в стенку.','')}
       else{opGoal(M);tot.rt-=.3;if(c.big)push(M,'Вы не дотягиваетесь. Арбитр показывает, что всё чисто.','')}
     }
@@ -1410,7 +1452,7 @@ function* liveMatch(A,B,st,o,pre){
       if(!gk)opts.push({label:'Отдать партнёру без голов',sub:'Пусть почувствует вкус',detail:'Около 66%, раздевалка оценит',p:.66,team:1});
       const i=yield frame(`VAR · ${V}'`,`${V}'. Арбитр идёт к монитору… и показывает на точку! Пенальти в ворота соперника. Счёт ${sc[0]}:${sc[1]}.`,opts.map(({label,sub,detail})=>({label,sub,detail})),f0);
       const c=opts[i]||opts[0];f0=lines.length;push(V,'VAR: пенальти в ворота соперника!','whistle');
-      if(rng()<c.p){if(c.me){myGoal(V,'Вы хладнокровно реализуете пенальти','g');tot.rt+=.3}else{sc[0]++;push(V,`ГОЛ! ${mate()} реализует пенальти.`,'gl')}}
+      if(rng()<c.p){if(c.me){myGoal(V,'Вы хладнокровно реализуете пенальти','g','pen');tot.rt+=.3}else{sc[0]++;push(V,`ГОЛ! ${mate()} реализует пенальти.`,'gl')}}
       else push(V,c.me?'Вратарь угадал! Вы не забиваете пенальти.':'Пенальти не забит: вратарь угадал.','miss');
       if(c.team&&G.P.rel)G.P.rel.team=Math.min(100,G.P.rel.team+3);
     }else if(t<.7){
@@ -1424,7 +1466,7 @@ function* liveMatch(A,B,st,o,pre){
       f0=lines.length;push(V,'VAR: пенальти в ваши ворота.','whistle');
       const save=gk?rng()<(i===1?.18:.3+(P.at.pac-70)*.006):rng()<(i===1?.3:.2);
       if(!gk&&i===0)cardRisk(.4,true);if(!gk&&i===2)lo*=.9;
-      if(save){push(V,gk?'СЕЙВ! Вы тащите пенальти!':'Вратарь тащит пенальти!','save');if(gk){tot.rt+=.6;S.keyHero=true}}else opGoal(V);
+      if(save){push(V,gk?'СЕЙВ! Вы тащите пенальти!':'Вратарь тащит пенальти!','save',gk?'save':null);if(gk){tot.rt+=.6;S.keyHero=true;kmSet(true)}}else opGoal(V);
     }
     seg(V+1,90);
   }else seg(M+1,90);
@@ -2200,7 +2242,7 @@ function matchView(){
     const shown=Math.max(m.from,0),lastL=m.lines[shown-1]||m.lines[0];
     return `<section class="decide bigm live" aria-live="polite">${head}
       ${board(m,`<span class="clock num" id="lvClock">${lastL.m}'</span><b class="num" id="lvScore">${lastL.s}</b><i class="onair">в эфире</i>`,'<div class="goalfx" id="lvFx" aria-hidden="true"></div>')}
-      <ol class="feedl" id="lvFeed">${m.lines.map((l,i)=>`<li class="${l.k} ${i>=shown?'pend':''}" data-s="${l.s}" data-m="${l.m}"><span class="mn num">${l.m}'</span><span class="tx">${esc(l.t)}</span></li>`).join('')}</ol>
+      <div class="lvwrap"><ol class="feedl" id="lvFeed">${m.lines.map((l,i)=>`<li class="${l.k} ${i>=shown?'pend':''}" data-s="${l.s}" data-m="${l.m}"${l.d?` data-d="${i}"`:''}><span class="mn num">${l.m}'</span><span class="tx">${esc(l.t)}</span></li>`).join('')}</ol>${liveSkHtml(m,shown)}</div>
       <div class="go"><button class="btn ghost mini" id="lvSkip" data-a="lvSkip">Перемотать к решению</button></div>
       <div id="lvDec" hidden>${m.opts.length?`<h2>${esc(m.phase)}</h2><p>${esc(m.body)}</p>${optsHtml(m,'mopt')}`:`<div class="go"><button class="btn primary" data-a="mopt" data-i="0">${m.phase==='Пенальти'?'К серии пенальти':'Итоги матча'}</button></div>`}</div>
     </section>`;
@@ -2710,9 +2752,9 @@ async function coachImage(){
   if(G.code)txt(`код мира: ${G.code}`,W/2,H-66,`700 26px ${M}`,'#5E7890','center');
   return cv;
 }
-async function openShare(){
+async function openShare(kind){
   UI.share={loading:true};render();
-  try{const cv=isCoach()?await coachImage():await careerImage();UI.share={url:cv.toDataURL('image/png')};cv.toBlob(b=>{UI.share.blob=b},'image/png')}catch(e){UI.share={err:'Не получилось нарисовать картинку.'}}
+  try{const cv=kind==='chrono'&&G.P?await chronoImage():isCoach()?await coachImage():await careerImage();UI.share={url:cv.toDataURL('image/png')};cv.toBlob(b=>{UI.share.blob=b},'image/png')}catch(e){UI.share={err:'Не получилось нарисовать картинку.'}}
   render();
 }
 function shareModal(){
@@ -3140,7 +3182,147 @@ function bestMoment(s){
 }
 function filmstrip(){
   if(!G.seasons.length)return '';
-  return `<div class="film" role="list">${G.seasons.slice().reverse().map(s=>{const [k,t]=bestMoment(s);return `<div class="frame ${k}" role="listitem"><span class="f-y">${s.label}</span><b>${esc(s.clubName)}</b><span class="f-m">${esc(t)}</span><span class="f-o num">${s.ovrAfter}<small>${s.age} л.</small></span></div>`}).join('')}</div>`;
+  return `<div class="film" role="list">${G.seasons.slice().reverse().map(s=>{const [k,t]=bestMoment(s);return `<div class="frame ${k}" role="listitem"><span class="f-y">${s.label}</span><b>${esc(s.clubName)}</b><span class="f-m">${esc(t)}</span>${s.km?`<span class="f-sk" title="${esc(s.km.c+' · '+s.km.t)}">${sketchSvg(s.km.d,true)}</span>`:''}<span class="f-o num">${s.ovrAfter}<small>${s.age} л.</small></span></div>`}).join('')}</div>`;
+}
+
+/* ================= goal sketches: a tactics-board drawing of a goal or a key moment =================
+   d = 'type:seed' (types below). The layout comes from the seed only, never from the match RNG.
+   Animated version draws the passes and the shot in order (CSS dash + SMIL ball); static=true gives the last frame. */
+const SK_T=['shot','round','fk','fkl','fkp','fkpass','head','headpass','pen','ast','gen','me','op','save','tackle','miss'];
+function sketchSvg(d,static_){
+  const [t0,sd]=String(d||"gen:1").split(":"),r=mulb(+sd||1),u=(a,b)=>a+(b-a)*r(),f=n=>Math.round(n*10)/10;
+  let t=SK_T.includes(t0)?t0:'gen';
+  if(t==='me')t=['shot','head','shot','pen'][Math.floor(r()*4)];
+  const flip=t==='op'||t==='save'||t==='tackle';
+  const P={me:[],mate:[],opp:[]},seq=[];let ball=null;
+  const add=(k,x,y)=>{P[k].push([x,y]);return [x,y]};
+  const leg=(a,b,kind,bend)=>{const mx=(a[0]+b[0])/2+(bend||0),my=(a[1]+b[1])/2-(bend?Math.abs(bend)*.4:0);seq.push({d:`M${f(a[0])} ${f(a[1])}Q${f(mx)} ${f(my)} ${f(b[0])} ${f(b[1])}`,kind,end:b,mine:P.me.some(p=>p[0]===a[0]&&p[1]===a[1])})};
+  const goalPt=side=>[60+side*u(5,9.5),4.2];
+  const gk=add('opp',60+u(-3,3),9);
+  if(t==='shot'||t==='gen'){const s=add(t==='gen'?'mate':'me',u(42,78),u(24,36)),p=add('mate',u(18,102),u(44,57));add('opp',f(s[0]+u(-8,8)),s[1]+u(4,8));add('opp',u(30,90),u(16,24));leg(p,s,'pass',u(-10,10));leg(s,goalPt(s[0]<60?1:-1),'shot',u(-3,3))}
+  else if(t==='round'){const s=add('me',u(46,74),u(30,40)),k=[gk[0]+(s[0]<60?7:-7),12];add('opp',u(30,50),u(30,44));leg(s,k,'run',s[0]<60?6:-6);leg(k,[60,4.2],'shot',0)}
+  else if(t==='fk'||t==='fkl'||t==='fkp'||t==='fkpass'){const s=add('me',u(38,82),u(38,44)),gx=s[0]<60?1:-1;for(let i=0;i<4;i++)add('opp',f(s[0]+(60-s[0])*.32+(i-1.5)*3.2),s[1]-10);add('opp',u(40,80),u(18,26));
+    if(t==='fkpass'){const m=add('mate',s[0]+gx*u(10,16),s[1]-u(4,8));leg(s,m,'pass',0);leg(m,goalPt(gx),'shot',gx*-4)}else leg(s,goalPt(gx),'shot',t==='fk'?-gx*u(10,14):t==='fkl'?0:gx*-2)}
+  else if(t==='head'||t==='headpass'){const c=[u(0,1)<.5?2:118,2],s=add('me',u(52,68),u(12,18));add('opp',s[0]+u(-4,4),s[1]+u(2,4));add('opp',u(40,80),u(10,20));
+    if(t==='headpass'){const m=add('mate',s[0]+u(-10,10),u(10,16));leg(c,s,'pass',c[0]<60?10:-10);leg(s,m,'pass',0);leg(m,goalPt(m[0]<60?1:-1),'shot',0)}else{leg(c,s,'pass',c[0]<60?10:-10);leg(s,goalPt(s[0]<60?1:-1),'shot',0)}}
+  else if(t==='pen'){const s=add('me',60,26);leg(s,goalPt(u(0,1)<.5?1:-1),'shot',0)}
+  else if(t==='ast'){const s=add('me',r()<.5?u(92,104):u(16,28),u(22,34)),m=add('mate',u(52,68),u(10,18));add('opp',m[0]+u(-5,5),m[1]+u(2,5));add('opp',u(40,80),u(22,30));const p=add('mate',u(40,80),u(46,57));leg(p,s,'pass',u(-12,12));leg(s,m,'pass',s[0]<60?-8:8);leg(m,goalPt(m[0]<60?1:-1),'shot',0)}
+  else if(t==='miss'){const s=add('me',u(42,78),u(22,34));leg(s,[60+(s[0]<60?1:-1)*u(13,17),2],'shot',u(-4,4))}
+  else if(flip){/* their attack on our goal: drawn on the same board, our goal at the top */
+    P.opp.pop();const keeper=t==='save'?add('me',60,9):add('mate',60,9),a=add('opp',u(36,84),u(22,34)),p=add('opp',u(20,100),u(44,57));
+    if(t==='tackle'){const me=add('me',a[0]+u(-3,3),a[1]-u(6,9));add('mate',u(30,90),u(30,44));leg(p,a,'pass',u(-8,8));leg(a,me,'run',0);seq.push({x:me})}
+    else{add('mate',a[0]+u(-6,6),a[1]+u(3,7));leg(p,a,'pass',u(-8,8));if(t==='save'){leg(a,[keeper[0]+(a[0]<60?-3:3),7.5],'shot',0);seq.push({x:[keeper[0]+(a[0]<60?-3:3),7.5],save:1})}else leg(a,goalPt(a[0]<60?1:-1),'shot',u(-4,4))}}
+  // board
+  const op=flip?'#FF6B66':'#E6EDF3',we=flip?'#E6EDF3':'#F2C14E';
+  let s=`<svg class="sk${static_?' st':''}" viewBox="0 0 120 62" aria-hidden="true"><rect width="120" height="62" rx="5" fill="#0E3B26"/><path d="M0 12h120M0 28h120M0 44h120M0 60h120" stroke="#fff" stroke-opacity=".035" stroke-width="8"/>`+
+    `<g fill="none" stroke="#fff" stroke-opacity=".5" stroke-width=".6"><rect x="3" y="3" width="114" height="64"/><rect x="24" y="3" width="72" height="28"/><rect x="42" y="3" width="36" height="10"/><path d="M48 31a14 14 0 0 0 24 0"/><rect x="50.5" y=".6" width="19" height="2.4" stroke-opacity=".8"/></g><circle cx="60" cy="23" r=".7" fill="#fff" fill-opacity=".6"/>`;
+  let delay=.15,legs='',ballA='';
+  for(const g of seq){
+    if(g.d){const dur=g.kind==='shot'?.5:.7,cls=g.kind==='shot'?'s':g.kind==='run'?'r':'p';
+      legs+=`<path class="sk-${cls}" d="${g.d}" pathLength="1" style="animation-delay:${f(delay)}s;animation-duration:${dur}s"${g.kind==='shot'?` stroke="${flip?op:g.mine?we:'#E6EDF3'}"`:''}/>`;
+      if(!static_)ballA+=`<animateMotion begin="${f(delay)}s" dur="${dur}s" fill="freeze" path="${g.d}"/>`;
+      ball=g.end;delay+=dur+.1}
+    else if(g.x){legs+=g.save?`<path d="M${f(g.x[0]-3)} ${f(g.x[1]-3)}l6 6m0-6l-6 6" stroke="#2FD27C" stroke-width="1.6" class="sk-x" style="animation-delay:${f(delay)}s"/>`:`<path d="M${f(g.x[0]-2.5)} ${f(g.x[1]-2.5)}l5 5m0-5l-5 5" stroke="#2FD27C" stroke-width="1.6" class="sk-x" style="animation-delay:${f(delay)}s"/>`}}
+  const dot=(x,y,fill,str,rr)=>`<circle cx="${f(x)}" cy="${f(y)}" r="${rr||2.4}" fill="${fill}" stroke="${str}" stroke-width=".8"/>`;
+  s+=P.opp.map(([x,y])=>dot(x,y,flip?'#FF6B66':'#3B4650',flip?'#4a1110':'#9AA7B2')).join('')+P.mate.map(([x,y])=>dot(x,y,flip?'#3B4650':'#E6EDF3',flip?'#9AA7B2':'#0E3B26')).join('')+legs+
+    P.me.map(([x,y])=>`<circle cx="${f(x)}" cy="${f(y)}" r="4.6" fill="#F2C14E" fill-opacity=".25"/>`+dot(x,y,'#F2C14E','#3a2a00',2.9)).join('');
+  const b=static_&&ball?ball:(seq[0]&&seq[0].d?seq[0].d.match(/^M([\d.]+) ([\d.]+)/).slice(1).map(Number):[60,30]);
+  if(static_)s+=`<circle r="1.5" fill="#fff" stroke="#111" stroke-width=".4" cx="${f(b[0])}" cy="${f(b[1])}"/>`;
+  else if(ballA)s+=`<circle r="1.5" fill="#fff" stroke="#111" stroke-width=".4" opacity="0"><set attributeName="opacity" to="1" begin=".15s" fill="freeze"/>${ballA}</circle>`;
+  return s+'</svg>';
+}
+function skFig(l,st){return sketchSvg(l.d,st)+`<figcaption><span class="num">${l.m}'</span>${esc(l.t)}</figcaption>`}
+function liveSkHtml(m,shown){let l=null;for(let i=Math.min(shown,m.lines.length)-1;i>=0;i--)if(m.lines[i].d){l=m.lines[i];break}return `<figure class="lvsk" id="lvSk" ${l?'':'hidden'}>${l?skFig(l,true):''}</figure>`}
+
+/* ================= chronology of a career: season by season, with the turning points ================= */
+function chronoRows(){
+  const P=G.P,ss=G.seasons.slice().reverse(),rows=[];let deb=false;
+  ss.forEach((s,i)=>{
+    const pv=ss[i-1],ev=[];
+    if(!pv)ev.push(['start',`Первый контракт: «${s.clubName}»`]);
+    else if(s.clubName!==pv.clubName){const t=(P.transfers||[]).find(x=>x.y===s.year&&x.to===s.clubName);
+      ev.push(['move',s.loan?`Аренда в «${s.clubName}»`:!t&&pv.loan?`Возвращение в «${s.clubName}»`:t&&t.fee?`Переход в «${s.clubName}» за ${fmtM(t.fee)}`:`Переход в «${s.clubName}»`])}
+    if(pv&&s.pos!==pv.pos)ev.push(['pos',`Новая позиция: ${POS[s.pos].n.toLowerCase()}`]);
+    if(!deb&&s.intl&&s.intl.apps>0){deb=true;ev.push(['nat',`Дебют за сборную: ${s.natName}`])}
+    if(s.captain&&!(pv&&pv.captain))ev.push(['cap','Капитанская повязка']);
+    s.trophies.forEach(t=>ev.push(['tro',t]));
+    s.awards.filter(a=>!/^(Достижение|Achievement)/.test(a)&&/Золотой мяч|Трофей|бутса|Игрок|бомбардир|Лучший|Yashin|Ballon|Boot|Player/i.test(a)).forEach(a=>ev.push(['aw',a]));
+    if(s.bdo&&s.bdo.place>1&&s.bdo.place<=10&&s.pos!=='GK')ev.push(['bdo',`Золотой мяч: ${s.bdo.place}-е место`]);
+    (s.records||[]).slice(0,2).forEach(r=>ev.push(['rec',r]));
+    if((s.inj||[]).some(n=>n>=10))ev.push(['inj',`Тяжёлая травма: пропущено ~${s.inj.reduce((a,b)=>a+b,0)} матчей`]);
+    rows.push({s,ev});
+  });
+  return rows;
+}
+const chronoStat=s=>{const c=s.club;return `${c.apps} ${plural(c.apps,'матч','матча','матчей')} · ${s.pos==='GK'?`${c.cs} ${plural(c.cs,'сухой','сухих','сухих')}`:`${c.g} ${plural(c.g,'гол','гола','голов')} · ${c.a} ${plural(c.a,'пас','паса','пасов')}`} · рейтинг ${s.ovrBefore}→${s.ovrAfter}`};
+const chronoEnd=()=>{const P=G.P,r=P.retired;if(G.phase!=='retired'||!r)return null;return {y:r.year,age:r.age,t:r.why==='ban'?'Пожизненная дисквалификация':r.why==='form'?'Завершение карьеры: форма уже не та':'Завершение карьеры',f:P.farewell?`Прощальный матч: «${P.farewell.club}», ${P.farewell.score}`:''}};
+function viewChrono(){
+  const rows=chronoRows(),end=chronoEnd();
+  if(!rows.length)return '';
+  return `<section><div class="sec-h"><h2>Хронология</h2><span class="small muted">вся карьера по сезонам</span><button class="btn mini" data-a="share" data-v="chrono">Картинка</button></div>
+    <ol class="chrono">${rows.map(({s,ev})=>`<li class="${ev.some(e=>e[0]==='tro'||e[0]==='aw')?'big':''}"><div class="ch-y"><b class="num">${s.label}</b><span>${s.age} лет</span></div>
+      <div class="ch-b"><div class="ch-h"><b>${esc(s.clubName)}</b>${s.loan?'<span class="tag">аренда</span>':''}<span class="ch-st num">${chronoStat(s)}</span></div>
+      ${ev.length?`<ul>${ev.map(([k,t])=>`<li class="ev-${k}">${esc(t)}</li>`).join('')}</ul>`:''}
+      ${s.km?`<div class="ch-km">${sketchSvg(s.km.d,true)}<span>${esc(s.km.c)} · ${s.km.m}' · ${esc(s.km.t)}</span></div>`:''}</div></li>`).join('')}
+    ${end?`<li class="end"><div class="ch-y"><b class="num">${end.y}</b><span>${end.age} лет</span></div><div class="ch-b"><div class="ch-h"><b>${esc(end.t)}</b></div>${end.f?`<ul><li>${esc(end.f)}</li></ul>`:''}</div></li>`:''}</ol></section>`;
+}
+async function chronoImage(){
+  const P=G.P,W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  try{await Promise.all(['900 80px "Sofia Sans Extra Condensed"','600 40px "Golos Text"','700 40px "JetBrains Mono"'].map(f=>document.fonts.load(f)))}catch(e){}
+  const D='"Sofia Sans Extra Condensed","Arial Narrow",sans-serif',B='"Golos Text",system-ui,sans-serif',M='"JetBrains Mono",monospace';
+  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#13262E');g.addColorStop(.45,'#0A171D');g.addColorStop(1,'#04080B');x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.strokeStyle='#F2C14E';x.lineWidth=6;x.strokeRect(36,36,W-72,H-72);
+  const txt=(t,px,py,font,color,align='left',maxW)=>{x.font=font;x.fillStyle=color;x.textAlign=align;let s=trText(String(t));if(maxW)while(s.length>3&&x.measureText(s).width>maxW)s=s.slice(0,-2)+'…';x.fillText(s,px,py)};
+  txt('ЛЕГЕНДА ПОЛЯ',90,130,`900 44px ${D}`,'#F2C14E');
+  txt('ХРОНОЛОГИЯ',W-90,130,`700 30px ${M}`,'#8FA5B9','right');
+  txt(P.name.toUpperCase(),86,240,`900 96px ${D}`,'#E6EDF3','left',W-180);
+  const rows=chronoRows(),end=chronoEnd(),n=rows.length+(end?1:0),top=310,bot=H-160,rh=Math.min(120,(bot-top)/Math.max(1,n)),big=rh>=80,LX=250;
+  x.fillStyle='#2A4654';x.fillRect(LX-2,top,4,Math.max(0,n*rh-rh*.4));
+  const fs=Math.round(Math.max(20,Math.min(34,rh*.34))),fe=Math.round(Math.max(17,Math.min(26,rh*.24)));
+  rows.forEach(({s,ev},i)=>{const y=top+i*rh+fs,hot=ev.some(e=>e[0]==='tro'||e[0]==='aw');
+    x.beginPath();x.arc(LX,y-fs*.35,hot?11:8,0,Math.PI*2);x.fillStyle=hot?'#F2C14E':'#0A171D';x.fill();x.lineWidth=3;x.strokeStyle=hot?'#F2C14E':'#5E7784';x.stroke();
+    txt(s.label,LX-34,y,`700 ${fs}px ${M}`,hot?'#F2C14E':'#E6EDF3','right');
+    if(big)txt(`${s.age} лет`,LX-34,y+fe+6,`600 ${fe}px ${B}`,'#5E7784','right');
+    txt(s.clubName+(s.loan?' (аренда)':''),LX+34,y,`700 ${fs}px ${B}`,'#E6EDF3','left',W-LX-34-90-(big?0:260));
+    if(!big)txt(`${s.ovrAfter}`,W-90,y,`700 ${fs}px ${M}`,'#8FA5B9','right');
+    const pr=['tro','aw','bdo','nat','move','cap','rec','pos','inj'],evs=ev.filter(e=>e[0]!=='start').sort((a,b)=>pr.indexOf(a[0])-pr.indexOf(b[0])).map(e=>e[1]);
+    if(big){const line=evs.slice(0,3).join(' · ')||chronoStat(s);txt(line,LX+34,y+fe+8,`600 ${fe}px ${B}`,hot?'#FFE3A1':'#8FA5B9','left',W-LX-34-90)}
+    else if(evs.length)txt(evs[0],LX+34+x.measureText('').width,y+fe+4,`600 ${fe}px ${B}`,hot?'#FFE3A1':'#8FA5B9','left',W-LX-34-90);
+  });
+  if(end){const y=top+rows.length*rh+fs;x.beginPath();x.arc(LX,y-fs*.35,9,0,Math.PI*2);x.fillStyle='#6CC6FF';x.fill();txt(String(end.y),LX-34,y,`700 ${fs}px ${M}`,'#6CC6FF','right');txt(end.t,LX+34,y,`700 ${fs}px ${B}`,'#6CC6FF','left',W-LX-124)}
+  txt('legendapolya.com',W/2,H-90,`700 32px ${M}`,'#8FA5B9','center');
+  return cv;
+}
+
+/* ================= daily streak: consecutive days with at least one goal of the daily challenge done ================= */
+const STREAK_KEY='legenda-polya-streak';
+const dayOfNum=n=>dayKey(new Date(n*864e5));
+function streakGet(){try{const o=JSON.parse(LS.getItem(STREAK_KEY)||'{}');return {d:Array.isArray(o.d)?o.d:[],g:o.g||''}}catch(e){return {d:[],g:''}}}
+function streakPut(o){try{LS.setItem(STREAK_KEY,JSON.stringify({d:o.d.slice(-60),g:o.g}))}catch(e){}}
+function streakMark(day){const o=streakGet();if(o.d.includes(day))return false;o.d.push(day);o.d.sort();streakPut(o);return true}
+function streakInfo(){
+  const o=streakGet(),set=new Set(o.d),today=dayNum(dayKey());let n=today,len=0;
+  if(!set.has(dayOfNum(n)))n--;
+  while(set.has(dayOfNum(n))){len++;n--}
+  return {len,today:set.has(dayOfNum(today)),week:Array.from({length:7},(_,i)=>{const k=dayOfNum(today-6+i);return {k,on:set.has(k),t:i===6}}),gift:o.g}
+}
+// gifts for a new ordinary career (never in challenges or rooms, where everyone must start equal)
+const STREAK_GIFTS=[[2,'Подъёмные','+€0,3 млн на старте'],[3,'Бонус лояльности','+€0,6 млн на старте'],[5,'Сборы с легендой','+€0,6 млн и рост в первом сезоне выше'],[7,'Неделя без пропусков','+€1,5 млн и сборы с легендой'],[14,'Две недели подряд','+€3 млн, сборы и +2 к репутации']];
+function streakGift(len){let g=null;for(const x of STREAK_GIFTS)if(len>=x[0])g=x;return g}
+function streakApply(){
+  const si=streakInfo(),g=streakGift(si.len),today=dayKey();if(!g||si.gift===today)return;
+  const P=G.P,L=si.len,m=L>=14?3:L>=7?1.5:L>=3?.6:.3;
+  P.earn+=m*1e6;if(L>=5)P.growMod+=L>=7?.8:.5;if(L>=14)P.rep=Math.min(100,P.rep+2);
+  const o=streakGet();o.g=today;streakPut(o);
+  G.summer.push(`Подарок за серию ${L} ${plural(L,'день','дня','дней')} подряд: ${g[1].toLowerCase()} (${g[2]}).`);
+}
+function streakPanel(){
+  const si=streakInfo(),next=STREAK_GIFTS.find(x=>x[0]>si.len);
+  return `<section class="panel streak"><div class="sec-h"><h2>Серия дней</h2><span class="small muted">хотя бы одна цель испытания дня — и день засчитан</span></div>
+    <div class="streak-h"><b class="num">${si.len}</b><span>${plural(si.len,'день','дня','дней')} подряд${si.len?' 🔥':''}</span><span class="small muted">${si.today?'Сегодня уже засчитано.':si.len?'Сыграйте испытание сегодня, иначе серия сгорит.':'Начните серию с сегодняшнего испытания.'}</span></div>
+    <div class="streak-days" aria-label="Последние 7 дней">${si.week.map(d=>`<span class="${d.on?'on':''} ${d.t?'today':''}">${d.k.slice(6,8)}</span>`).join('')}</div>
+    <div class="streak-gifts">${STREAK_GIFTS.map(([n,t,d])=>`<div class="${si.len>=n?'on':''}"><b>${n} ${plural(n,'день','дня','дней')} · ${t}</b><span>${d}</span></div>`).join('')}</div>
+    <p class="small muted" style="margin:0">Подарок приходит в новую обычную карьеру — раз в день${next?`. До следующего: ${next[0]-si.len} ${plural(next[0]-si.len,'день','дня','дней')}`:''}. В испытаниях и комнатах старт у всех одинаковый.</p></section>`;
 }
 
 /* ================= sound (synthesised, no files) and confetti ================= */
@@ -3193,6 +3375,7 @@ function liveTick(){
   const nxt=items[n],k=nxt.className;void nxt;
   UI.liveT=setTimeout(()=>{
     UI.live.n=n+1;
+    if(nxt.dataset.d){const l=m.lines[+nxt.dataset.d],fg=document.getElementById('lvSk');if(l&&fg){fg.innerHTML=skFig(l,false);fg.hidden=false}}
     if(/\bgl\b/.test(k)){sfx(/op/.test(k)?'ogoal':'goal');buzz(/op/.test(k)?35:[30,40,70]);const fx=document.getElementById('lvFx');if(fx){fx.textContent=/op/.test(k)?'Гол соперника':'ГОЛ!';fx.className='goalfx '+(/op/.test(k)?'op':'')+' on'}}
     else if(/whistle/.test(k))sfx('whistle');else if(/save/.test(k))sfx('save');else if(/card/.test(k))sfx('card');else if(/miss/.test(k))sfx('ogoal');
     liveTick();
@@ -3235,7 +3418,7 @@ function* farewellGen(){
   const nems=[...(P.nemPast||[]).map(x=>x.name),...(P.nem?[P.nem.name]:[])];
   const peak=Math.max(...P.ovrHist.map(h=>h.ovr)),me={n:`Друзья ${sur}`,s:peak},op={n:'Звёзды мира',s:Math.round(peak+2)};
   const lines=[],sc=[0,0];let id=++LIVE_ID;
-  const push=(m,t,k)=>lines.push({m,t,k:k||'',s:`${sc[0]}:${sc[1]}`});
+  const push=(m,t,k,d)=>{const l={m,t,k:k||'',s:`${sc[0]}:${sc[1]}`};if(d)l.d=d+':'+(hashStr(id+'|'+lines.length+'|'+m)%99991+1);lines.push(l)};
   const frame=(phase,body,opts,from)=>({kind:'live',id:id*10+lines.length,comp:'Прощальный матч',st:`стадион «${last}»`,title:'Прощальный матч',phase,me,op,score:`${sc[0]}:${sc[1]}`,lines:lines.slice(),from,body,opts});
   push(1,`Стадион «${last}» забит до отказа. На трибунах — баннеры с вашим номером ${P.num}.`,'whistle');
   push(1,`За вас выходят партнёры разных лет: ${friends.slice(0,5).map(f=>f[0]).join(', ')}.`,'');
@@ -3311,6 +3494,7 @@ function viewHome(){
       <button class="home-card" data-a="tab" data-v="multi"><span class="hc-ic">${ico('multi')}</span><span class="eyebrow">С друзьями</span><b>Мультиплеер</b><span class="hc-s">Одна комната, один мир</span></button>
       <button class="home-card" data-a="tab" data-v="saves"><span class="hc-ic">${ico('saves')}</span><span class="eyebrow">Слоты</span><b>Сохранения</b><span class="hc-s">${all.length} из ${MAX_SLOTS}</span></button>
     </div>
+    ${(()=>{const si=streakInfo();return si.len?`<button class="streak-chip" data-a="toChal">🔥 Серия ${si.len} ${plural(si.len,'день','дня','дней')}${si.today?'':' · сыграйте испытание сегодня'}</button>`:''})()}
     ${slots.length?`<p class="eyebrow" style="margin:26px 0 10px">Другие карьеры</p><ul class="slots">${slots.map(m=>slotCard(m,`<button class="btn mini" data-a="slotLoad" data-id="${esc(m.id)}">Открыть</button>`)).join('')}</ul>`:''}
     </section>
     ${todayTop()}
@@ -3692,6 +3876,7 @@ function viewMuseum(){
   return `<section class="museum-h"><p class="eyebrow">Музей карьеры</p><h1 class="disp">${esc(P.name)}</h1><p class="muted">${POS[sumPos()].n} · ${G.seasons.length} ${plural(G.seasons.length,'сезон','сезона','сезонов')} · ${P.trophies.length} ${plural(P.trophies.length,'трофей','трофея','трофеев')}</p></section>
     <section><div class="sec-h"><h2>Стена футболок</h2><span class="small muted">каждый клуб — с вашим номером</span></div><div class="kits">${kits}${natKit}</div></section>
     <section class="panel vitrine"><div class="sec-h"><h2>Витрина</h2><span class="small muted">трофеи и главные награды</span></div>${shelf}</section>
+    ${viewChrono()}
     <section><div class="sec-h"><h2>Газетные вырезки</h2><span class="small muted">самые громкие сезоны</span></div>${clips}</section>
     ${rel.length?`<section class="panel"><div class="sec-h"><h2>Реликвии</h2></div><div class="perks">${rel.map(([a,b])=>`<div class="perk on"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</div></section>`:''}`;
 }
@@ -4737,6 +4922,7 @@ function startCareer(){
   G.euro=euroEntrants();
   G.phase='career';
   G.summer=[`Первый профессиональный контракт с «${club.name}» на 3 года, ${fmtW(G.P.wage)}.`,`Ваш ровесник ${G.P.nem.name} (${N(G.P.nem.nat).name}) подписал контракт с «${C(G.P.nem.club).name}». Скауты уже сравнивают вас.`];
+  if(!UI.chal&&!UI.roomSeed)try{streakApply()}catch(e){}
   UI.tab='career';UI.tblLg=null;
   save();render();window.scrollTo(0,0);try{statPing(UI.roomSeed?'rooms':'careers')}catch(e){}return true;
 }
@@ -5233,6 +5419,7 @@ function chalCheck(){
     let ok=false;try{ok=!!g[3](G.P,s)}catch(e){}
     if(ok){done[k]=s?s.label:String(G.year);if(s)s.news.push(`Цель испытания выполнена: ${g[0]}.`)}}
   c.done=done;
+  if(c.kind==='day'&&Object.keys(done).length&&streakMark(c.day)&&s){const L=streakInfo().len;s.news.push(`Серия испытаний: ${L} ${plural(L,'день','дня','дней')} подряд 🔥`)}
 }
 const chalBonus=()=>{const c=G.chal,d=chalDone(c);return chalGoals(c).reduce((a,k)=>a+(d[k]&&GOALS[k]?GOAL_PTS[GOALS[k][1]]||40:0),0)};
 const chalScore=()=>r1(legacyScore()*(G.P.hard?1.3:1)+(G.chal?chalBonus():0));
@@ -5294,6 +5481,7 @@ function viewChallenges(){
       <p class="small muted">У всех сегодня одинаковый старт: ${esc(POS[d.f.pos].n.toLowerCase())}, «${esc(d.f.club)}», ${esc(d.f.nat)}. Одинаковый потенциал и мир — разные решения. Итог попадёт в таблицу дня.</p>
       <div class="go"><button class="btn primary" data-a="chalStart" data-v="day">Принять вызов</button></div>
       <div data-lb="day-${d.day}">${lbList('day-'+d.day,5)}</div></section>
+    ${streakPanel()}
     <section class="panel"><div class="sec-h"><h2>Сценарии</h2><span class="small muted">готовый старт и цель</span></div>
       <div class="scen">${SCENARIOS.map(x=>`<div class="scen-i"><b>${x.n}</b><span>${x.d}</span><em>Цель: ${GOALS[x.goal][0]}</em><button class="btn mini" data-a="chalStart" data-v="scen" data-id="${x.id}">Начать</button></div>`).join('')}</div></section>
   </div>
@@ -5434,7 +5622,7 @@ document.addEventListener('click',e=>{
   else if(a==='ret'){UI.confirmRetire=true;render()}
   else if(a==='retNo'){UI.confirmRetire=false;render()}
   else if(a==='cer'){G.ceremony=false;save();render();window.scrollTo(0,0)}
-  else if(a==='share'){openShare()}
+  else if(a==='share'){openShare(b.dataset.v)}
   else if(a==='shareClose'){UI.share=null;render()}
   else if(a==='shareNative'){const f=new File([UI.share.blob],'legenda.png',{type:'image/png'});navigator.share({files:[f],title:EN?'Legend of the Pitch':'Легенда поля'}).catch(()=>{})}
   else if(a==='mpCreate'){mpCreate()}
@@ -5456,6 +5644,7 @@ document.addEventListener('click',e=>{
   else if(a==='mpBegin'){mpBegin()}
   else if(a==='mpCopy'){const t=MP.sess?MP.sess.code:'';try{navigator.clipboard.writeText(t).then(()=>{b.textContent='Скопировано'},()=>{b.textContent=t})}catch(err){b.textContent=t}}
   else if(a==='setMode'){UI.form.mode=b.dataset.v;render()}
+  else if(a==='toChal'){UI.form.mode='chal';dropEmpty();G=null;RUN=null;MATCH=null;UI.wait=null;UI.tab='career';try{LS.removeItem(ACTIVE_KEY)}catch(err){}render();window.scrollTo(0,0)}
   else if(a==='cPlay'){beginCoachHalf()}
   else if(a==='cSell'){sellPlayer(b.dataset.id);render()}
   else if(a==='cDrop'&&isCoach()){if(G.C.squad.length>18){const p=G.C.squad.find(x=>x.id===b.dataset.id);G.C.squad=G.C.squad.filter(x=>x!==p);UI.cMsg=p?`${p.name} больше не вызывается.`:null;save()}else UI.cMsg='Меньше 18 игроков оставлять нельзя.';render()}

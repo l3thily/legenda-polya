@@ -796,10 +796,51 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
   .status>.act{margin-top:18px}
 }
 @media (max-width:600px){.kits{grid-template-columns:repeat(2,1fr);padding:14px}.shelf{grid-template-columns:repeat(3,1fr)}.tro-i .ic svg{width:44px;height:44px}.clips{padding:12px}}
+.lvwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);gap:14px;align-items:start}
+.lvwrap:has(.lvsk[hidden]){grid-template-columns:1fr}
+.lvsk{margin:0;display:grid;gap:6px;position:sticky;top:12px}
+.lvsk figcaption{font-size:12.5px;color:var(--muted);line-height:1.35}
+.lvsk figcaption .num{color:var(--gold2);margin-right:4px}
+.sk{display:block;width:100%;height:auto;border-radius:10px}
+.sk path.sk-p,.sk path.sk-r,.sk path.sk-s{fill:none;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:skDraw .6s linear forwards}
+.sk .sk-p{stroke:#E6EDF3;stroke-width:.7;stroke-opacity:.75}.sk .sk-r{stroke:#F2C14E;stroke-width:.8;stroke-opacity:.8}.sk .sk-s{stroke-width:1.3}
+.sk .sk-x{opacity:0;animation:skIn .3s ease forwards}
+.sk.st path{animation:none!important;stroke-dashoffset:0!important}.sk.st .sk-x{opacity:1}
+@keyframes skDraw{to{stroke-dashoffset:0}}@keyframes skIn{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.sk path{animation:none!important;stroke-dashoffset:0!important}.sk .sk-x{opacity:1}}
+@media (max-width:720px){.lvwrap{grid-template-columns:1fr}.lvsk{order:-1;position:static;max-width:340px;justify-self:center;width:100%}}
+.frame .f-sk{display:block;margin:4px 0 2px;opacity:.95}
+.chrono{list-style:none;margin:0;padding:0;position:relative}
+.chrono::before{content:"";position:absolute;left:83px;top:8px;bottom:8px;width:2px;background:var(--line2)}
+.chrono>li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:22px;padding:10px 0;position:relative}
+.chrono>li::before{content:"";position:absolute;left:79px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--bg);border:2px solid var(--dim)}
+.chrono>li.big::before{border-color:var(--gold);background:var(--gold);box-shadow:0 0 12px rgba(242,193,78,.6)}
+.chrono>li.end::before{border-color:var(--sky);background:var(--sky)}
+.ch-y{text-align:right;display:grid;gap:2px;align-content:start}.ch-y b{font-size:15px}.ch-y span{font-size:12px;color:var(--dim)}
+.ch-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}.ch-h b{font-size:15px}.ch-st{font-size:12px;color:var(--dim)}
+.ch-b>ul{list-style:none;margin:7px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.ch-b>ul li{font-size:12.5px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.05);color:var(--muted)}
+.ch-b li.ev-tro,.ch-b li.ev-aw{background:rgba(242,193,78,.14);color:var(--gold2)}
+.ch-b li.ev-move,.ch-b li.ev-start,.ch-b li.ev-nat{background:rgba(108,198,255,.1);color:var(--sky)}
+.ch-b li.ev-inj{background:rgba(255,94,91,.1);color:#FFC9C7}
+.ch-b li.ev-rec,.ch-b li.ev-bdo,.ch-b li.ev-cap{color:var(--gold2)}
+.ch-km{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--muted)}
+@media (max-width:520px){.chrono::before{left:55px}.chrono>li{grid-template-columns:44px minmax(0,1fr);gap:22px}.chrono>li::before{left:51px}.ch-km{grid-template-columns:1fr;max-width:300px}}
+.streak{display:grid;gap:10px}
+.streak-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.streak-h b{font-family:var(--disp);font-weight:900;font-size:40px;color:var(--gold);line-height:1}
+.streak-days{display:flex;gap:6px;flex-wrap:wrap}
+.streak-days span{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:11px;color:var(--dim);background:rgba(255,255,255,.05)}
+.streak-days span.on{background:rgba(242,193,78,.2);color:var(--gold2);box-shadow:inset 0 0 0 1px rgba(242,193,78,.55)}
+.streak-days span.today{outline:1px dashed var(--dim);outline-offset:2px}
+.streak-gifts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(170px,100%),1fr));gap:6px}
+.streak-gifts div{border:1px dashed var(--line2);border-radius:10px;padding:8px 10px;font-size:12.5px;color:var(--dim);display:grid;gap:2px}
+.streak-gifts div b{color:var(--muted);font-size:13px}
+.streak-gifts div.on{border-style:solid;border-color:rgba(242,193,78,.55);color:var(--gold2)}.streak-gifts div.on b{color:var(--gold)}
+.streak-chip{display:inline-flex;align-items:center;gap:6px;margin:18px 0 0;padding:6px 12px;border-radius:999px;background:rgba(242,193,78,.12);color:var(--gold2);font-size:13.5px;border:0;cursor:pointer;font:inherit}
 </style>
 
 <div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
 
-<script src="app.4abca11c2d.js" defer></script>
+<script src="app.2000871208.js" defer></script>
 
 </html>
