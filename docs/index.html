@@ -158,8 +158,12 @@ main>*,.grid2>*,.hero>*,.setup>*,.hof>*,.cer>*,.nem>*,.decide>*,.panel,.season,.
 .facts span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
 #cardPrev{display:grid;justify-items:center;padding-top:10px}
 /* player card portrait */
-.fc-ph{position:absolute;right:-1%;top:21%;width:64%;bottom:30%;pointer-events:none}
-.fc-face{width:100%;height:100%;object-fit:contain;object-position:right bottom;filter:drop-shadow(0 12px 16px rgba(0,0,0,.35));-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent);mask-image:linear-gradient(180deg,#000 82%,transparent)}
+.fc-ph{position:absolute;left:31%;right:3%;top:5%;bottom:calc(30% + 2px);pointer-events:none}
+.fcard.has-face .fc-top{flex-direction:column;align-items:flex-start;max-width:34%}
+.fcard.has-face .fc-age{text-align:left;margin-top:12px;display:grid;gap:0}
+.fcard.has-face .fc-age b{font-size:30px}
+.fcard.has-face .fc-num{font-size:20px;margin-top:2px}
+.fc-face{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 14px rgba(0,0,0,.3));-webkit-mask-image:linear-gradient(180deg,#000 88%,transparent);mask-image:linear-gradient(180deg,#000 88%,transparent)}
 .fcard .fc-top,.fcard .fc-name,.fcard .fc-meta{z-index:1}
 .fcard .fc-name{text-shadow:0 1px 0 color-mix(in srgb,var(--c1) 70%,transparent)}
 /* new career: shared bits */
@@ -938,6 +942,6 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 
 <div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
 
-<script src="app.457d9f2a61.js" defer></script>
+<script src="app.aeac5e5c98.js" defer></script>
 
 </html>
