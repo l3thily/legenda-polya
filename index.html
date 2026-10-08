@@ -1001,11 +1001,16 @@ function setLang(l){try{LS.setItem(LANG_KEY,l)}catch(e){}try{const u=new URL(loc
 /* ================= utils ================= */
 /* two seeded streams: RW drives the world (same world code = same world), RPR drives everything about the player */
 function mkRng(seed){const o={s:seed>>>0};o.f=()=>{o.s=(o.s+0x6D2B79F5)>>>0;let t=o.s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296};return o}
-function hashStr(s){let h=2166136261;for(const ch of String(s)){h^=ch.codePointAt(0);h=Math.imul(h,16777619)}return h>>>0}
+/* FNV-1a over code points; hashFrom continues from a saved state, so a fixed prefix is hashed once */
+function hashFrom(h,s){s=String(s);for(let i=0;i<s.length;i++){let c=s.charCodeAt(i);if(c>=0xD800&&c<0xDC00&&i+1<s.length){const d=s.charCodeAt(i+1);if(d>=0xDC00&&d<0xE000){c=(c-0xD800)*0x400+(d-0xDC00)+0x10000;i++}}h^=c;h=Math.imul(h,16777619)}return h}
+function hashStr(s){return hashFrom(2166136261,s)>>>0}
 let RW=mkRng(Math.random()*4294967296),RPR=mkRng(Math.random()*4294967296);
 const R=()=>RW.f(),RP=()=>RPR.f();
 /* world randomness is re-keyed by world code + year + phase, so one player's choices can't shift the whole world stream: same code = same world for everyone in a room */
-const wKey=t=>hashStr('world|'+(G&&G.code||'')+'|'+(G&&G.set?G.set.rusMode:'')+'|'+(G?G.year:0)+'|'+t);
+let WK_P=null,WK_H=0,MK_C=new Map();
+const wKey=t=>{const p='world|'+(G&&G.code||'')+'|'+(G&&G.set?G.set.rusMode:'')+'|'+(G?G.year:0)+'|';if(p!==WK_P){WK_P=p;WK_H=hashFrom(2166136261,p);MK_C=new Map()}return hashFrom(WK_H,t)>>>0};
+/* = wKey('m|'+pre+rest), with the hash of the competition prefix cached */
+const mKey=(pre,rest)=>{wKey('');let s=MK_C.get(pre);if(s===undefined){s=hashFrom(WK_H,'m|'+pre);MK_C.set(pre,s)}return hashFrom(s,rest)>>>0};
 function wseed(t){RW=mkRng(wKey(t))}
 const ri=(a,b)=>a+Math.floor(R()*(b-a+1)),riP=(a,b)=>a+Math.floor(RP()*(b-a+1));
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -1436,7 +1441,7 @@ function simMatch(A,B,o={}){
   if(mB)db=trackDecide(B,m);
   const {la,lb,sa,sb}=lambdas(A,B,o,m);
   let rr=o.p?RP:R;
-  if(!o.p&&S&&S.mk){const k=[o.c,o.cn||o.log||'',o.stage||'',A.kind+A.id,B.kind+B.id].join('|'),n=S.mk[k]=(S.mk[k]||0)+1;rr=mkRng(wKey('m|'+k+'|'+n)).f}
+  if(!o.p&&S&&S.mk){const pre=(o.c||'')+'|'+(o.cn||o.log||'')+'|'+(o.stage||'')+'|',tail=A.kind+A.id+'|'+B.kind+B.id,k=pre+tail,n=S.mk[k]=(S.mk[k]||0)+1;rr=mkRng(mKey(pre,tail+'|'+n)).f}
   const u=[rr(),rr(),rr(),rr(),rr()];
   let ga=poissonU(la,u[0]),gb=poissonU(lb,u[1]),et=false,pens=null;
   const tied=()=>o.ko?ga===gb:o.agg?ga+o.agg[0]===gb+o.agg[1]:false;
@@ -5399,26 +5404,30 @@ function startCareer(){
 
 /* ================= views ================= */
 /* ---- photo portraits: 48 people × ages 18/27/35 (faces/fNN_AA.webp; a missing age falls back to 27) ---- */
-const FACE_REG={europe:[1,2,3,4,5,6,8,9,10,12,13,14,16,21,37,45],latam:[15,17,18,20,22,25],africa:[19,23,24,26,27,28,29,30,31,32,33,34],mena:[7,11,35,36,38,39,40,46],asia:[41,42,43,44],cis:[47,48]};
-const FACE_REG_N={europe:'Европа',latam:'Латинская Америка',africa:'Африка',mena:'Ближний Восток',asia:'Азия',cis:'Центральная Азия'};
+const FACE_REG={europe:[1,2,3,4,5,6,7,8,9,10,11,12,13,14],latam:[15,16,17,18,19,20,21,22,23,24],africa:[25,26,27,28,29,30,31,32,33,34],mena:[35,36,37,38,39,40],asia:[41,42,43,44],cis:[45,46,47,48]};
+/* finer groups inside the regions (from faces.json): Russian, Caucasian, Central Asian */
+const FACE_SUB={rus:[45],cauc:[46],casia:[47,48]};
+const FACE_REG_N={europe:'Европа',latam:'Латинская Америка',africa:'Африка',mena:'Ближний Восток',asia:'Азия',cis:'СНГ и Кавказ'};
 const faceId=n=>'f'+String(n).padStart(2,'0');
 const FACE_ALL=Object.values(FACE_REG).flat().sort((a,b)=>a-b).map(faceId);
-const MENA_N=['Марокко','Алжир','Тунис','Египет','Ливия','Саудовская Аравия','Катар','ОАЭ','Иран','Ирак','Иордания','Оман','Бахрейн','Кувейт','Сирия','Ливан','Палестина','Йемен','Турция','Албания','Босния и Герцеговина','Косово','Азербайджан'];
+const MENA_N=['Марокко','Алжир','Тунис','Египет','Ливия','Саудовская Аравия','Катар','ОАЭ','Иран','Ирак','Иордания','Оман','Бахрейн','Кувейт','Сирия','Ливан','Палестина','Йемен','Турция'];
+const CAUC_N=['Грузия','Армения','Азербайджан'],SLAV_N=['Россия','Украина','Беларусь'],BALK_N=['Албания','Босния и Герцеговина','Косово'];
 const CIS_N=['Узбекистан','Казахстан','Таджикистан','Кыргызстан','Туркменистан','Монголия']; // i18n:skip
 const ASIA_N=['Япония','Южная Корея','Китай','КНДР','Вьетнам','Таиланд','Индонезия','Малайзия','Филиппины','Сингапур','Мьянма','Камбоджа','Лаос','Гонконг','Тайвань'];
 const MIXED={Бразилия:{latam:5,africa:3,europe:2},Франция:{europe:5,africa:4,mena:1},Англия:{europe:7,africa:3},Нидерланды:{europe:6,africa:3,mena:1},Бельгия:{europe:6,africa:3,mena:1},США:{europe:4,africa:3,latam:3},Колумбия:{latam:7,africa:3},Эквадор:{latam:6,africa:4},Португалия:{europe:7,africa:2,latam:1},Германия:{europe:7,africa:1,mena:2},Швеция:{europe:7,africa:2,mena:1},Швейцария:{europe:7,africa:2,mena:1},Канада:{europe:5,africa:3,asia:2},Австралия:{europe:8,asia:2}};
 /* where a nationality's portraits come from: weights over regions */
 function faceRegs(nat){
   if(MIXED[nat])return MIXED[nat];
-  if(MENA_N.includes(nat))return {mena:1};if(CIS_N.includes(nat))return {cis:1};if(ASIA_N.includes(nat))return {asia:1};
+  if(MENA_N.includes(nat))return {mena:1};if(CIS_N.includes(nat))return {casia:1};if(ASIA_N.includes(nat))return {asia:1};
+  if(SLAV_N.includes(nat))return {europe:1,rus:4};if(CAUC_N.includes(nat))return {cauc:3,mena:1};if(BALK_N.includes(nat))return {europe:1,mena:1};
   const n=S_NATS.find(x=>x.name===nat),cf=n?n.conf:'UEFA';
   return cf==='CAF'?{africa:1}:cf==='CONMEBOL'||cf==='CONCACAF'?{latam:3,africa:1}:cf==='AFC'?{mena:1,asia:1}:cf==='OFC'?{asia:1,europe:1}:{europe:1};
 }
-function facePool(nat){const w=faceRegs(nat);return Object.entries(w).flatMap(([r,k])=>FACE_REG[r].flatMap(i=>Array(k).fill(faceId(i))))}
+function facePool(nat){const w=faceRegs(nat);return Object.entries(w).flatMap(([r,k])=>(FACE_REG[r]||FACE_SUB[r]).flatMap(i=>Array(k).fill(faceId(i))))}
 function faceFor(nat,seed){const p=facePool(nat);return p[Math.abs(seed|0)%p.length]}
 const faceAge=a=>a<=22?18:a<=30?27:35;
-function faceImg(id,age,cls='face'){if(!id)return '';const a=faceAge(age);
-  return `<img class="${cls}" src="faces/${id}_${a}.webp" alt="" decoding="async"${a!==27?` onerror="this.onerror=null;this.src='faces/${id}_27.webp'"`:''}>`}
+function faceImg(id,age,cls='face',thumb){if(!id)return '';const a=faceAge(age),d=thumb?'faces/t/':'faces/';
+  return `<img class="${cls}" src="${d}${id}_${a}.webp" alt="" decoding="async"${thumb?' loading="lazy"':''}${a!==27?` onerror="this.onerror=null;this.src='${d}${id}_27.webp'"`:''}>`}
 function cardTier(v){v=+v;return !(v>0)?'gold':v<65?'bronze':v<75?'silver':v<85?'gold':'icon'}
 function playerCard(o){
   return `<div class="fcard ${cardTier(o.ovr)} ${o.up?'lvlup':''} ${o.face?'has-face':''}" aria-label="Карточка игрока"><div class="sheen"></div><div class="pitch"></div>${o.face?`<div class="fc-ph">${faceImg(o.face,o.age||27,'fc-face')}</div>`:''}
@@ -5465,10 +5474,10 @@ function setupFace(f){
   const reg=UI.faceReg||'fit',pool=reg==='fit'?[...new Set(facePool(f.nat))].sort():reg==='all'?FACE_ALL:FACE_REG[reg].map(faceId);
   const chips=[['fit','Под сборную'],['all','Все'],...Object.entries(FACE_REG_N)].map(([k,n])=>`<button type="button" class="chipb" data-a="faceReg" data-v="${k}" aria-pressed="${reg===k}">${n}</button>`).join('');
   return `<div class="field"><span class="lbl">Лицо</span>
-    <div class="fp-top"><div class="fp-ages">${[18,27,35].map(a=>`<figure>${faceImg(f.face,a,'fp-age')}<figcaption>${a} лет</figcaption></figure>`).join('')}</div>
+    <div class="fp-top"><div class="fp-ages">${[18,27,35].map(a=>`<figure>${faceImg(f.face,a,'fp-age',1)}<figcaption>${a} лет</figcaption></figure>`).join('')}</div>
       <button type="button" class="btn ghost mini" data-a="faceRnd">Случайное лицо</button></div>
     <div class="chips fp-reg">${chips}</div>
-    <div class="fp-grid" role="listbox" aria-label="Лицо игрока">${pool.map(id=>`<button type="button" class="fp-i" role="option" data-a="pickFace" data-v="${id}" aria-selected="${f.face===id}">${faceImg(id,27,'fp-img')}</button>`).join('')}</div>
+    <div class="fp-grid" role="listbox" aria-label="Лицо игрока">${pool.map(id=>`<button type="button" class="fp-i" role="option" data-a="pickFace" data-v="${id}" aria-selected="${f.face===id}">${faceImg(id,27,'fp-img',1)}</button>`).join('')}</div>
     <p class="small muted" style="margin:0">Лицо взрослеет вместе с игроком: в 18, 27 и 35 лет.</p></div>`;
 }
 function setupPos(f){

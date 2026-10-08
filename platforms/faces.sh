@@ -4,11 +4,12 @@
 set -e
 cd "$(dirname "$0")/.."
 SRC="${1:-$HOME/dev/legenda-faces/out}"
-mkdir -p static/faces
+mkdir -p static/faces/t
 for f in "$SRC"/f[0-9][0-9]_[0-9][0-9].png; do
   b=$(basename "$f" .png); o="static/faces/$b.webp"
   [ -f "$o" ] && [ "$o" -nt "$f" ] && continue
   cwebp -quiet -q 80 -alpha_q 85 -resize 320 0 "$f" -o "$o"
+  cwebp -quiet -q 72 -alpha_q 70 -resize 150 0 "$f" -o "static/faces/t/$b.webp"   # picker thumbnails
 done
 ls static/faces/*.webp | wc -l | xargs echo "faces:"
 du -sh static/faces | cut -f1 | xargs echo "size:"
