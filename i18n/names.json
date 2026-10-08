@@ -172,7 +172,6 @@
 "Вьетнам":"Vietnam",
 "Таиланд":"Thailand",
 "Таджикистан":"Tajikistan",
-"Киргизия":"Kyrgyzstan",
 "Малайзия":"Malaysia",
 "КНДР":"North Korea",
 "Ливан":"Lebanon",
@@ -3672,5 +3671,6 @@
 "Клаусура":"Clausura",
 "Финалисасьон":"Finalización",
 "Запад":"West",
-"Восток":"East"
+"Восток":"East",
+"Кыргызстан":"Kyrgyzstan"
 }
