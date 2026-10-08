@@ -16,7 +16,7 @@ cat <<'HEAD'
 <meta name="rating" content="12+">
 <meta name="google-adsense-account" content="ca-pub-3786708907323389">
 <link rel="canonical" href="https://legendapolya.com/">
-<meta name="description" content="Симулятор футбольной карьеры: 30 лиг, еврокубки, сборные, Золотой мяч.">
+<meta name="description" content="Симулятор футбольной карьеры: 56 лиг, еврокубки, сборные, Золотой мяч.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
