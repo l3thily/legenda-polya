@@ -5501,10 +5501,10 @@ function startCareer(){
 }
 
 /* ================= views ================= */
-/* ---- photo portraits: 48 people × ages 18/27/35 (faces/fNN_AA.webp; a missing age falls back to 27) ---- */
-const FACE_REG={europe:[1,2,3,4,5,6,7,8,9,10,11,12,13,14],latam:[15,16,17,18,19,20,21,22,23,24],africa:[25,26,27,28,29,30,31,32,33,34],mena:[35,36,37,38,39,40],asia:[41,42,43,44],cis:[45,46,47,48]};
+/* ---- photo portraits: 96 people × ages 18/27/35 (faces/fNN_AA.webp; a missing age falls back to 27) ---- */
+const FACE_REG={europe:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,49,50,51,52,53,54,55,56,57,58],latam:[15,16,17,18,19,20,21,22,23,24,59,60,61,62,63,64,65,66,67],africa:[25,26,27,28,29,30,31,32,33,34,68,69,70,71,72,73,74,75,76],mena:[35,36,37,38,39,40,77,78,79,80,81,82,83,84],asia:[41,42,43,44,85,86,87,88,89,90,91],cis:[45,46,47,48,92,93,94,95,96]};
 /* finer groups inside the regions (from faces.json): Russian, Caucasian, Central Asian */
-const FACE_SUB={rus:[45],cauc:[46],casia:[47,48]};
+const FACE_SUB={rus:[45],cauc:[46,94,95],casia:[47,48,92,93,96]};
 const FACE_REG_N={europe:'Европа',latam:'Латинская Америка',africa:'Африка',mena:'Ближний Восток',asia:'Азия',cis:'СНГ и Кавказ'};
 const faceId=n=>'f'+String(n).padStart(2,'0');
 const FACE_ALL=Object.values(FACE_REG).flat().sort((a,b)=>a-b).map(faceId);
