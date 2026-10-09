@@ -2308,12 +2308,14 @@ function* olympics(Y,SB,ch){
 }
 
 const LINE_AW={DEF:'Лучший защитник года',MID:'Лучший полузащитник года',ATT:'Лучший нападающий года'}; // i18n:skip
-const POSB={GK:-3,CB:-2.5,LB:-2.5,RB:-2.5,CDM:-1.5,CM:-.8,CAM:0,LW:0,RW:0,ST:0};
+const POSB={GK:-3,CB:-1.5,LB:-1.5,RB:-1.5,CDM:-1,CM:-.6,CAM:0,LW:0,RW:0,ST:0};
 const JURY=[['star','Класс игрока'],['form','Форма'],['out','Статистика'],['league','Уровень лиги'],['team','Клубные трофеи'],['nat','Сборная'],['big','Большие матчи'],['media','Имя и награды']];
 /* the same formula for everyone: class + form + position-aware output + club & national results + decisive games + reputation */
+const juryTk=(pos,ovr,apps)=>Math.round((PSP[pos]||PSP.CM).tk*attrF(ovr-4)*(apps||0)*.9);
 function juryScore(c,noise){
   const grp=POS[c.pos].grp;
-  let out=grp==='ATT'?(c.g+.6*c.a)*.25:grp==='MID'?(1.2*c.g+.9*c.a)*.25:grp==='DEF'?(1.5*c.g+c.a)*.25+c.cs*.12:c.cs*.2+(c.avg-6.8)*6;
+  const tk=c.tk==null?juryTk(c.pos,c.ovr,c.apps):c.tk;
+  let out=grp==='ATT'?(c.g+.6*c.a)*.25:grp==='MID'?(1.2*c.g+.9*c.a)*.25+(c.pos==='CAM'?0:tk*.015):grp==='DEF'?(1.5*c.g+c.a)*.25+c.cs*.12+tk*.025+(c.avg-6.9)*3:c.cs*.2+(c.avg-6.8)*6;
   out=clamp(out,-3,16)+(c.apps<25?-(25-c.apps)*.5:0);
   const lf=c.lf==null?1:c.lf,fm=clamp((c.avg-7)*8,-6,8);
   const p={star:.9*(c.ovr-80)+POSB[c.pos],form:fm>0?fm*lf:fm,out:out>0?out*lf:out,league:-(1-lf)*14,team:c.team,nat:c.nat,big:c.big*1.5+c.fin*2,media:c.rep*.06+(c.gb?4:0)};
@@ -2345,7 +2347,7 @@ function* doAwards(SB,Y,ch,myT){
   const soloBoot=!room&&myBoot>0&&myBoot>=bootTop;
   if(soloBoot)award('Золотая бутса');
   const natPts=TR.called?(SB.n[P.nat]||0)*(S.tapps?1:.4):0;
-  const mj=juryScore({ovr:P.ovr,pos:P.pos,apps:c.apps,avg:avg||6,g:c.g+S.intl.g,a:c.a+S.intl.a,cs:c.cs,team:SB.c[P.clubId]||0,nat:natPts,big:S.bigG,fin:S.finG,rep:P.rep+clamp(Math.log10(1+(P.fol||0))*8,0,18)+(P.subs&&P.subs.pr?45:0),gb:soloBoot,lf:leagueFactor(S.lgId)},gaussP());
+  const mj=juryScore({ovr:P.ovr,pos:P.pos,apps:c.apps,tk:Math.round(((S.ps&&S.ps.tk)||0)*(S.ps&&S.ps.n?Math.min(1,(c.apps+S.intl.apps)/S.ps.n):1)),avg:avg||6,g:c.g+S.intl.g,a:c.a+S.intl.a,cs:c.cs,team:SB.c[P.clubId]||0,nat:natPts,big:S.bigG,fin:S.finG,rep:P.rep+clamp(Math.log10(1+(P.fol||0))*8,0,18)+(P.subs&&P.subs.pr?45:0),gb:soloBoot,lf:leagueFactor(S.lgId)},gaussP());
   const me={name:P.name,club:P.clubId,me:true,pos:P.pos,age:P.age,ovr:P.ovr,sc:mj.sc,p:mj.p,g:c.g+S.intl.g,a:c.a+S.intl.a};
   const gbRival=soloBoot?null:bootName;
   let rivals=rs.map(({r,s})=>{const j=juryScore({ovr:r.ovr,pos:r.pos,apps:s.apps,avg:s.avg,g:s.g,a:s.a,cs:s.cs,team:SB.c[r.club]||0,nat:SB.n[r.nat]||0,big:s.big,fin:s.fin,rep:s.rep,gb:gbRival===r.name,lf:leagueFactor(C(r.club).lg)});return {name:r.name,club:r.club,pos:r.pos,age:Y-r.by,ovr:r.ovr,sc:j.sc,p:j.p,g:s.g,a:s.a}});
@@ -2372,7 +2374,7 @@ function* doAwards(SB,Y,ch,myT){
     if(bc[0].pts>0&&bc[0].pts>=bootTop){bootName=bc[0].name;if(bc[0].me)award('Золотая бутса')}
   }else if(soloBoot)bootName=P.name;
   const all=rivals.concat(others,[me],nemE&&!room?[nemE]:[]).sort((a,b)=>b.sc-a.sc),place=all.indexOf(me)+1;
-  const pack=x=>({n:x.name,c:C(x.club).name,me:!!x.me,room:!!x.room,nem:!!x.nem,g:x.g,a:x.a,sc:r1(x.sc)});
+  const pack=x=>({n:x.name,c:C(x.club).name,me:!!x.me,room:!!x.room,nem:!!x.nem,g:x.g,a:x.a,sc:r1(x.sc),pos:x.pos});
   if(nemE){const np=room?all.filter(x=>x.sc>nemE.sc).length+1:all.indexOf(nemE)+1;S.nem={n:nm.name,c:C(nm.club).name,place:np,me:place,g:ns.g,a:ns.a,ovr:Math.round(nm.ovr),tro:ns.tro};if(place<=30||np<=30){if(place<np)nm.w++;else nm.l++}nm.best=Math.min(nm.best||99,np);if(np===1)nm.bdo++}
   S.bdo={place,top:all.slice(0,3).map(pack),list:all.slice(0,30).map(pack),mine:mj.p,win:all[0].p,winName:all[0].me?P.name:all[0].name,myScore:r1(me.sc),cmp:(()=>{const o=all[0].me?all[1]:all[0];return {n:o.name,p:o.p,sc:r1(o.sc)}})(),boot:bootName};
   ch.bdo=all[0].me?P.name:all[0].name;
