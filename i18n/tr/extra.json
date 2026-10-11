@@ -539,5 +539,22 @@
  "рекордов — {0}": "records — {0}",
  "ключевой пас": "key pass",
  "отбор": "tackle",
- "сейв": "save"
+ "сейв": "save",
+ "Цвета клуба: {0}": "Club colours: {0}",
+ "вкл": "on",
+ "выкл": "off",
+ "от {0} ·": "by {0} ·",
+ "Напишите, от кого карьера: ваше имя или ник.": "Say who this career is from: your name or nickname.",
+ "Отправьте карьеру в таблицы рекордов — за сегодня, за всё время и в GOAT своей позиции. Видны имя игрока, подпись отправителя и игровые результаты.": "Send the career to the leaderboards: today, all time and the GOAT list of its position. Shown: the player name, the sender and game results.",
+ "От кого: ваше имя или ник": "From: your name or nickname",
+ "От кого": "From",
+ "Все игроки": "All players",
+ "Мои карьеры": "My careers",
+ "лучшие завершённые карьеры в этом браузере по позициям": "the best finished careers in this browser, by position",
+ "лучшие карьеры всех игроков за всё время по позициям: попадают отправленные в таблицу рекордов": "the best careers of all players of all time, by position: careers sent to the leaderboard get in",
+ "Пока нет завершённых карьер на этой позиции.": "No finished careers in this position yet.",
+ "Символическая сборная: лучший на каждой позиции": "All-time XI: the best in each position",
+ "Сборная всех времён 1-4-3-3: лучший на каждой позиции": "All-time XI, 4-3-3: the best in each position",
+ "Карьера в таблице: место {0} в общей{1}{2}{3}.": "Career on the leaderboard: #{0} overall{1}{2}{3}.",
+ ", {0} в GOAT позиции «{1}»": ", #{0} in the {1} GOAT list"
 }

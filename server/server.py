@@ -155,8 +155,27 @@ def reporter():
                 sent = today
 
 
+# GOAT boards: one per position, all time
+POS_KEYS = ("GK", "CB", "LB", "RB", "CDM", "CM", "CAM", "LW", "RW", "ST")
+POS_SHORT = {"ВР": "GK", "ЦЗ": "CB", "ЛЗ": "LB", "ПЗ": "RB", "ОП": "CDM", "ЦП": "CM", "АП": "CAM", "ЛВ": "LW", "ПВ": "RW", "НАП": "ST",
+             "GK": "GK", "CB": "CB", "LB": "LB", "RB": "RB", "CDM": "CDM", "CM": "CM", "CAM": "CAM", "LW": "LW", "RW": "RW", "ST": "ST"}
+
+
+def goat_backfill():
+    """once: careers sent before the GOAT boards existed go to the board of their position"""
+    if any(k.startswith("pos-") for k in scores):
+        return False
+    for e in scores.get("all", []):
+        pk = POS_SHORT.get(e.get("pos", ""))
+        if pk:
+            scores.setdefault("pos-" + pk, []).append(dict(e, pk=pk))
+    for k in [k for k in scores if k.startswith("pos-")]:
+        scores[k].sort(key=lambda x: -x["score"])
+    return True
+
+
 def board_ok(b):
-    if b == "all" or (b.startswith("sc-") and 3 < len(b) <= 24 and b[3:].isalnum()):
+    if b == "all" or (b.startswith("pos-") and b[4:] in POS_KEYS) or (b.startswith("sc-") and 3 < len(b) <= 24 and b[3:].isalnum()):
         return True
     if (b.startswith("day-") or b.startswith("top-")) and len(b) == 12 and b[4:].isdigit():
         today = time.strftime("%Y%m%d", time.gmtime())
@@ -336,6 +355,9 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(403, {"error": "forbidden"})
             with lock:
                 return self.reply(200, {"text": stats_text(int(q.get("days", "7") or 7)), "days": dict(sorted(stats.items())[-30:]), "online": online_now(int(time.time()))})
+        if parts == ["api", "goat"]:
+            with lock:
+                return self.reply(200, {"goat": {k: scores.get("pos-" + k, [])[:10] for k in POS_KEYS}})
         if parts == ["api", "scores"]:
             q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
             b = q.get("board", "all")
@@ -411,7 +433,9 @@ class Handler(BaseHTTPRequestHandler):
                 board, sid = clip(data.get("board"), 24), clip(data.get("id"), 24)
                 if not board_ok(board) or not sid:
                     return self.reply(400, {"error": "неверная таблица"})
-                e = {"id": sid, "nick": clip(data.get("nick"), 24) or "Игрок", "score": round(num(data.get("score"), 0, 3000), 1),
+                by = clip(data.get("by"), 24)
+                e = {"id": sid, "nick": by or clip(data.get("nick"), 24) or "Игрок", "name": clip(data.get("name"), 40), "by": by,
+                     "pk": POS_SHORT.get(clip(data.get("pk"), 4), ""), "nat": clip(data.get("nat"), 40), "score": round(num(data.get("score"), 0, 3000), 1),
                      "tier": clip(data.get("tier"), 40), "pos": clip(data.get("pos"), 6), "tro": int(num(data.get("tro"), 0, 500)),
                      "bdo": int(num(data.get("bdo"), 0, 50)), "goal": int(num(data.get("goal"), 0, 3)), "hard": bool(data.get("hard")), "t": now}
                 lst = [x for x in scores.get(board, []) if x["id"] != sid] + [e]
@@ -560,6 +584,9 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     load()
     load_scores()
+    with lock:
+        if goat_backfill():
+            persist_scores()
     load_stats()
     with lock:
         if cleanup(int(time.time())):

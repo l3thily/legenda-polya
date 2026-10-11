@@ -53,6 +53,43 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .tab[aria-current="true"]{color:var(--gold2);background:rgba(242,193,78,.08)}
 .tab[aria-current="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;border-radius:2px;background:var(--gold);box-shadow:0 0 10px var(--gold)}
 .topact{display:flex;gap:6px;align-items:center}
+/* club colours (clubTheme): glow, accent line, active tab */
+html.club-theme body::before{background:
+    radial-gradient(60% 42% at 6% -6%,rgba(var(--club-rgb),.22),transparent 70%),
+    radial-gradient(60% 42% at 94% -6%,rgba(var(--club2-rgb),.12),transparent 70%),
+    radial-gradient(90% 50% at 50% 115%,rgba(var(--club-rgb),.12),transparent 70%),
+    repeating-linear-gradient(90deg,rgba(var(--club-rgb),.03) 0 90px,transparent 90px 180px),
+    linear-gradient(180deg,var(--bg) 0%,#0a0f13 100%)}
+html.club-theme .top::after,html.club-theme .bnav::before{background:linear-gradient(90deg,transparent,rgba(var(--club-rgb),.85),transparent)}
+html.club-theme .tab[aria-current="true"]{color:#fff;background:rgba(var(--club-rgb),.16)}
+html.club-theme .tab[aria-current="true"]::after,html.club-theme .bn[aria-current="true"]::before{background:var(--club);box-shadow:0 0 10px var(--club)}
+html.club-theme .bn[aria-current="true"]{color:#fff}
+html.club-theme .bn[aria-current="true"] .ic{filter:drop-shadow(0 0 7px rgba(var(--club-rgb),.7))}
+html.club-theme .brand i{background:radial-gradient(circle at 35% 30%,#fff 0 18%,rgba(var(--club-rgb),1) 45%,rgba(var(--club2-rgb),1) 100%);box-shadow:0 0 18px rgba(var(--club-rgb),.6)}
+html.club-theme .sec-h h2{text-decoration:underline;text-decoration-color:rgba(var(--club-rgb),.7);text-decoration-thickness:2px;text-underline-offset:6px}
+/* GOAT */
+.goat-xi{position:relative;width:100%;max-width:440px;aspect-ratio:60/80;margin:16px auto 0;border-radius:14px;background:repeating-linear-gradient(180deg,#123b26 0 10%,#0f3420 10% 20%);box-shadow:inset 0 0 0 1px rgba(47,210,124,.25),inset 0 0 60px rgba(0,0,0,.45);overflow:hidden}
+.goat-xi svg{position:absolute;inset:3%;width:94%;height:94%;fill:none;stroke:rgba(255,255,255,.28);stroke-width:.5;vector-effect:non-scaling-stroke}
+.gx-p{position:absolute;translate:-50% -50%;display:grid;justify-items:center;gap:1px;width:88px;padding:5px 4px;border-radius:10px;background:rgba(7,13,18,.78);border:1px solid rgba(242,193,78,.45);text-align:center}
+.gx-p b{font-size:11.5px;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.gx-p .num{font-size:11px;color:var(--gold2)}
+.gx-pos{font:700 10px/1 var(--mono);color:var(--gold);letter-spacing:.05em}
+.gx-p.empty{border-color:var(--line2);opacity:.6}
+.goat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.goat-b{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.goat-b h3{margin:0;font-size:16px}
+.goat-l{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:4px}
+.goat-l li{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px solid var(--line)}
+.goat-l li:last-child{border-bottom:0}
+.goat-l li.me{background:rgba(242,193,78,.08);border-radius:8px}
+.goat-l .gr-n{color:var(--dim);font-size:12px;text-align:right}
+.goat-l li:nth-child(1) .gr-n{color:var(--gold)}
+.gr-who{display:grid;grid-template-columns:auto 1fr;column-gap:6px;align-items:center;min-width:0}
+.gr-who b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gr-who .small{grid-column:1/-1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gr-who .flag-i{width:16px;height:12px}
+.goat-l em{font-style:normal;font-weight:700;color:var(--gold2)}
+@media (max-width:600px){.gx-p{width:78px;padding:4px 3px}.gx-p b{font-size:10.5px;letter-spacing:-.01em}.goat-grid{grid-template-columns:1fr}.goat-l li{grid-template-columns:20px minmax(0,1fr) auto}.goat-l .gr-st{display:none}}
 .lng{font:700 12px/1 var(--mono);letter-spacing:.06em;min-width:40px;padding-inline:8px}
 .foot{display:flex;gap:12px;align-items:center;justify-content:center;margin:28px 0 8px;color:var(--dim)}
 .chat-log{list-style:none;margin:0;padding:0;max-height:260px;overflow:auto;display:grid;gap:6px}
@@ -712,7 +749,9 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 .btn.newc{gap:6px;padding-inline:13px 15px}
 .btn.newc .ic{width:18px;height:18px;stroke-width:2.2}
 .bnav{display:none}
-@media (max-width:1100px){.nb-long{display:none}.top .tab{padding-inline:9px}}
+.tab .ts{display:none}
+@media (max-width:1440px){.nb-long{display:none}.top .tab{padding-inline:9px}.tab .tl{display:none}.tab .ts{display:inline}}
+@media (max-width:1180px){.top .tab{padding-inline:7px;font-size:14px}.brand{font-size:24px}}
 @media (max-width:960px){
   .top .tabs{display:none}
   .topin{min-height:54px;padding-block:5px;gap:10px}
@@ -5552,6 +5591,7 @@ const TAB_IC={
   tables:'<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M3.5 14h17M9 4v16"/>',
   world:'<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.5 3.6 5.3 3.6 8.5s-1.2 6-3.6 8.5c-2.4-2.5-3.6-5.3-3.6-8.5s1.2-6 3.6-8.5z"/>',
   multi:'<circle cx="9" cy="8.5" r="3.3"/><path d="M3 19.5c.4-3.3 2.9-5.6 6-5.6s5.6 2.3 6 5.6"/><path d="M15.5 5.4a3.3 3.3 0 0 1 0 6.3M17.5 14.2c1.9.7 3.2 2.7 3.5 5.3"/>',
+  goat:'<path d="M3.5 8.5 7.5 12 12 5l4.5 7 4-3.5-1.8 10H5.3z"/><path d="M5.5 20.5h13"/>',
   saves:'<path d="M5 3.5h11.5L20 7v13.5H5z"/><path d="M8.5 3.5v4.5h6.5V3.5M8.5 20.5v-6.5h7v6.5"/>',
   new:'<path d="M12 5v14M5 12h14"/>',
   ball:'<circle cx="12" cy="12" r="8.5"/><path d="m12 8.2 3.4 2.5-1.3 4h-4.2l-1.3-4zM12 3.5v4.7M15.4 10.7l4.4-1.5M14.1 14.7l2.8 3.9M9.9 14.7l-2.8 3.9M8.6 10.7 4.2 9.2"/>'
@@ -5559,9 +5599,9 @@ const TAB_IC={
 const ico=(k,c)=>`<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${TAB_IC[k]||''}</svg>`;
 function topbar(){
   const has=G&&(G.P||G.C),ret=has&&G.phase==='retired';
-  const list=has?[['career',ret?'Итоги':'Карьера',ret?'Итоги':'Карьера',ret?'hall':'career'],...(G.P&&!isCoach()?[['life','Жизнь','Жизнь','life'],['museum','Музей','Музей','museum']]:[]),['tables','Таблицы','Таблицы','tables'],['world','Мир','Мир','world'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']]
-    :[['career','Новая карьера','Новая','new'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']];
-  const tabs=list.map(([k,l])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l}</button>`).join('');
+  const list=has?[['career',ret?'Итоги':'Карьера',ret?'Итоги':'Карьера',ret?'hall':'career'],...(G.P&&!isCoach()?[['life','Жизнь','Жизнь','life'],['museum','Музей','Музей','museum']]:[]),['tables','Таблицы','Таблицы','tables'],['world','Мир','Мир','world'],['goat','GOAT','GOAT','goat'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']]
+    :[['career','Новая карьера','Новая','new'],['goat','GOAT','GOAT','goat'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']];
+  const tabs=list.map(([k,l,sh])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l===sh?l:`<span class="tl">${l}</span><span class="ts">${sh}</span>`}</button>`).join('');
   const bn=list.map(([k,l,sh,ic])=>`<button class="bn" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}" aria-label="${l}">${ico(ic)}<span>${sh}</span></button>`).join('');
   const nb=has?`<button class="btn ghost newc" data-a="newYes" title="Новая карьера" aria-label="Новая карьера">${ico('new')}<span>Новая<span class="nb-long"> карьера</span></span></button>`:'';
   const lng=`<button class="btn ghost lng" data-a="lang" lang="${EN?'ru':'en'}" title="${LANG_OTHER}" aria-label="${LANG_OTHER}">${EN?'RU':'EN'}</button>`;
@@ -5917,6 +5957,7 @@ function render(){
   else if(UI.tab==='home')body=viewHome();
   else if(UI.tab==='multi')body=viewMulti();
   else if(UI.tab==='saves')body=viewSaves();
+  else if(UI.tab==='goat')body=viewGoat();
   else if(!G||(!G.P&&!G.C))body=viewSetup();
   else if(UI.tab==='tables')body=viewTables();
   else if(UI.tab==='world')body=viewWorld();
@@ -5926,6 +5967,7 @@ function render(){
   const enter=UI.shown!==UI.tab;UI.shown=UI.tab;
   app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}${siteFoot()}</main>${consentBanner()}`+(G&&(G.P||G.C)?shareModal():'');
   try{afterRender()}catch(e){console.error(e)}
+  clubTheme();
   if(UI.news&&!document.querySelector('.news')){app.insertAdjacentHTML('beforeend',newsView())}
   for(const s of ['.lgg .lgt.on','.clg .clt.on','.fp-grid .fp-i[aria-selected="true"]']){const el=document.querySelector(s);if(el){const p=el.parentElement;if(el.offsetTop<p.scrollTop||el.offsetTop+el.offsetHeight>p.scrollTop+p.clientHeight)p.scrollTop=el.offsetTop-8}}
 }
@@ -5977,7 +6019,7 @@ const SHOW_PRIVACY=false;
 const AD_CONTACT={tg:'nowayarkady'}; // Telegram for advertisers
 function siteFoot(){
   if(YG)return '';
-  return `<footer class="foot"><span class="age-mark" title="Возрастная категория">12+</span><a class="small" href="https://t.me/${AD_CONTACT.tg}" target="_blank" rel="noopener">Реклама в игре: @${AD_CONTACT.tg}</a>${SHOW_PRIVACY?'<a class="small" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>':''}${adsOn()?'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>':''}<button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
+  return `<footer class="foot"><span class="age-mark" title="Возрастная категория">12+</span><a class="small" href="https://t.me/${AD_CONTACT.tg}" target="_blank" rel="noopener">Реклама в игре: @${AD_CONTACT.tg}</a>${SHOW_PRIVACY?'<a class="small" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>':''}${adsOn()?'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>':''}${G&&(G.P||G.C)?`<button class="btn ghost mini" data-a="clubTheme" aria-pressed="${clubThemeOn()}">Цвета клуба: ${clubThemeOn()?'вкл':'выкл'}</button>`:''}<button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
 }
 
 /* ================= challenges: daily, scenarios, hardcore, leaderboards ================= */
@@ -6117,23 +6159,26 @@ const mskDay=()=>dayKey(new Date(Date.now()+3*3600e3));
 function todayTop(){
   const b='top-'+mskDay(),l=LB.cache[b];if(l===undefined)setTimeout(()=>lbLoad(b),0);
   const top=(l||[]).slice(0,3),medal=['🥇','🥈','🥉'];
-  return `<section class="panel"><div class="sec-h"><h2>Топ-3 сегодня</h2><span class="small muted">лучшие завершённые карьеры всех игроков за день</span></div><div data-lb="${b}">${top.length?`<ol class="podium">${top.map((e,i)=>`<li class="p${i+1}"><span class="m">${medal[i]}</span><b>${esc(e.nick)}</b><span>${esc(e.pos||'')} · ${esc(e.tier||'')}</span><em class="num">${e.score}</em></li>`).join('')}</ol>`:l===undefined?'<p class="small muted">Загружаю…</p>':'<p class="small muted">Сегодня ещё никто не завершил карьеру. Будьте первым в таблице дня!</p>'}</div></section>`;
+  return `<section class="panel"><div class="sec-h"><h2>Топ-3 сегодня</h2><span class="small muted">лучшие завершённые карьеры всех игроков за день</span></div><div data-lb="${b}">${top.length?`<ol class="podium">${top.map((e,i)=>`<li class="p${i+1}"><span class="m">${medal[i]}</span><b>${esc(e.name||e.nick)}</b><span>${e.by?`от ${esc(e.by)} · `:''}${esc(e.pos||'')} · ${esc(e.tier||'')}</span><em class="num">${e.score}</em></li>`).join('')}</ol>`:l===undefined?'<p class="small muted">Загружаю…</p>':'<p class="small muted">Сегодня ещё никто не завершил карьеру. Будьте первым в таблице дня!</p>'}</div></section>`;
 }
 function lbLoad(board){if(Date.now()-(LB.at[board]||0)<15000)return;LB.at[board]=Date.now();api('/scores?board='+encodeURIComponent(board)).then(d=>{LB.cache[board]=d.scores||[];const el=document.querySelector(`[data-lb="${board}"]`);if(el)el.innerHTML=board.startsWith('top-')?(todayTop().match(/<div data-lb="[^"]+">([\s\S]*)<\/div><\/section>$/)||['',''])[1]:lbList(board)}).catch(()=>{LB.cache[board]=LB.cache[board]||null;const el=document.querySelector(`[data-lb="${board}"]`);if(el)el.innerHTML='<p class="small muted">Таблица недоступна: нет связи с сервером.</p>'})}
 function lbList(board,n=10){
   const l=LB.cache[board];if(l===undefined){setTimeout(()=>lbLoad(board),0);return '<p class="small muted">Загружаю…</p>'}
   if(!l||!l.length)return '<p class="small muted">Пока пусто — станьте первым.</p>';
-  return `<ol class="lb">${l.slice(0,n).map(e=>`<li class="${G&&e.id===G.slot?'me':''}"><b>${esc(e.nick)}</b><span>${esc(e.pos||'')} · ${esc(e.tier||'')}${e.hard?' · хардкор':''}${e.goal?' · целей ✓'+(e.goal===true?1:e.goal):''}</span><em class="num">${e.score}</em></li>`).join('')}</ol>`;
+  return `<ol class="lb">${l.slice(0,n).map(e=>`<li class="${G&&e.id===G.slot?'me':''}"><b>${esc(e.name||e.nick)}</b><span>${e.by?`от ${esc(e.by)} · `:''}${esc(e.pos||'')} · ${esc(e.tier||'')}${e.hard?' · хардкор':''}${e.goal?' · целей ✓'+(e.goal===true?1:e.goal):''}</span><em class="num">${e.score}</em></li>`).join('')}</ol>`;
 }
 const lbBox=(board,title,sub)=>`<section class="panel"><div class="sec-h"><h2>${title}</h2>${sub?`<span class="small muted">${sub}</span>`:''}</div><div data-lb="${board}">${lbList(board)}</div></section>`;
 function lbSend(){
   if(!G||!G.P||G.phase!=='retired'||UI.lbBusy)return;
-  const nick=String(UI.lbNick||G.P.name).trim().slice(0,24)||'Игрок',P=G.P,gk=mainPos()==='GK';
-  const body={id:G.slot,nick,score:chalScore(),tier:legacyTier(),pos:POS[mainPos()].s,tro:P.trophies.length,bdo:P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,goal:G.chal?Object.keys(chalDone(G.chal)).length:0,hard:!!P.hard};
-  const boards=['all','top-'+mskDay()].concat(G.chal?[G.chal.kind==='day'?'day-'+G.chal.day:'sc-'+G.chal.id]:[]);
+  const by=String(UI.lbBy==null?lbByGet():UI.lbBy).trim().slice(0,24);
+  if(!by){UI.lbErr='Напишите, от кого карьера: ваше имя или ник.';render();const el=document.getElementById('lb-by');if(el)el.focus();return}
+  UI.lbErr=null;try{LS.setItem(LB_BY_KEY,by)}catch(e){}
+  const P=G.P,mp=mainPos(),gk=mp==='GK';
+  const body={id:G.slot,nick:by,by,name:P.name,pk:mp,nat:N(P.nat).name,score:chalScore(),tier:legacyTier(),pos:POS[mainPos()].s,tro:P.trophies.length,bdo:P.awards.filter(a=>a.n===(gk?'Трофей Яшина':'Золотой мяч')).length,goal:G.chal?Object.keys(chalDone(G.chal)).length:0,hard:!!P.hard};
+  const boards=['all','top-'+mskDay(),'pos-'+mp].concat(G.chal?[G.chal.kind==='day'?'day-'+G.chal.day:'sc-'+G.chal.id]:[]);
   UI.lbBusy=true;render();
   Promise.all(boards.map(b=>api('/scores',{...body,board:b}).then(d=>{LB.cache[b]=d.scores;LB.at[b]=Date.now();return [b,d.rank]})))
-    .then(rs=>{G.lbSent=Object.fromEntries(rs);save()}).catch(e=>{UI.lbErr=e.message}).finally(()=>{UI.lbBusy=false;render()});
+    .then(rs=>{G.lbSent=Object.fromEntries(rs);GOAT.at=0;save()}).catch(e=>{UI.lbErr=e.message}).finally(()=>{UI.lbBusy=false;render()});
 }
 /* a short spoiler-free result to paste into chats, Wordle-style */
 function shareText(){
@@ -6151,9 +6196,65 @@ function lbHall(){
   if(!G||!G.P||G.phase!=='retired'||G.room)return '';
   const sent=G.lbSent,b2=G.chal?(G.chal.kind==='day'?'day-'+G.chal.day:'sc-'+G.chal.id):null;
   return `<section class="panel"><div class="sec-h"><h2>Таблица рекордов</h2><span class="small muted">очки наследия: ${chalScore()}${G.P.hard?' (×1,3 хардкор)':''}${G.chal&&chalBonus()?` (+${chalBonus()} за цели)`:''}</span></div>
-    ${sent?`<p class="note">Карьера в таблице: место ${sent.all||'—'} в общей${sent['top-'+mskDay()]?`, ${sent['top-'+mskDay()]} за сегодня`:''}${b2&&sent[b2]?`, ${sent[b2]} в таблице испытания`:''}.</p>`:`<p class="small muted">Отправьте карьеру в таблицы рекордов — за сегодня и за всё время. Виден только ник и игровые результаты.</p><div class="chat-f"><input id="lb-nick" maxlength="24" value="${esc(UI.lbNick||G.P.name)}" aria-label="Ник"><button class="btn primary" data-a="lbSend" ${UI.lbBusy?'disabled':''}>Отправить</button></div>${UI.lbErr?`<p class="err">${esc(UI.lbErr)}</p>`:''}`}
+    ${sent?`<p class="note">Карьера в таблице: место ${sent.all||'—'} в общей${sent['top-'+mskDay()]?`, ${sent['top-'+mskDay()]} за сегодня`:''}${b2&&sent[b2]?`, ${sent[b2]} в таблице испытания`:''}${sent['pos-'+mainPos()]?`, ${sent['pos-'+mainPos()]} в GOAT позиции «${POS[mainPos()].n}»`:''}.</p>`:`<p class="small muted">Отправьте карьеру в таблицы рекордов — за сегодня, за всё время и в GOAT своей позиции. Видны имя игрока, подпись отправителя и игровые результаты.</p><div class="chat-f"><input id="lb-by" maxlength="24" required value="${esc(UI.lbBy==null?lbByGet():UI.lbBy)}" placeholder="От кого: ваше имя или ник" aria-label="От кого"><button class="btn primary" data-a="lbSend" ${UI.lbBusy?'disabled':''}>Отправить</button></div>${UI.lbErr?`<p class="err lb-err">${esc(UI.lbErr)}</p>`:''}`}
     <div class="go"><button class="btn" data-a="shareRes">Поделиться результатом</button></div>
     <div class="grid2" style="margin-top:14px"><div><p class="eyebrow">Все времена</p><div data-lb="all">${lbList('all')}</div></div>${b2?`<div><p class="eyebrow">Это испытание</p><div data-lb="${b2}">${lbList(b2)}</div></div>`:''}</div></section>`;
+}
+/* ================= club colours: the career screens take the colours of the club the player (or coach) is at now ================= */
+const CLUB_THEME_KEY='legenda-polya-clubtheme';
+function clubThemeOn(){if(UI.clubTheme!=null)return UI.clubTheme;try{return LS.getItem(CLUB_THEME_KEY)!=='0'}catch(e){return true}}
+const hexRgb=h=>{const n=parseInt(h.slice(1),16);return [n>>16,n>>8&255,n&255]};
+const rgbSat=([r,g,b])=>{const mx=Math.max(r,g,b),mn=Math.min(r,g,b);return mx?(mx-mn)/mx:0};
+/* the more colourful of the two kit colours; white and black clubs keep the gold. Dark colours are lifted to read on the night background */
+function clubAccent(k){
+  const cs=[k.a,k.b,k.c].filter(Boolean).map(hexRgb).filter(c=>rgbSat(c)>.35&&Math.max(...c)>60);
+  if(!cs.length)return null;
+  let c=cs.sort((x,y)=>rgbSat(y)-rgbSat(x))[0],t=0;
+  const lift=c=>c.map(v=>Math.round(v+(255-v)*.18));
+  while(kitLum('#'+c.map(v=>v.toString(16).padStart(2,'0')).join(''))<.16&&t++<8)c=lift(c);
+  const sec=[k.a,k.b].map(hexRgb).find(x=>x.join()!==cs[0].join())||c;
+  return {c,sec};
+}
+function clubTheme(){
+  const r=document.documentElement;let club=null;
+  if(clubThemeOn()&&G&&!UI.moved&&!['home','multi','saves','goat'].includes(UI.tab)){
+    if(G.P&&!isCoach())club=C(G.P.clubId);else if(G.C&&G.C.job==='club')club=C(G.C.clubId);
+  }
+  const a=club&&clubAccent(kitOf(club.name)),key=a?club.name:'';
+  if(r.dataset.club===key)return;r.dataset.club=key;
+  if(!a){r.classList.remove('club-theme');['--club','--club-rgb','--club2-rgb'].forEach(v=>r.style.removeProperty(v));return}
+  const hx='#'+a.c.map(v=>v.toString(16).padStart(2,'0')).join('');
+  r.style.setProperty('--club',hx);r.style.setProperty('--club-rgb',a.c.join(','));r.style.setProperty('--club2-rgb',a.sec.join(','));r.classList.add('club-theme');
+}
+/* ================= GOAT: the best careers of every position, all players (server) or this browser ================= */
+const LB_BY_KEY='legenda-polya-by';
+function lbByGet(){try{return LS.getItem(LB_BY_KEY)||''}catch(e){return ''}}
+const GOAT={data:null,at:0,err:false};
+const GOAT_XI=[['GK',50,89],['LB',13,68],['CB',37,73,0],['CB',63,73,1],['RB',87,68],['CDM',50,55],['CM',25,44],['CAM',75,44],['LW',15,19],['ST',50,13],['RW',85,19]];
+const GOAT_LINES=[['Вратари',['GK']],['Защитники',['CB','LB','RB']],['Полузащитники',['CDM','CM','CAM']],['Нападающие',['ST','LW','RW']]];
+function goatLoad(){if(Date.now()-GOAT.at<15000)return;GOAT.at=Date.now();
+  api('/goat').then(d=>{GOAT.data=d.goat||{};GOAT.err=false}).catch(()=>{GOAT.err=true}).finally(()=>{if(UI.tab==='goat')render()})}
+/* careers of this browser by position: the table keeps the short label of either language */
+function goatMine(){
+  const key={};for(const k of Object.keys(POS)){key[POS[k].s]=k;key[k]=k}
+  const o={};for(const k of Object.keys(POS))o[k]=[];
+  for(const x of greatsGet())if(x.k!=='c'&&key[x.pos])o[key[x.pos]].push({id:x.id,name:x.name,tier:x.tier,score:x.score,tro:x.tro,bdo:x.bdo,years:x.years});
+  for(const k in o)o[k].sort((a,b)=>b.score-a.score);
+  return o;
+}
+function goatRow(e,i,pk){
+  return `<li class="${G&&e.id===G.slot?'me':''}"><span class="gr-n num">${i+1}</span><span class="gr-who">${e.nat?flagSvg(e.nat,'flag-i'):''}<b>${esc(e.name||e.nick)}</b><span class="small muted">${e.by?`от ${esc(e.by)} · `:''}${esc(e.tier||'')}${e.years?' · '+esc(e.years):''}${e.hard?' · хардкор':''}</span></span><span class="gr-st small muted">🏆${e.tro||0}${e.bdo?` · ${pk==='GK'?'Яшин':'ЗМ'}×${e.bdo}`:''}</span><em class="num">${e.score}</em></li>`;
+}
+function viewGoat(){
+  const mine=UI.goatSrc==='mine';
+  if(!mine&&!GOAT.data&&!GOAT.err)setTimeout(goatLoad,0);
+  const d=mine?goatMine():GOAT.data;
+  const seg=`<div class="seg" role="tablist"><button class="tab" data-a="goatSrc" data-v="world" aria-current="${!mine}">Все игроки</button><button class="tab" data-a="goatSrc" data-v="mine" aria-current="${mine}">Мои карьеры</button></div>`;
+  const head=`<section class="panel"><div class="sec-h"><h2>GOAT</h2><span class="small muted">${mine?'лучшие завершённые карьеры в этом браузере по позициям':'лучшие карьеры всех игроков за всё время по позициям: попадают отправленные в таблицу рекордов'}</span></div>${seg}`;
+  if(!d)return head+`<p class="small muted" style="margin-top:14px">${GOAT.err?'Таблица недоступна: нет связи с сервером.':'Загружаю…'}</p></section>`;
+  const xi=GOAT_XI.map(([k,x,y,n])=>{const e=(d[k]||[])[n||0];return `<div class="gx-p${e?'':' empty'}" style="left:${x}%;top:${y}%"><span class="gx-pos">${POS[k].s}</span>${e?`<b>${esc(e.name||e.nick)}</b><span class="num">${e.score}</span>`:'<b>—</b>'}</div>`}).join('');
+  const lines=GOAT_LINES.map(([t,ks])=>`<p class="eyebrow" style="margin:22px 0 10px">${t}</p><div class="goat-grid">${ks.map(k=>{const l=d[k]||[];return `<div class="goat-b"><div class="sec-h"><h3>${POS[k].n}</h3><span class="small muted">${POS[k].s}</span></div>${l.length?`<ol class="goat-l">${l.slice(0,10).map((e,i)=>goatRow(e,i,k)).join('')}</ol>`:`<p class="small muted">${mine?'Пока нет завершённых карьер на этой позиции.':'Пока пусто — станьте первым.'}</p>`}</div>`}).join('')}</div>`).join('');
+  return head+`<div class="goat-xi" aria-label="Символическая сборная: лучший на каждой позиции"><svg viewBox="0 0 60 90" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="58" height="88" rx="2"/><path d="M1 45H59M18 89V76H42V89M18 1V14H42V1M25 89V85H35V89M25 1V5H35V1"/><circle cx="30" cy="45" r="7"/></svg>${xi}</div><p class="small muted" style="text-align:center;margin:8px 0 0">Сборная всех времён 1-4-3-3: лучший на каждой позиции</p></section><section class="panel">${lines}</section>`;
 }
 function viewChallenges(){
   const d=dailySetup();
@@ -6321,6 +6422,8 @@ document.addEventListener('click',e=>{
   else if(a==='mpInvite'){mpInvite(b)}
   else if(a==='chalStart'){startChallenge(b.dataset.v,b.dataset.id)}
   else if(a==='lbSend'){lbSend()}
+  else if(a==='goatSrc'){UI.goatSrc=b.dataset.v;if(b.dataset.v==='world')GOAT.at=0,goatLoad();render()}
+  else if(a==='clubTheme'){UI.clubTheme=!clubThemeOn();try{LS.setItem(CLUB_THEME_KEY,UI.clubTheme?'1':'0')}catch(err){}render()}
   else if(a==='moveGo'){moveGo()}
   else if(a==='load'){if(G&&G.P&&!RUN){G.P.load=b.dataset.v;save();render()}}
   else if(a==='shareRes'){shareResult(b)}
@@ -6354,7 +6457,7 @@ document.addEventListener('input',e=>{
   else if(id==='m-code'){UI.mpCode=e.target.value.toUpperCase()}
   else if(id==='m-pub'){UI.mpPublic=e.target.checked}
   else if(id==='f-hard'){UI.form.hard=e.target.checked}
-  else if(id==='lb-nick'){UI.lbNick=e.target.value}
+  else if(id==='lb-by'){UI.lbBy=e.target.value;if(UI.lbErr&&e.target.value.trim()){UI.lbErr=null;const er=document.querySelector('.lb-err');if(er)er.remove()}}
 });
 document.addEventListener('change',e=>{
   const id=e.target.id,f=UI.form;
