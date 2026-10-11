@@ -918,7 +918,9 @@ if(!Object.fromEntries)Object.fromEntries=it=>{const o={};for(const [k,v] of it)
 /* storage that never throws: some in-app browsers, iframes and privacy modes block localStorage — the game then keeps
    its data in memory for this tab instead of dying on a black screen */
 const memStore=()=>{const m=new Map();return {getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>{m.set(k,String(v))},removeItem:k=>{m.delete(k)},clear:()=>m.clear(),key:i=>[...m.keys()][i]??null,get length(){return m.size}}};
-const LS=(()=>{try{const s=window.localStorage;s.setItem('legenda-polya-probe','1');s.removeItem('legenda-polya-probe');return s}catch(e){return memStore()}})();
+/* a full storage (old unpacked saves can fill the 5 MB quota) is still the real one: slotsPack() then frees room */
+const LS=(()=>{let s=null;try{s=window.localStorage;s.setItem('legenda-polya-probe','1');s.removeItem('legenda-polya-probe');return s}catch(e){
+  try{if(s&&(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'||e.code===22||e.code===1014)){s.getItem('legenda-polya-probe');return s}}catch(e2){}return memStore()}})();
 const SS=(()=>{try{const s=window.sessionStorage;s.getItem('x');return s}catch(e){return memStore()}})();
 /* ================= language =================
    The source is Russian. The build (i18n/i18n.js) rewrites interface strings as EN?`…`:`…`; game data (clubs, nations,
@@ -1328,6 +1330,12 @@ function dropEmpty(){
   if(SV.job&&SV.job.id===G.slot)SV.job=null;
   try{LS.removeItem(slotKey(G.slot));if(LS.getItem(ACTIVE_KEY)===G.slot)LS.removeItem(ACTIVE_KEY)}catch(e){}
   slotsSet(slotsGet().filter(x=>x.id!==G.slot));
+}
+/* saves written before packing (raw JSON with the season scratch S.mk, ~280 KB per season) are packed in place */
+function slotsPack(){
+  try{for(let i=LS.length-1;i>=0;i--){const k=LS.key(i);if(!k||!k.startsWith('legenda-polya-slot-'))continue;
+    const raw=LS.getItem(k);if(!raw||raw.charCodeAt(0)===1)continue;
+    try{LS.setItem(k,lzPack(saveJSON(JSON.parse(raw))))}catch(e){}}}catch(e){}
 }
 /* once: careers saved before this rule that never got past the start, and orphaned slot data */
 function slotsTidy(){
@@ -6395,7 +6403,7 @@ function newsView(){
 function start(data){
   moveListen();
   if(oldSite()&&!YG){if(!moveHasSaves()){location.replace(movedTarget());return}UI.moved=true}
-  if(data&&data.Gs)G=migrate(JSON.parse(data.Gs));else if(data&&data.G)G=migrate(data.G);else{slotsTidy();const s=load();if(s&&(s.P||s.C)&&s.clubs)G=migrate(s)}
+  if(data&&data.Gs)G=migrate(JSON.parse(data.Gs));else if(data&&data.G)G=migrate(data.G);else{slotsPack();slotsTidy();const s=load();if(s&&(s.P||s.C)&&s.clubs)G=migrate(s)}
   if(G)SAVED=saveJSON(G);
   if(G&&G.room&&G.room.token&&!MP.sess){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave()}
   if(data&&data.UI)Object.assign(UI,data.UI);
