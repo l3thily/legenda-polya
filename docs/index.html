@@ -84,20 +84,27 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .tab[aria-current="true"]{color:var(--gold2);background:rgba(242,193,78,.08)}
 .tab[aria-current="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;border-radius:2px;background:var(--gold);box-shadow:0 0 10px var(--gold)}
 .topact{display:flex;gap:6px;align-items:center}
-/* club colours (clubTheme): glow, accent line, active tab */
+/* club colours (clubTheme): the whole night background, top bar, accents and cards take the club colours */
+html.club-theme{--line:rgba(var(--club-rgb),.32);--line2:rgba(var(--club-rgb),.5);background:color-mix(in srgb,rgb(var(--club-rgb)) 14%,#05090C)}
 html.club-theme body::before{background:
-    radial-gradient(60% 42% at 6% -6%,rgba(var(--club-rgb),.22),transparent 70%),
-    radial-gradient(60% 42% at 94% -6%,rgba(var(--club2-rgb),.12),transparent 70%),
-    radial-gradient(90% 50% at 50% 115%,rgba(var(--club-rgb),.12),transparent 70%),
-    repeating-linear-gradient(90deg,rgba(var(--club-rgb),.03) 0 90px,transparent 90px 180px),
-    linear-gradient(180deg,var(--bg) 0%,#0a0f13 100%)}
-html.club-theme .top::after,html.club-theme .bnav::before{background:linear-gradient(90deg,transparent,rgba(var(--club-rgb),.85),transparent)}
-html.club-theme .tab[aria-current="true"]{color:#fff;background:rgba(var(--club-rgb),.16)}
-html.club-theme .tab[aria-current="true"]::after,html.club-theme .bn[aria-current="true"]::before{background:var(--club);box-shadow:0 0 10px var(--club)}
+    radial-gradient(70% 55% at 0% -8%,rgba(var(--club-rgb),.55),transparent 70%),
+    radial-gradient(60% 50% at 100% -8%,rgba(var(--club2-rgb),.3),transparent 70%),
+    radial-gradient(90% 55% at 50% 112%,rgba(var(--club-rgb),.35),transparent 70%),
+    repeating-linear-gradient(115deg,rgba(var(--club-rgb),.07) 0 60px,transparent 60px 120px),
+    linear-gradient(180deg,color-mix(in srgb,rgb(var(--club-rgb)) 22%,#05090C) 0%,#05090C 70%)}
+html.club-theme .top{background:linear-gradient(90deg,rgba(var(--club-rgb),.55),rgba(var(--club-rgb),.25) 45%,rgba(var(--club2-rgb),.22)),rgba(5,9,12,.82);border-bottom:0}
+html.club-theme .top::after,html.club-theme .bnav::before{height:3px;background:linear-gradient(90deg,var(--club),rgb(var(--club2-rgb)) 50%,var(--club))}
+html.club-theme .bnav{background:linear-gradient(0deg,rgba(var(--club-rgb),.3),rgba(var(--club-rgb),.12)),rgba(5,9,12,.92)}
+html.club-theme .tab{color:rgba(255,255,255,.78)}
+html.club-theme .tab[aria-current="true"]{color:#fff;background:rgba(var(--club-rgb),.42)}
+html.club-theme .tab[aria-current="true"]::after,html.club-theme .bn[aria-current="true"]::before{background:#fff;box-shadow:0 0 10px var(--club)}
 html.club-theme .bn[aria-current="true"]{color:#fff}
-html.club-theme .bn[aria-current="true"] .ic{filter:drop-shadow(0 0 7px rgba(var(--club-rgb),.7))}
-html.club-theme .brand i{background:radial-gradient(circle at 35% 30%,#fff 0 18%,rgba(var(--club-rgb),1) 45%,rgba(var(--club2-rgb),1) 100%);box-shadow:0 0 18px rgba(var(--club-rgb),.6)}
-html.club-theme .sec-h h2{text-decoration:underline;text-decoration-color:rgba(var(--club-rgb),.7);text-decoration-thickness:2px;text-underline-offset:6px}
+html.club-theme .bn[aria-current="true"] .ic{filter:drop-shadow(0 0 7px rgba(var(--club-rgb),.9))}
+html.club-theme .brand i{background:radial-gradient(circle at 35% 30%,#fff 0 18%,rgba(var(--club-rgb),1) 45%,rgba(var(--club2-rgb),1) 100%);box-shadow:0 0 18px rgba(var(--club-rgb),.8)}
+html.club-theme .panel,html.club-theme .season,html.club-theme .decide{border-color:rgba(var(--club-rgb),.4);box-shadow:inset 0 3px 0 rgba(var(--club-rgb),.85),0 20px 50px -30px rgba(var(--club-rgb),.6)}
+html.club-theme .sec-h h2{text-decoration:underline;text-decoration-color:var(--club);text-decoration-thickness:3px;text-underline-offset:7px}
+html.club-theme .eyebrow{color:color-mix(in srgb,var(--club) 55%,#fff)}
+html.club-theme .stat-grid dt{color:color-mix(in srgb,var(--club) 45%,#9fb1ba)}
 /* GOAT */
 .goat-xi{position:relative;width:100%;max-width:440px;aspect-ratio:60/80;margin:16px auto 0;border-radius:14px;background:repeating-linear-gradient(180deg,#123b26 0 10%,#0f3420 10% 20%);box-shadow:inset 0 0 0 1px rgba(47,210,124,.25),inset 0 0 60px rgba(0,0,0,.45);overflow:hidden}
 .goat-xi svg{position:absolute;inset:3%;width:94%;height:94%;fill:none;stroke:rgba(255,255,255,.28);stroke-width:.5;vector-effect:non-scaling-stroke}
@@ -982,6 +989,6 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 
 <div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
 
-<script src="app.3eab4f976b.js" defer></script>
+<script src="app.ad83df1324.js" defer></script>
 
 </html>
