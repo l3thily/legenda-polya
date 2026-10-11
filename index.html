@@ -1369,7 +1369,7 @@ function flushSave(){
 }
 const slotRaw=id=>{if(SV.job&&SV.job.id===id)return SV.job.json;try{return lzUnpack(LS.getItem(slotKey(id)))}catch(e){return null}};
 addEventListener('pagehide',flushSave);
-document.addEventListener('visibilitychange',()=>{const h=document.visibilityState==='hidden';if(h)flushSave();sndHold('tab',h)});
+document.addEventListener('visibilitychange',()=>{const h=document.visibilityState==='hidden';if(h)flushSave();else if(UI.tab==='goat'&&typeof goatLoad==='function')goatLoad(true);sndHold('tab',h)});
 /* leaving a career that has no progress yet: it is thrown away instead of taking a save slot */
 function dropEmpty(){
   if(!G||!G.slot||hasProgress())return;
@@ -6096,7 +6096,7 @@ function render(){
   const enter=UI.shown!==UI.tab;UI.shown=UI.tab;
   app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}${siteFoot()}</main>${consentBanner()}`+(G&&(G.P||G.C)?shareModal():'');
   try{afterRender()}catch(e){console.error(e)}
-  clubTheme();
+  clubTheme();goatWatch();
   if(UI.news&&!document.querySelector('.news')){app.insertAdjacentHTML('beforeend',newsView())}
   for(const s of ['.lgg .lgt.on','.clg .clt.on','.fp-grid .fp-i[aria-selected="true"]']){const el=document.querySelector(s);if(el){const p=el.parentElement;if(el.offsetTop<p.scrollTop||el.offsetTop+el.offsetHeight>p.scrollTop+p.clientHeight)p.scrollTop=el.offsetTop-8}}
 }
@@ -6307,7 +6307,7 @@ function lbSend(){
   const boards=['all','top-'+mskDay(),'pos-'+mp].concat(G.chal?[G.chal.kind==='day'?'day-'+G.chal.day:'sc-'+G.chal.id]:[]);
   UI.lbBusy=true;render();
   Promise.all(boards.map(b=>api('/scores',{...body,board:b}).then(d=>{LB.cache[b]=d.scores;LB.at[b]=Date.now();return [b,d.rank]})))
-    .then(rs=>{G.lbSent=Object.fromEntries(rs);GOAT.at=0;save()}).catch(e=>{UI.lbErr=e.message}).finally(()=>{UI.lbBusy=false;render()});
+    .then(rs=>{G.lbSent=Object.fromEntries(rs);save();goatLoad(true)}).catch(e=>{UI.lbErr=e.message}).finally(()=>{UI.lbBusy=false;render()});
 }
 /* a short spoiler-free result to paste into chats, Wordle-style */
 function shareText(){
@@ -6361,8 +6361,15 @@ function lbByGet(){try{return LS.getItem(LB_BY_KEY)||''}catch(e){return ''}}
 const GOAT={data:null,at:0,err:false};
 const GOAT_XI=[['GK',50,89],['LB',13,68],['CB',37,73,0],['CB',63,73,1],['RB',87,68],['CDM',50,55],['CM',25,44],['CAM',75,44],['LW',15,19],['ST',50,13],['RW',85,19]];
 const GOAT_LINES=[['Вратари',['GK']],['Защитники',['CB','LB','RB']],['Полузащитники',['CDM','CM','CAM']],['Нападающие',['ST','LW','RW']]];
-function goatLoad(){if(Date.now()-GOAT.at<15000)return;GOAT.at=Date.now();
-  api('/goat').then(d=>{GOAT.data=d.goat||{};GOAT.err=false}).catch(()=>{GOAT.err=true}).finally(()=>{if(UI.tab==='goat')render()})}
+/* always fresh: loaded on every visit, refreshed every 20 s while the tab is open, redrawn only when something changed */
+function goatLoad(force){if(!force&&Date.now()-GOAT.at<5000)return;GOAT.at=Date.now();
+  api('/goat').then(d=>{const nd=d.goat||{},ch=JSON.stringify(nd)!==JSON.stringify(GOAT.data)||GOAT.err;GOAT.data=nd;GOAT.err=false;if(ch&&UI.tab==='goat'&&UI.goatSrc!=='mine')render()})
+    .catch(()=>{if(!GOAT.err){GOAT.err=!GOAT.data;if(UI.tab==='goat')render()}})}
+function goatWatch(){
+  if(UI.tab!=='goat'){if(GOAT.timer){clearInterval(GOAT.timer);GOAT.timer=null}GOAT.shown=false;return}
+  if(!GOAT.shown){GOAT.shown=true;goatLoad(true)}
+  if(!GOAT.timer)GOAT.timer=setInterval(()=>{if(UI.tab!=='goat'){clearInterval(GOAT.timer);GOAT.timer=null;GOAT.shown=false;return}if(document.visibilityState!=='hidden'&&UI.goatSrc!=='mine')goatLoad(true)},20000);
+}
 /* careers of this browser by position: the table keeps the short label of either language */
 function goatMine(){
   const key={};for(const k of Object.keys(POS)){key[POS[k].s]=k;key[k]=k}
@@ -6376,11 +6383,10 @@ function goatRow(e,i,pk){
 }
 function viewGoat(){
   const mine=UI.goatSrc==='mine';
-  if(!mine&&!GOAT.data&&!GOAT.err)setTimeout(goatLoad,0);
   const d=mine?goatMine():GOAT.data;
   const seg=`<div class="seg" role="tablist"><button class="tab" data-a="goatSrc" data-v="world" aria-current="${!mine}">Все игроки</button><button class="tab" data-a="goatSrc" data-v="mine" aria-current="${mine}">Мои карьеры</button></div>`;
   const head=`<section class="panel"><div class="sec-h"><h2>GOAT</h2><span class="small muted">${mine?'лучшие завершённые карьеры в этом браузере по позициям':'лучшие карьеры всех игроков за всё время по позициям: попадают отправленные в таблицу рекордов'}</span></div>${seg}`;
-  if(!d)return head+`<p class="small muted" style="margin-top:14px">${GOAT.err?'Таблица недоступна: нет связи с сервером.':'Загружаю…'}</p></section>`;
+  if(!d)return head+`<p class="small muted" style="margin-top:14px">${GOAT.err&&!GOAT.data?'Таблица недоступна: нет связи с сервером.':'Загружаю…'}</p></section>`;
   const xi=GOAT_XI.map(([k,x,y,n])=>{const e=(d[k]||[])[n||0];return `<div class="gx-p${e?'':' empty'}" style="left:${x}%;top:${y}%"><span class="gx-pos">${POS[k].s}</span>${e?`<b>${esc(e.name||e.nick)}</b><span class="num">${e.score}</span>`:'<b>—</b>'}</div>`}).join('');
   const lines=GOAT_LINES.map(([t,ks])=>`<p class="eyebrow" style="margin:22px 0 10px">${t}</p><div class="goat-grid">${ks.map(k=>{const l=d[k]||[];return `<div class="goat-b"><div class="sec-h"><h3>${POS[k].n}</h3><span class="small muted">${POS[k].s}</span></div>${l.length?`<ol class="goat-l">${l.slice(0,10).map((e,i)=>goatRow(e,i,k)).join('')}</ol>`:`<p class="small muted">${mine?'Пока нет завершённых карьер на этой позиции.':'Пока пусто — станьте первым.'}</p>`}</div>`}).join('')}</div>`).join('');
   return head+`<div class="goat-xi" aria-label="Символическая сборная: лучший на каждой позиции"><svg viewBox="0 0 60 90" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="58" height="88" rx="2"/><path d="M1 45H59M18 89V76H42V89M18 1V14H42V1M25 89V85H35V89M25 1V5H35V1"/><circle cx="30" cy="45" r="7"/></svg>${xi}</div><p class="small muted" style="text-align:center;margin:8px 0 0">Сборная всех времён 1-4-3-3: лучший на каждой позиции</p></section><section class="panel">${lines}</section>`;
@@ -6551,7 +6557,7 @@ document.addEventListener('click',e=>{
   else if(a==='mpInvite'){mpInvite(b)}
   else if(a==='chalStart'){startChallenge(b.dataset.v,b.dataset.id)}
   else if(a==='lbSend'){lbSend()}
-  else if(a==='goatSrc'){UI.goatSrc=b.dataset.v;if(b.dataset.v==='world')GOAT.at=0,goatLoad();render()}
+  else if(a==='goatSrc'){UI.goatSrc=b.dataset.v;if(b.dataset.v==='world')goatLoad(true);render()}
   else if(a==='clubTheme'){UI.clubTheme=!clubThemeOn();try{LS.setItem(CLUB_THEME_KEY,UI.clubTheme?'1':'0')}catch(err){}render()}
   else if(a==='moveGo'){moveGo()}
   else if(a==='load'){if(G&&G.P&&!RUN){G.P.load=b.dataset.v;save();render()}}
