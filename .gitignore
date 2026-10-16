@@ -6,3 +6,5 @@ i18n/todo.json
 dist-yg/
 platforms/.cache/
 platforms/*.zip
+
+__pycache__/

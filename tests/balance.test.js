@@ -1,0 +1,33 @@
+// usage: node bdo.js <index.html> N [pos] [strategy: top|stay]
+const fs=require('fs'),vm=require('vm');
+const file=require('path').join(__dirname,'../index.html');
+let src=fs.readFileSync(file,'utf8');const a=src.indexOf('<script>',src.indexOf('<script>')>-1?0:0);
+const s0=src.lastIndexOf('<script>',src.indexOf('/* ================= boot'));let js=src.slice(s0+8,src.lastIndexOf('</script>'));
+js=js.replace(/try\{window\.claude&&window\.claude\.hot&&window\.claude\.hot\.snapshot[\s\S]*$/,'');
+const noop=new Proxy(function(){},{get:(t,k)=>k===Symbol.toPrimitive?()=>'':k==='length'?0:noop,apply:()=>noop,construct:()=>noop});
+const store={};const LS={getItem:k=>store[k]??null,setItem:(k,v)=>store[k]=String(v),removeItem:k=>delete store[k],key:i=>Object.keys(store)[i],get length(){return Object.keys(store).length}};
+const seededMath=Object.create(Math);let seed=1;seededMath.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+const ctx={process,console,Math:seededMath,JSON,Date,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,clearInterval(){},localStorage:LS,sessionStorage:LS,document:noop,navigator:{userAgent:'node',language:'ru'},location:{search:'',pathname:'/',hostname:'localhost',href:'http://localhost/'},history:noop,fetch:()=>new Promise(()=>{}),URLSearchParams,TextEncoder,TextDecoder,Uint8Array,Uint16Array,Uint32Array,Float64Array,Array,Object,Set,Map,Promise,MutationObserver:function(){return {observe(){}}},requestAnimationFrame:()=>0,addEventListener(){},matchMedia:()=>({matches:false,addEventListener(){}}),btoa:s=>Buffer.from(s,'binary').toString('base64'),atob:s=>Buffer.from(s,'base64').toString('binary'),performance:{now:()=>Date.now()},Intl,AudioContext:undefined,XMLHttpRequest:function(){return noop}};
+ctx.window=ctx;ctx.scrollTo=()=>{};ctx.self=ctx;ctx.globalThis=ctx;vm.createContext(ctx);
+vm.runInContext(js+`;render=function(){};save=function(){};flushSave=function(){};statPing=function(){};mpProgress=function(){};adsFull=function(){};confetti=function(){};sfx=function(){};greatRecord=function(){};`,ctx,{filename:'game.js'});
+const run=code=>vm.runInContext(code,ctx);
+
+const assert=require('node:assert/strict');
+run(`G=buildWorld('off');G.P={ovr:90,clubId:0,name:'Player'};G.chron=[{bdo:'Player'},{bdo:'Player'},{bdo:'Rival'},{bdo:'Player'}]`);
+assert.equal(run(`juryFat('Player')`),-13);
+assert.ok(run(`juryFat('New')===0`));
+assert.equal(run(`G.balanceVersion`),20261016);
+assert.equal(run(`migrate({year:2026}).balanceVersion`),undefined);
+run(`globalThis.candidate={pos:'ST',ovr:90,apps:40,avg:8,g:40,a:10,cs:0,team:20,nat:0,big:4,fin:2,rep:90}`);
+assert.ok(run(`juryScore({...candidate,mates:3},0).sc < juryScore({...candidate,mates:0},0).sc`));
+assert.ok(run(`juryScore({...candidate,fat:-13},0).sc < juryScore(candidate,0).sc`));
+assert.equal(run(`juryScore({...candidate,rep:1000},0).p.media`),6);
+assert.ok(run(`juryScore({...candidate,big:100},0).p.big<=10`));
+run(`G.leagues[0].ids.forEach((id,i)=>G.clubs[id].str=i?70:90);globalThis.bonus={c:{}};lgBonus(G.leagues[0],{titles:[{id:0,main:true}],t:[{id:0}]},bonus,{champs:{}})`);
+assert.equal(run(`bonus.c[0]`),5);
+run(`G.leagues[0].ids.forEach((id,i)=>G.clubs[id].str=i?88:90);bonus={c:{}};lgBonus(G.leagues[0],{titles:[{id:0,main:true}],t:[{id:0}]},bonus,{champs:{}})`);
+assert.equal(run(`bonus.c[0]`),10);
+run(`LS.setItem(GREAT_KEY,JSON.stringify([{id:'old',k:'p',pos:'ST',score:999},{id:'new',k:'p',pos:'ST',score:20,balanceVersion:20261016}]))`);
+assert.equal(run(`goatMine().ST.length`),1);
+assert.equal(run(`goatMine().ST[0].id`),'new');
+console.log('Balance checks passed');

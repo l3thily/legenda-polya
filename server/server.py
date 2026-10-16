@@ -39,6 +39,7 @@ ONLINE_TTL = 150
 STATS_KEY = os.environ.get("STATS_KEY", "")
 TG_TOKEN, TG_CHAT = os.environ.get("TG_TOKEN", ""), os.environ.get("TG_CHAT", "")
 SCORES_FILE = os.path.join(os.path.dirname(DATA), "scores.json")
+BALANCE_VERSION = 20261016
 scores: dict = {}  # board -> [entries], best first: global hall of fame, daily challenge, scenarios
 changed = threading.Condition(lock)  # long-poll: GET ?v=<version>&wait=<s> returns as soon as the room changes
 rooms: dict = {}
@@ -60,6 +61,17 @@ def load_scores():
             scores = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
         scores = {}
+
+    # One-time season reset; archive the complete old file before changing the competitive boards.
+    competitive = ["all"] + ["pos-" + p for p in POS_KEYS]
+    if any(e.get("balanceVersion") != BALANCE_VERSION for b in competitive for e in scores.get(b, [])):
+        archive = SCORES_FILE + ".before-balance-20261016.json"
+        if not os.path.exists(archive):
+            with open(archive, "x", encoding="utf-8") as f:
+                json.dump(scores, f, ensure_ascii=False)
+        for b in competitive:
+            scores[b] = []
+        persist_scores()
 
 
 def persist_scores():
@@ -433,8 +445,10 @@ class Handler(BaseHTTPRequestHandler):
                 board, sid = clip(data.get("board"), 24), clip(data.get("id"), 24)
                 if not board_ok(board) or not sid:
                     return self.reply(400, {"error": "неверная таблица"})
+                if data.get("balanceVersion") != BALANCE_VERSION:
+                    return self.reply(409, {"error": "Новый рейтинг: начните карьеру после обновления баланса 16 октября."})
                 by = clip(data.get("by"), 24)
-                e = {"id": sid, "nick": by or clip(data.get("nick"), 24) or "Игрок", "name": clip(data.get("name"), 40), "by": by,
+                e = {"balanceVersion": BALANCE_VERSION, "id": sid, "nick": by or clip(data.get("nick"), 24) or "Игрок", "name": clip(data.get("name"), 40), "by": by,
                      "pk": POS_SHORT.get(clip(data.get("pk"), 4), ""), "nat": clip(data.get("nat"), 40), "score": round(num(data.get("score"), 0, 3000), 1),
                      "tier": clip(data.get("tier"), 40), "pos": clip(data.get("pos"), 6), "tro": int(num(data.get("tro"), 0, 500)),
                      "bdo": int(num(data.get("bdo"), 0, 50)), "goal": int(num(data.get("goal"), 0, 3)), "hard": bool(data.get("hard")), "t": now}
