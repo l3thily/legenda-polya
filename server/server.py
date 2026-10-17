@@ -31,7 +31,7 @@ CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
 GAMES = {"fb", "hk"}  # rooms and boards of different games never mix; old clients mean football
 HK_BV = 20261018
-HK_POS = ("C", "W", "D", "G")
+HK_POS = ("C", "W", "D", "G", "K")
 
 lock = threading.Lock()
 STATS_FILE = os.path.join(os.path.dirname(DATA), "stats.json")
