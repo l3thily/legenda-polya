@@ -1,0 +1,221 @@
+0	Bold promise
+1	Pre-season press conference. A journalist asks straight out: "What should we expect from you this season?" Every word will make a headline — and in a year they'll hold you to it.
+2	"{0} clean sheets"
+3	"{0} goals and assists"
+4	Personal target
+5	Motivation: you play a bit better. In a year it gets reviewed: deliver and it's glory, fail and it's mockery
+6	You promised {0} clean sheets.
+7	You promised {0} goals and assists.
+8	"We'll win a trophy"
+9	Team target
+10	In a year they'll check whether a trophy came
+11	You promised the fans a trophy.
+12	"I'll do my talking on the pitch"
+13	No promises
+14	You steered clear of bold promises.
+15	Who takes the penalties
+16	The regular penalty taker has missed in two straight games. The coach left it to the dressing room, and you want to take them yourself.
+17	Take the ball
+18	I'm taking it, full stop
+19	More goals, but your teammate holds a grudge
+20	You are now the penalty taker.
+21	Suggest a shoot-out in training
+22	Let accuracy decide
+23	50%: the ball is yours
+24	You won the training shoot-out — the penalties are yours.
+25	Your teammate won the shoot-out and stays on penalties.
+26	Step aside
+27	No time for ego
+28	You left the penalties to your teammate.
+29	Video game cover
+30	The makers of the biggest football game want you on the cover of the new edition. Fans are already recalling the "cover curse".
+31	Followers +15%, reputation grows. They say cover stars flop the next season
+32	You're on the video game cover — and the curse spared you.
+33	The cover came out and your form went: the "curse" struck.
+34	Superstition comes first
+35	You turned the cover down — just in case.
+36	A new arrival
+37	Your child is born! The birth falls on the week of a big away game.
+38	Stay with the family
+39	Miss a couple of games
+40	Fans are touched, the coach understands
+41	You missed the away trip for the birth of your child.
+42	Play, then rush home
+43	A goal for the baby
+44	The coach appreciates it, and your "rocking the cradle" celebration goes viral
+45	You played and dedicated your goal to your newborn.
+46	Childhood idol joins the team
+47	{0} have signed the veteran whose poster hung on your wall as a kid. He plays in your position.
+48	Learn from him
+49	Every session is a masterclass
+50	Much faster progress, less playing time
+51	Your childhood idol became your mentor.
+52	Take his place
+53	Out with the old
+54	55%: the spot is yours. Otherwise you're on the bench
+55	You beat your own idol to a starting spot.
+56	The veteran showed who's boss.
+57	Tax audit
+58	The tax office has questions about how your image-rights payments were structured. Lawyers advise settling quietly.
+59	Settle
+60	Pay {0}
+61	Quick and quiet
+62	The tax dispute was settled.
+63	Go to court
+64	The scheme is legal
+65	50%: you win. Otherwise the fine doubles and it hits the headlines
+66	The court ruled the scheme legal.
+67	You lost in court: a double fine and ugly headlines.
+68	Pay with interest, publicly
+69	Costs more, but your reputation is safe
+70	You publicly settled your tax affairs.
+71	A secret call
+72	A middleman for {0} calls you directly, going around your club: "We'll come for you in the summer. We just need your word."
+73	Meet in secret
+74	Dinner at a hotel
+75	More offers in the summer. 40%: photos of the meeting leak to the press
+76	You secretly met with people from {0}.
+77	Photos of the secret meeting made the papers. The stands are furious.
+78	Tell your club
+79	Fans and coach are on your side
+80	You told your club about the rival's call.
+81	Refer them to your agent
+82	No fuss
+83	You passed the call on to your agent.
+84	Academy protégé
+85	The academy's best youngster comes up after training: "Can I stay late with you?" The coach nods approvingly.
+86	Take him under your wing
+87	Share your experience
+88	The dressing room and coach value it, and your protégé becomes part of your legacy
+89	You now have a protégé from the academy.
+90	Not now
+91	My own career comes first
+92	A little more time for yourself
+93	You turned the youngster down.
+94	School exams
+95	School wants you to sit your final exams, but you have training camp and the first team. Mum insists on the diploma.
+96	Sit them properly
+97	Textbooks on the team bus
+98	Slightly slower progress, Mum is happy
+99	You passed your final exams.
+100	Quit for football
+101	All in on one card
+102	Faster progress
+103	You quit school for football.
+104	Online study
+105	Do both
+106	50%: you manage both
+107	You combined school and football.
+108	Doing both didn't work: you were worn out at both.
+109	Video game rating
+110	The new edition of the football game is out: your rating is {0} lower than you think is fair.
+111	Kick off on social media
+112	"Do they even watch football?"
+113	Followers grow, anger helps on the pitch, the coach doesn't like it
+114	Your post about your game rating got millions of views.
+115	A clip with a gamepad
+116	Fans will love it
+117	You turned your rating into a funny clip.
+118	Ignore it
+119	It's just a game
+120	You didn't comment on the rating.
+121	Asia
+122	Australia
+123	Japan
+124	Overseas tour
+125	The club is going on a pre-season tour to {0}: friendlies, autograph sessions, flights across time zones.
+126	Go
+127	Star of the tour
+128	Followers and a sponsor bonus. 20%: a minor overload injury
+129	The tour to {0} was a hit.
+130	Flights and heat: you pulled a muscle on tour.
+131	Stay at the training ground
+132	Individual preparation
+133	Faster progress, fans are disappointed
+134	You skipped the tour to prepare.
+135	Nickname
+136	Commentators and fans argue about what to call you. There are two options — and both are already memes.
+137	The nickname will stay with you for your whole career
+138	Now they call you "{0}".
+139	No nicknames
+140	Just my surname
+141	You asked to be called by your surname.
+142	Supercar crash
+143	You missed a bend at night. You got away with bruises, but the video is already online.
+144	Admit fault
+145	Apologise publicly
+146	A couple of games out, slightly lower reputation
+147	You admitted fault for the crash.
+148	Hire lawyers
+149	60%: the story dies down
+150	The lawyers hushed it up.
+151	Trying to hush up the crash backfired.
+152	A hard tackle
+153	After your tackle in training a teammate is out for a month. The dressing room has gone quiet.
+154	Apologise
+155	Visit him in hospital
+156	You apologised to your teammate.
+157	"That's football"
+158	We train how we play
+159	The coach likes the edge, your teammates don't
+160	You didn't apologise for the tackle.
+161	First coach
+162	A message from your youth coach, the one who put you up front when you were eight. He is seriously ill, and the school has no money.
+163	Pay for treatment
+164	Quiet help, loud gratitude
+165	You paid for your first coach's treatment.
+166	Invite him to a match
+167	Guest of honour in the box
+168	The touching footage will go viral
+169	Your first coach watched the match from the box.
+170	The last dance
+171	Your body is telling you: there's one season left. You can announce it now — and turn the season into a farewell tour.
+172	Announce your final season
+173	Farewell tour
+174	Every stadium applauds, you play on emotion. Your career ends after the season
+175	You announced this season will be your last.
+176	While my legs still run
+177	You didn't announce your retirement.
+178	Killer
+179	Lightning
+180	Tank
+181	Cobra
+182	Professor
+183	Wizard
+184	Engine
+185	Compass
+186	Rock
+187	Sheriff
+188	Bulldog
+189	Spider
+190	Cat
+191	Giant
+192	Octopus
+193	Safe
+194	{0} goals and assists
+195	no trophies
+196	A promise kept
+197	A year ago you promised {0} — and you delivered ({1}). The stands chant your name, and the press quotes that very interview.
+198	Thank the fans
+199	This is for you
+200	Promise kept: {0}.
+201	Promise broken
+202	A year ago you promised {0}, but it came out as {1}. The journalists remembered every word.
+203	Own it
+204	"I let you down"
+205	A small hit to your reputation
+206	You admitted you didn't keep your promise.
+207	Blame your teammates
+208	"Nobody helped me"
+209	The fans will forgive, the dressing room won't
+210	You blamed your teammates for the broken promise.
+211	Promise again
+212	This time for sure
+213	A new target for the season: the same promise
+214	You repeated your promise.
+215	division
+216	divisions
+217	divisions
+218	Division {0}
+219	Country · {0} to choose from, {1} leagues
+220	Division ·
