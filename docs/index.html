@@ -248,6 +248,16 @@ main>*,.grid2>*,.hero>*,.setup>*,.hof>*,.cer>*,.nem>*,.decide>*,.panel,.season,.
 .lgt-m{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--dim);grid-row:5}
 .lgt em{grid-row:4;align-self:start;justify-self:start;font-style:normal;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#C9B3FF;background:rgba(181,140,255,.12);border-radius:6px;padding:2px 6px;margin-top:2px}
 .stars{font-style:normal;color:var(--gold);letter-spacing:1px;font-size:12px}.stars span{color:var(--line2)}
+.nvid{position:fixed;inset:0;z-index:200;background:#000;display:flex;align-items:center;justify-content:center}
+.nvid video{width:100%;height:100%;object-fit:contain;background:#000}
+.nvid-b{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));display:flex;gap:8px}
+.tr-on{color:var(--gold);font-size:9px;vertical-align:middle}
+.winter .wmid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:14px;margin:6px 0 14px}
+.wtab{display:grid;gap:4px}.wtab>div{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:6px 10px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:13px}
+.wtab>div.me{border-color:var(--gold);background:rgba(242,193,78,.1)}.wtab b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wst{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0}.wst>div{padding:8px 10px;border-radius:10px;background:var(--card);border:1px solid var(--line)}.wst dt{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.wst dd{margin:2px 0 0;font-size:18px;font-weight:800}.wst .wide{grid-column:1/-1}
+.fm{display:inline-block;font-style:normal;font-size:12px;font-weight:700;padding:2px 6px;border-radius:6px;margin-right:4px;background:rgba(127,160,180,.18)}.fm.hi{background:rgba(70,200,120,.25)}.fm.lo{background:rgba(230,80,80,.25)}
+@media (max-width:720px){.winter .wmid{grid-template-columns:1fr}.wst{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .cntg{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:8px;max-height:330px;overflow-y:auto;padding:2px;scrollbar-width:thin}
 .cnt{display:grid;gap:5px;justify-items:start;text-align:left;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(19,35,45,.9),rgba(11,21,28,.9));cursor:pointer;transition:transform .15s var(--ease),border-color .15s,box-shadow .15s}
 .cnt:hover{transform:translateY(-2px);border-color:var(--line2)}
@@ -998,6 +1008,6 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 
 <div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
 
-<script src="app.0288f44340.js" defer></script>
+<script src="app.682d2c1adb.js" defer></script>
 
 </html>
