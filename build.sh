@@ -15,14 +15,14 @@ cat <<'HEAD'
 <meta name="theme-color" content="#070D12">
 <meta name="rating" content="12+">
 <meta name="google-adsense-account" content="ca-pub-3786708907323389">
-<link rel="canonical" href="https://legendapolya.com/">
+<link rel="canonical" href="https://legendapolya.com/fb/">
 <meta name="description" content="Симулятор футбольной карьеры: 56 лиг, еврокубки, сборные, Золотой мяч.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Легенда поля">
 <meta property="og:title" content="Легенда поля">
-<meta property="og:url" content="https://legendapolya.com/">
+<meta property="og:url" content="https://legendapolya.com/fb/">
 <meta property="og:description" content="Создай игрока и проведи его от академии до Золотого мяча.">
 <script>
 /* boot guard: if the game hasn't started in 9 s, say so on the splash and send the errors (no personal data) for diagnosis */

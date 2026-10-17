@@ -773,6 +773,8 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 .tab{white-space:nowrap}
 .topact{margin-left:auto}
 .btn.newc{gap:6px;padding-inline:13px 15px}
+.btn.hub{gap:6px;padding-inline:11px 13px;text-decoration:none}.btn.hub .ic{width:17px;height:17px}
+@media (max-width:1100px){.btn.hub span{display:none}.btn.hub{padding-inline:10px}}
 .btn.newc .ic{width:18px;height:18px;stroke-width:2.2}
 .bnav{display:none}
 .tab .ts{display:none}
@@ -6189,6 +6191,7 @@ const TAB_IC={
   goat:'<path d="M3.5 8.5 7.5 12 12 5l4.5 7 4-3.5-1.8 10H5.3z"/><path d="M5.5 20.5h13"/>',
   saves:'<path d="M5 3.5h11.5L20 7v13.5H5z"/><path d="M8.5 3.5v4.5h6.5V3.5M8.5 20.5v-6.5h7v6.5"/>',
   new:'<path d="M12 5v14M5 12h14"/>',
+  hub:'<rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/>',
   ball:'<circle cx="12" cy="12" r="8.5"/><path d="m12 8.2 3.4 2.5-1.3 4h-4.2l-1.3-4zM12 3.5v4.7M15.4 10.7l4.4-1.5M14.1 14.7l2.8 3.9M9.9 14.7l-2.8 3.9M8.6 10.7 4.2 9.2"/>'
 };
 const ico=(k,c)=>`<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${TAB_IC[k]||''}</svg>`;
@@ -6201,7 +6204,8 @@ function topbar(){
   const nb=has?`<button class="btn ghost newc" data-a="newYes" title="Новая карьера" aria-label="Новая карьера">${ico('new')}<span>Новая<span class="nb-long"> карьера</span></span></button>`:'';
   const lng=`<button class="btn ghost lng" data-a="lang" lang="${EN?'ru':'en'}" title="${LANG_OTHER}" aria-label="${LANG_OTHER}">${EN?'RU':'EN'}</button>`;
   const snd=`<button class="btn ghost snd" data-a="snd" aria-pressed="${SND.on}" aria-label="${SND.on?'Выключить звук':'Включить звук'}" title="${SND.on?'Звук включён':'Звук выключен'}">${SND.on?SVG_SND_ON:SVG_SND_OFF}</button>`;
-  return `<header class="top"><div class="wrap topin"><button class="brand" data-a="home" aria-label="Главное меню" aria-current="${UI.tab==='home'}"><i></i>Легенда поля</button><nav class="tabs" aria-label="Разделы">${tabs}</nav><div class="topact">${lng}${snd}${nb}</div></div></header>
+  const hub=!YG&&hubSite()?`<a class="btn ghost hub" href="/" title="Все игры серии «Легенда»" aria-label="Все игры">${ico('hub')}<span>Все игры</span></a>`:'';
+  return `<header class="top"><div class="wrap topin"><button class="brand" data-a="home" aria-label="Главное меню" aria-current="${UI.tab==='home'}"><i></i>Легенда поля</button><nav class="tabs" aria-label="Разделы">${tabs}</nav><div class="topact">${hub}${lng}${snd}${nb}</div></div></header>
   <nav class="bnav" aria-label="Разделы" style="--n:${list.length}">${bn}</nav>`;
 }
 /* ---- new-career screen: pitch for the position, league map by continent, club cards, portrait picker ---- */
@@ -6963,19 +6967,21 @@ const onlineBadge=()=>STAT.online?`<span class="online" title="Сейчас иг
 const MOVED_TO='https://legendapolya.com';
 const OLD_SITES=['https://l3thily.github.io','https://legenda-polya.88-218-121-40.sslip.io'];
 const SAVE_KEYS=k=>k.startsWith('legenda-polya')&&!/-(tab|adtest|banner|api|adx|seen|consent|tidy1)$/.test(k);
+function hubSite(){try{return location.origin===MOVED_TO||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)}catch(e){return false}}
 function oldSite(){try{return OLD_SITES.includes(location.origin)&&!LS.getItem('legenda-polya-stay')}catch(e){return false}}
-function movedTarget(){try{return MOVED_TO+'/'+location.search+location.hash}catch(e){return MOVED_TO}}
+const GAME_PATH='/fb/'; // the football section of the games site; the root is the menu of all games
+function movedTarget(){try{return MOVED_TO+GAME_PATH+location.search+location.hash}catch(e){return MOVED_TO+GAME_PATH}}
 function moveDump(){const o={};try{for(let i=0;i<LS.length;i++){const k=LS.key(i);if(SAVE_KEYS(k))o[k]=LS.getItem(k)}}catch(e){}return o}
 function moveHasSaves(){try{return slotsGet().length>0||!!LS.getItem(SAVE)||greatsGet().length>0}catch(e){return false}}
 function moveView(){
   return `<section class="moved"><p class="eyebrow">Легенда поля</p><h1 class="disp">Игра переехала на <em>legendapolya.com</em></h1>
     <p class="lead">Новый адрес — быстрее и надёжнее. Ваши карьеры, достижения и рекорды хранятся в этом браузере: нажмите кнопку, и мы перенесём их на новый сайт.</p>
-    <div class="go"><button class="btn primary" data-a="moveGo">Перенести сохранения и открыть</button><a class="btn ghost" href="${MOVED_TO}/">Открыть без сохранений</a></div>
+    <div class="go"><button class="btn primary" data-a="moveGo">Перенести сохранения и открыть</button><a class="btn ghost" href="${MOVED_TO+GAME_PATH}">Открыть без сохранений</a></div>
     ${UI.moveMsg?`<p class="note">${esc(UI.moveMsg)}</p>`:''}</section>`;
 }
 function moveGo(){
-  const w=window.open(MOVED_TO+'/?import=1','_blank');
-  if(!w){location.href=MOVED_TO+'/';return}
+  const w=window.open(MOVED_TO+GAME_PATH+'?import=1','_blank');
+  if(!w){location.href=MOVED_TO+GAME_PATH;return}
   const data=moveDump();UI.moveMsg='Открываем новый сайт…';render();
   const onMsg=e=>{if(e.origin!==MOVED_TO||!e.data)return;
     if(e.data.type==='lp-ready')w.postMessage({type:'lp-import',data},MOVED_TO);
