@@ -194,7 +194,7 @@ def board_ok(b):
         return True
     if b.startswith("hk-sc-") and 6 < len(b) <= 24 and b[6:].isalnum():
         return True
-    if b.startswith("hk-day-") and len(b) == 15 and b[7:].isdigit():
+    if (b.startswith("hk-day-") or b.startswith("hk-top-")) and len(b) == 15 and b[7:].isdigit():
         today = time.strftime("%Y%m%d", time.gmtime())
         yday = time.strftime("%Y%m%d", time.gmtime(time.time() - 86400))
         tmrw = time.strftime("%Y%m%d", time.gmtime(time.time() + 86400))
@@ -473,7 +473,7 @@ class Handler(BaseHTTPRequestHandler):
                 lst = [x for x in scores.get(board, []) if x["id"] != sid] + [e]
                 lst.sort(key=lambda x: -x["score"])
                 scores[board] = lst[:100]
-                for prefix in ("day-", "top-", "hk-day-"):
+                for prefix in ("day-", "top-", "hk-day-", "hk-top-"):
                     days = sorted(k for k in scores if k.startswith(prefix))
                     for old in days[:-14]:
                         del scores[old]
