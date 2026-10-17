@@ -821,6 +821,7 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 }
 @keyframes fanIn{from{opacity:0;translate:-60% -42%;rotate:0deg;scale:.8}}
 .home-btns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
+.home-btns.n4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .home-card{position:relative;text-align:left;display:grid;gap:3px;align-content:start;padding:18px 18px 20px;border-radius:18px;border:1px solid var(--line2);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent),var(--glass);cursor:pointer;overflow:hidden;transition:transform .2s var(--ease),border-color .2s,box-shadow .2s;min-width:0}
 .home-card b{font-family:var(--disp);font-weight:900;text-transform:uppercase;font-size:30px;line-height:1;overflow-wrap:anywhere}
 .home-card .hc-s{color:var(--muted);font-size:13.5px}
@@ -908,7 +909,7 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
   .fan{height:236px;margin-top:-6px;margin-bottom:4px}
   .fan .fcard{zoom:.62}
   .home-hero h1{font-size:clamp(60px,19vw,96px)}
-  .home-btns{grid-template-columns:1fr;gap:8px;margin-top:20px}
+  .home-btns,.home-btns.n4{grid-template-columns:1fr;gap:8px;margin-top:20px}
   .home-card{grid-template-columns:auto minmax(0,1fr);column-gap:14px;align-items:center;padding:13px 14px}
   .home-card>*{grid-column:2}
   .home-card .hc-ic{grid-column:1;grid-row:1/4;margin:0}
@@ -4573,11 +4574,12 @@ function viewHome(){
         <p class="lead">От академии до Золотого мяча: сезоны, финалы в прямом эфире, заклятый соперник, деньги, слава и музей вашей карьеры.</p></div>
       ${fan}
     </div>
-    <div class="home-btns">
+    <div class="home-btns${cur?' n4':''}">
       ${cur?`<button class="home-card main" data-a="tab" data-v="career"><span class="hc-ic">${ico(G.phase==='retired'?'hall':'career')}</span><span class="eyebrow">Продолжить</span><b>${esc(cur.n)}</b><span class="hc-s">${esc(cur.s)}</span><span class="hc-go" aria-hidden="true">→</span></button>`:''}
       <button class="home-card ${cur?'':'main'}" data-a="newYes"><span class="hc-ic">${ico('new')}</span><span class="eyebrow">Начать</span><b>Новая карьера</b><span class="hc-s">Игрок или тренер, новый мир</span></button>
       <button class="home-card" data-a="tab" data-v="multi"><span class="hc-ic">${ico('multi')}</span><span class="eyebrow">С друзьями</span><b>Мультиплеер</b><span class="hc-s">Одна комната, один мир</span></button>
       <button class="home-card" data-a="tab" data-v="saves"><span class="hc-ic">${ico('saves')}</span><span class="eyebrow">Слоты</span><b>Сохранения</b><span class="hc-s">${all.length} из ${MAX_SLOTS}</span></button>
+      <button class="home-card" data-a="tab" data-v="goat"><span class="hc-ic">${ico('goat')}</span><span class="eyebrow">Рекорды</span><b>GOAT</b><span class="hc-s">Лучшие по позициям</span></button>
     </div>
     ${(()=>{const si=streakInfo();return si.len?`<button class="streak-chip" data-a="toChal">🔥 Серия ${si.len} ${plural(si.len,'день','дня','дней')}${si.today?'':' · сыграйте испытание сегодня'}</button>`:''})()}
     ${slots.length?`<p class="eyebrow" style="margin:26px 0 10px">Другие карьеры</p><ul class="slots">${slots.map(m=>slotCard(m,`<button class="btn mini" data-a="slotLoad" data-id="${esc(m.id)}">Открыть</button>`)).join('')}</ul>`:''}
@@ -6192,7 +6194,7 @@ const TAB_IC={
 const ico=(k,c)=>`<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${TAB_IC[k]||''}</svg>`;
 function topbar(){
   const has=G&&(G.P||G.C),ret=has&&G.phase==='retired';
-  const list=has?[['career',ret?'Итоги':'Карьера',ret?'Итоги':'Карьера',ret?'hall':'career'],...(G.P&&!isCoach()?[['life','Жизнь','Жизнь','life'],['museum','Музей','Музей','museum']]:isCoach()?[['museum','Музей','Музей','museum']]:[]),['tables','Таблицы','Таблицы','tables'],['world','Мир','Мир','world'],['goat','GOAT','GOAT','goat'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']]
+  const list=has?[['career',ret?'Итоги':'Карьера',ret?'Итоги':'Карьера',ret?'hall':'career'],...(G.P&&!isCoach()?[['life','Жизнь','Жизнь','life'],['museum','Музей','Музей','museum']]:isCoach()?[['museum','Музей','Музей','museum']]:[]),['tables','Таблицы','Таблицы','tables'],['world','Мир','Мир','world'],...(G.room?[['multi','Комната','Комната','multi']]:[])]
     :[['career','Новая карьера','Новая','new'],['goat','GOAT','GOAT','goat'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']];
   const tabs=list.map(([k,l,sh])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l===sh?l:`<span class="tl">${l}</span><span class="ts">${sh}</span>`}</button>`).join('');
   const bn=list.map(([k,l,sh,ic])=>`<button class="bn" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}" aria-label="${l}">${ico(ic)}<span>${sh}</span></button>`).join('');
