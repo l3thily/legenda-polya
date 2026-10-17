@@ -29,6 +29,9 @@ DONE_TTL = 2 * 24 * 3600
 ROOM_TTL = 14 * 24 * 3600
 CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
+GAMES = {"fb", "hk"}  # rooms and boards of different games never mix; old clients mean football
+HK_BV = 20261018
+HK_POS = ("C", "W", "D", "G")
 
 lock = threading.Lock()
 STATS_FILE = os.path.join(os.path.dirname(DATA), "stats.json")
@@ -187,6 +190,8 @@ def goat_backfill():
 
 
 def board_ok(b):
+    if b == "hk-all" or (b.startswith("hk-pos-") and b[7:] in HK_POS):
+        return True
     if b == "all" or (b.startswith("pos-") and b[4:] in POS_KEYS) or (b.startswith("sc-") and 3 < len(b) <= 24 and b[3:].isalnum()):
         return True
     if (b.startswith("day-") or b.startswith("top-")) and len(b) == 12 and b[4:].isdigit():
@@ -283,7 +288,7 @@ def note_firsts(room, me, line, now):
 
 def public(room):
     return {
-        "code": room["code"], "v": room.get("v", 0), "status": room["status"], "seed": room.get("seed"), "rus": room["rus"],
+        "code": room["code"], "game": room.get("game", "fb"), "v": room.get("v", 0), "status": room["status"], "seed": room.get("seed"), "rus": room["rus"],
         "host": room["host"], "started": room.get("started"),
         "players": [{**{k: p[k] for k in ("id", "name", "ready", "setup", "progress")},
                      "year": p.get("year"), "readyYear": p.get("readyYear")} for p in room["players"].values()],
@@ -368,7 +373,10 @@ class Handler(BaseHTTPRequestHandler):
             with lock:
                 return self.reply(200, {"text": stats_text(int(q.get("days", "7") or 7)), "days": dict(sorted(stats.items())[-30:]), "online": online_now(int(time.time()))})
         if parts == ["api", "goat"]:
+            q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
             with lock:
+                if q.get("game") == "hk":
+                    return self.reply(200, {"goat": {k: scores.get("hk-pos-" + k, [])[:10] for k in HK_POS}})
                 return self.reply(200, {"goat": {k: scores.get("pos-" + k, [])[:10] for k in POS_KEYS}})
         if parts == ["api", "scores"]:
             q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
@@ -377,11 +385,13 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(200, {"board": b, "scores": scores.get(b, [])[:20]})
         if parts == ["api", "rooms"]:
             # open lobbies anyone can join: newest first
+            q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
+            game = q.get("game") if q.get("game") in GAMES else "fb"
             with lock:
                 lst = [{"code": r["code"], "host": (r["players"].get(r["host"]) or {}).get("name", ""),
                         "players": len(r["players"]), "rus": r["rus"], "updated": r["updated"]}
                        for r in rooms.values()
-                       if r.get("public") and r["status"] == "lobby" and 0 < len(r["players"]) < MAX_PLAYERS]
+                       if r.get("public") and r["status"] == "lobby" and 0 < len(r["players"]) < MAX_PLAYERS and r.get("game", "fb") == game]
             lst.sort(key=lambda x: -x["updated"])
             return self.reply(200, {"rooms": lst[:20]})
         if len(parts) == 3 and parts[:2] == ["api", "rooms"]:
@@ -445,11 +455,12 @@ class Handler(BaseHTTPRequestHandler):
                 board, sid = clip(data.get("board"), 24), clip(data.get("id"), 24)
                 if not board_ok(board) or not sid:
                     return self.reply(400, {"error": "неверная таблица"})
-                if data.get("balanceVersion") != BALANCE_VERSION:
+                hk = board.startswith("hk-")
+                if data.get("balanceVersion") != (HK_BV if hk else BALANCE_VERSION):
                     return self.reply(409, {"error": "Новый рейтинг: начните карьеру после обновления баланса 16 октября."})
                 by = clip(data.get("by"), 24)
-                e = {"balanceVersion": BALANCE_VERSION, "id": sid, "nick": by or clip(data.get("nick"), 24) or "Игрок", "name": clip(data.get("name"), 40), "by": by,
-                     "pk": POS_SHORT.get(clip(data.get("pk"), 4), ""), "nat": clip(data.get("nat"), 40), "score": round(num(data.get("score"), 0, 3000), 1),
+                e = {"balanceVersion": HK_BV if hk else BALANCE_VERSION, "id": sid, "nick": by or clip(data.get("nick"), 24) or "Игрок", "name": clip(data.get("name"), 40), "by": by,
+                     "pk": (clip(data.get("pk"), 1) if clip(data.get("pk"), 1) in HK_POS else "") if hk else POS_SHORT.get(clip(data.get("pk"), 4), ""), "nat": clip(data.get("nat"), 40), "score": round(num(data.get("score"), 0, 3000), 1),
                      "tier": clip(data.get("tier"), 40), "pos": clip(data.get("pos"), 6), "tro": int(num(data.get("tro"), 0, 500)),
                      "bdo": int(num(data.get("bdo"), 0, 50)), "goal": int(num(data.get("goal"), 0, 3)), "hard": bool(data.get("hard")), "t": now}
                 lst = [x for x in scores.get(board, []) if x["id"] != sid] + [e]
@@ -468,7 +479,8 @@ class Handler(BaseHTTPRequestHandler):
                 code = new_code()
                 room = {"code": code, "created": now, "updated": now, "status": "lobby", "seed": None,
                         "rus": data.get("rus") if data.get("rus") in RUS_MODES else "random",
-                        "host": None, "players": {}, "feed": [], "public": bool(data.get("public"))}
+                        "host": None, "players": {}, "feed": [], "public": bool(data.get("public")),
+                        "game": data.get("game") if data.get("game") in GAMES else "fb"}
                 pid, token = add_player(room, data.get("name"))
                 room["host"] = pid
                 rooms[code] = room
@@ -481,6 +493,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(404, {"error": "Комната не найдена"})
             action = parts[3]
             if action == "join":
+                if (data.get("game") if data.get("game") in GAMES else "fb") != room.get("game", "fb"):
+                    return self.reply(409, {"error": "Эта комната для другой игры серии"})
                 if room["status"] == "started" and any((p.get("progress") or {}).get("season") not in (None, "старт") for p in room["players"].values()):
                     return self.reply(409, {"error": "Игра уже идёт: войти можно только до первого сыгранного сезона"})
                 if len(room["players"]) >= MAX_PLAYERS:
