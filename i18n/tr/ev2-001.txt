@@ -1,0 +1,425 @@
+0	Your goal ({0}, {1}) is on every highlights show.
+1	they want your style
+2	You broke your oath and joined {0}. Your former fans call you a traitor.
+3	A new acquaintance
+4	At a charity evening you talked all night with someone you now can't stop thinking about. And back in your hometown your old love is still waiting.
+5	A new relationship
+6	A social media star
+7	Followers grow, the gossip columns write about you
+8	A high-profile romance has begun.
+9	Go back to your old love
+10	Someone from your hometown
+11	Peace of mind and love from home
+12	You are back together with your hometown love.
+13	You decided not to get distracted from football.
+14	Celebrity party
+15	A rapper you know from social media invites you to a private party two days before a big match. Everyone will be there.
+16	Go
+17	Just for a bit
+18	Followers grow. 40%: photos leak and the coach is furious
+19	You went to the party — nobody found out.
+20	Photos from the party leaked online. The coach dropped you to the bench.
+21	The match matters more
+22	You skipped the party before the match.
+23	Voice of the dressing room
+24	Your teammates ask you to talk to the board: the club is holding back bonuses.
+25	For the whole team
+26	The dressing room has your back, the board is unhappy. 60%: the bonuses get paid
+27	After your talk the team got its bonuses.
+28	The board said no, but the team appreciated that you went.
+29	Not my business
+30	Every man for himself
+31	The dressing room is disappointed
+32	You refused to talk to the board.
+33	24/7 regime
+34	The club asks you to show the youngsters how to prepare: up at six, ice baths, food weighed to the gram.
+35	Bring the youngsters along
+36	An example for everyone
+37	The dressing room and coach value it, faster progress
+38	The youngsters now train on your regime.
+39	Work alone
+40	A regime is personal
+41	Even faster progress
+42	You focused on your own regime.
+43	Oath of loyalty
+44	{0} ultras ask you to promise publicly that you will never join {1}.
+45	Swear
+46	On the club crest
+47	The stands adore you. Break it and they'll never forgive you
+48	You swore never to play for {0}.
+49	Never say never
+50	The stands grow wary
+51	You made no oaths.
+52	Red card
+53	In a friendly you shoved the referee after a disputed whistle. The federation threatens a ban of {0} {1}.
+54	Appeal
+55	It was a provocation
+56	50%: the ban is lifted
+57	The appeal was upheld.
+58	The appeal was rejected: a {0}-{1} ban.
+59	Apologise to the referee
+60	The ban will be shortened
+61	You apologised, and the ban was shortened.
+62	Take an anger management course
+63	Working on yourself
+64	Full ban, but a calmer temper
+65	You signed up for an anger management course.
+66	The coach changes your role
+67	New tactics: the coach sees you not as a {0} but as a {1}. {2}.
+68	Become: {0}
+69	Trust the coach
+70	The coach is pleased, your stats will change
+71	Your new role: {0}.
+72	This is my game
+73	The coach is unhappy
+74	You refused to change your role.
+75	Scoring crisis
+76	Last season: {0} {1} in a row without a standout game. Journalists ask whether you're finished.
+77	Work with a psychologist
+78	It's all in the head
+79	You'll start the new season more confident
+80	Over the summer you worked with a psychologist.
+81	Review with a video analyst
+82	Find the cause
+83	You went through every match of last season.
+84	"I'll show them all"
+85	Anger
+86	Better stats in the spring, the coach dislikes big words
+87	You promised to answer the critics with goals.
+88	A streak everyone writes about
+89	{0} {1} in a row on fire — the press compares you to legends.
+90	Magazine cover
+91	Bask in the glory
+92	Followers and reputation
+93	You're on the cover of a football magazine.
+94	No big words
+95	A streak is a team effort
+96	The dressing room values modesty
+97	You thanked your teammates for your streak.
+98	Leader
+99	The dressing room listens to you: the team is stronger, relations with teammates grow
+100	Professional
+101	Routine and sleep: faster progress, fewer injuries, gentler decline after 30
+102	Party star
+103	Followers grow a third faster, but progress is a bit slower
+104	Loyal
+105	Fans love you more, and agents call less often with other clubs
+106	Hothead
+107	Anger helps you score, but coaches don't like it
+108	Character: people increasingly see you as "{0}".
+109	Character: the "{0}" trait is fading.
+110	Target man
+111	Back to goal and in the air: slightly more goals, fewer assists, lots of duels
+112	Poacher
+113	Lives in the box: more goals, less involvement in play
+114	False nine
+115	Drops deep for the ball: fewer goals, more assists and key passes
+116	Inverted winger
+117	Cuts inside to shoot: more goals
+118	Classic winger
+119	Down the line and cross: more assists
+120	Speedy dribbler
+121	Take-ons and runs: more dribbles, higher ratings in big wins
+122	The final pass: more assists and key passes
+123	Shadow striker
+124	Bursts into the box: more goals
+125	Free spirit
+126	Improvisation: dribbles and the occasional masterpiece
+127	Box-to-box
+128	From box to box: goals and tackles
+129	Deep-lying playmaker
+130	The team's metronome: more passes, more accurate passing
+131	Mezzala
+132	Half-spaces and runs: dribbles and assists
+133	Tackles and interceptions: more tackles
+134	Regista
+135	Passing from deep: more passes and key balls
+136	Anchor
+137	Position and reliability: accurate passing, clean sheets
+138	Stopper
+139	Hard tackling and headed goals from corners
+140	Ball-playing defender
+141	Starts attacks: more passes and key passes
+142	Libero
+143	Joins attacks: dribbles and assists
+144	Almost a winger: more assists and key passes
+145	Solid defender
+146	Defence first: more tackles
+147	Inverted full-back
+148	Steps into midfield: more passes
+149	Sweeper keeper
+150	Plays far off his line: more passes, more accurate distribution
+151	Shot stopper
+152	Reflexes on the line: more saves
+153	Penalty killer
+154	Reads penalty takers: wider reach in shoot-outs
+155	New position, new role: you're now a {0}.
+156	with a goal or a rating of 7.9+
+157	with a goal, an assist or a rating of 7.6+
+158	with a clean sheet or a rating of 7.4+
+159	Streak of the season: {0} {1} in a row on fire.
+160	Slump of the season: {0} {1} in a row without a standout game. The press asked awkward questions.
+161	Your protégé {0} made his debut for {1}.
+162	Your protégé {0} has retired.
+163	Protégé's debut
+164	{0}, whom you took under your wing at the academy, has been called up to the {1} first team. He's {2} and he's looking at you.
+165	Let him take a penalty on his debut
+166	A day to remember
+167	The dressing room and the stands will love it
+168	{0} scored on his debut from your penalty.
+169	Let him make his own way
+170	No favours
+171	He'll grow up tougher
+172	{0} is fighting for a place without your help.
+173	The pupil overtakes the master
+174	The coach keeps starting {0} — in your position. The press writes: "The pupil has surpassed the master."
+175	Step aside
+176	His time has come
+177	Less playing time, but the dressing room and press are in awe
+178	You gave up your place to your protégé {0}.
+179	The master hasn't said his last word
+180	50%: the place is yours
+181	You kept your place in the team.
+182	{0} won the battle for the place.
+183	Too small for two stars
+184	More offers in the summer
+185	You decided to leave the club to your protégé and look for a new team.
+186	Your protégé {0} has joined {1}.
+187	A giant buys your protégé
+188	{0} offer huge money for {1}. The kid asks for your advice.
+189	Give your blessing
+190	A chance like this comes once
+191	Your protégé moves to a giant, and you're the one who raised him
+192	{0} leaves for {1} with your blessing.
+193	One more year together
+194	50%: he stays. The dressing room will be stronger
+195	{0} stayed after talking to you.
+196	{0} is leaving for {1} after all.
+197	Winter agreement
+198	In winter you shook hands with {0}. The club has come for you, as promised.
+199	Change your mind
+200	Break your word: your reputation will suffer
+201	You broke your winter agreement with {0}.
+202	Pre-contract
+203	Your contract expires in the summer, and {0} offer a pre-contract: you'll move for free in the summer.
+204	Summer move to {0}
+205	The fans of 
+206	 will find out and be hurt
+207	In winter you agreed a move to {0}.
+208	This season first
+209	The club and the stands will appreciate it
+210	You turned {0} down mid-season.
+211	Too few minutes
+212	The first half of the season was spent on the bench. The winter camp is a chance to change the coach's mind.
+213	Talk to the coach
+214	Straight and honest
+215	50%: more playing time in the spring
+216	In winter the coach promised you more minutes.
+217	The talk with the coach got nowhere.
+218	Work hard at camp
+219	Prove it with actions
+220	At the winter camp you worked harder than anyone.
+221	Ask for a summer transfer
+222	They won't give me a chance here
+223	In winter you asked the club to let you go in the summer.
+224	Title race
+225	After the first half: {0} place{1} The spring will decide everything.
+226	, {0} pts clear
+227	, {0} pts behind
+228	No holiday
+229	Individual work over the break
+230	Slightly better play in the spring, 20%: overload
+231	You spent the winter break in the gym.
+232	Overload over the break: a couple of games without you.
+233	"We'll be champions"
+234	A bold interview
+235	The stands are thrilled, the pressure rises
+236	You promised the fans the title.
+237	Rest with the family
+238	A clear head
+239	You recharged with your family.
+240	Club in the relegation zone
+241	{0} spend the winter in {1} place. Agents are already calling, and the fans expect the stars to stay.
+242	Stay and fight
+243	This is my club
+244	The stands will remember
+245	In the middle of the crisis you publicly promised to stay.
+246	Gather the team
+247	A talk without the coach
+248	The dressing room will pull together
+249	You gathered the team for a talk.
+250	Listen to your agent
+251	A new club in the summer
+252	More offers in the summer, the stands are unhappy
+253	You made it clear you'd leave in the summer.
+254	You're on fire
+255	You're {0}. Everyone wants a piece of your form.
+256	{0} {1} in a row on fire
+257	scoring in almost every match
+258	Stay locked in
+259	No interviews
+260	Your form will hold
+261	You shut out the press to keep your form.
+262	Interviews and ads
+263	Seize the moment
+264	Followers and money
+265	Riding your form, you shot an ad.
+266	Extend your contract now
+267	While you're at your peak
+268	+2 years, higher wages
+269	In winter the club extended your contract at the peak of your form.
+270	Loss of form
+271	{0}. At the winter camp everyone is watching you.
+272	{0} {1} in a row without a standout game
+273	The first half of the season went badly
+274	A clear head, better play in the spring
+275	In winter you worked with a psychologist.
+276	Work your way out
+277	Faster progress, 15%: overload
+278	You worked your way out of the slump at camp.
+279	Overload at camp: a couple of games without you.
+280	Change your boots
+281	Superstition
+282	50%: it helps
+283	New boots — and you're scoring again.
+284	New boots, same old problems.
+285	Winter camp
+286	Half the season is gone: {0} place. The club is choosing where to hold the camp and asks the leaders.
+287	Camp in Dubai
+288	Sun and sponsors
+289	Followers grow, light workload
+290	Winter camp in Dubai.
+291	Camp in the mountains
+292	A tough winter camp in the mountains.
+293	Holidays at home
+294	Family and childhood friends
+295	Bond with the fans back home
+296	You spent the holidays at home.
+297	Winter break: {0} place, {1} pts.
+298	Winter break
+299	Winter:
+300	Winter: "{0}".
+301	Derby
+302	Return
+303	Battle for top spot
+304	Don't celebrate
+305	Respect for your old club
+306	If you score — no celebration. Your former fans will appreciate it
+307	Prove they were wrong to let you go
+308	Anger in your legs
+309	Better chance to score, but the team loses balance. Your former stands won't forgive a celebrated goal
+310	Salute the stands
+311	A lap of honour before kick-off
+312	A standing ovation guaranteed
+313	Risky: part of the stadium will whistle
+314	Fire up the stands
+315	A raised fist before kick-off
+316	The team is charged up, the fans are thrilled if you win
+317	Cool head
+318	Derbies are won by nerves
+319	Wind up the strikers
+320	A word in their ear
+321	The opponent gets nervous, but you're close to a booking
+322	A gesture before kick-off
+323	Provocation
+324	Get under their leader's skin
+325	Better chance to score, but you're close to a red card
+326	The opponent scores less often, but your team is more cautious too
+327	Fight for every ball
+328	Like it's the last game
+329	The team is stronger, the fans will appreciate it
+330	You face your former club for the first time. The stands greet you with applause.
+331	You face your former club for the first time. Whistles from every side — they haven't forgiven you for leaving.
+332	You face your former club for the first time. The stands are warily silent.
+333	The city is split in two, and for a week nobody has talked about anything else.
+334	First and second in the table meet.
+335	The loser will almost certainly go down.
+336	{0} vs {1}.{2}{3} How will you approach it?
+337	You scored and raised your hands: no celebration. Your former stands give you a standing ovation.
+338	A goal — and a celebration in front of your old stand. You're no longer welcome there.
+339	A lap of honour before kick-off: your former fans rise to greet you.
+340	A lap of honour before kick-off: half the stadium whistled.
+341	Return to {0} — {1}{2}.
+342	, an ovation
+343	, whistles from the stands
+344	{0}: {1} {2}. Choice: "{3}".
+345	A derby win, and the stands sing your name.
+346	The provocation backfired: a red card and a {0}-{1} ban.
+347	A painful defeat in the relegation battle.
+348	A massive three points in the title race.
+349	A draw: the race goes on.
+350	Your rival pulls clear.
+351	Protégé:
+352	{0}, {1}, age {2} · rating
+353	{0}, {1} apps, {2} goals
+354	{0} academy
+355	A trait is active from {0}. Your character changes with your decisions.
+356	Style:
+357	not chosen
+358	Best streak:
+359	{0} {1} in a row {2}
+360	Current form: streak {0}
+361	Season {0} · Winter break
+362	Rating
+363	Form · last matches
+364	Clean sheets
+365	streak {0}
+366	{0} without a standout game
+367	Rental property
+368	Apartments to let: about 4% a year, value grows slowly with almost no risk
+369	Esports team
+370	Grows with your followers. Can go bust
+371	from 500K followers
+372	Kids' academy
+373	Barely makes money (2% a year), but adds reputation and fan love every season
+374	Few posts: followers grow slower, a clearer head, slightly faster progress
+375	Behind the scenes of training
+376	Clips from the gym and the pitch: followers +10%, the "Professional" trait grows
+377	Lifestyle
+378	Cars, parties, travel: followers +40%, slightly slower progress, "Party star" grows
+379	Talking to fans
+380	Replies in the comments and meet-ups: followers +5%, fans love you more
+381	A pitch in your hometown
+382	Fans and your hometown will appreciate it
+383	Children's hospital
+384	A new wing with your name on the plaque
+385	Football veterans fund
+386	Help for players who were forgotten. The dressing room respects it
+387	Social media strategy: {0}.
+388	A small wedding for close friends. Congratulations!
+389	Wedding in the Maldives: the photos went around the world.
+390	You got married.
+391	You got married in the Maldives.
+392	Your parents moved into a new house.
+393	You bought your parents a house.
+394	Charity: {0}, {1}.
+395	Thank you! {0}: {1}.
+396	The esports team broke up.
+397	Style ·
+398	Character · up to two traits
+399	You don't have to choose: your character will form from your decisions.
+400	Character and style
+401	A house for your parents
+402	Fans back home are touched, the "Loyal" trait grows
+403	Married
+404	In a relationship
+405	Single
+406	Your partner is a social media star.
+407	You've been together since your hometown days.
+408	You'll meet someone on your own — in one of the off-seasons.
+409	Children: {0}.
+410	Marriage brings calm: slightly faster progress.
+411	Small wedding
+412	For close friends: the fans and press will appreciate it
+413	Wedding in the Maldives
+414	The photos will go around the world: followers grow
+415	Choose
+416	this season
+417	Help
+418	Family
+419	Social media strategy
+420	Charity
+421	applies every season
+422	not chosen
+423	{0} over the career
+424	once a season for each cause

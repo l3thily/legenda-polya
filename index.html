@@ -217,6 +217,16 @@ main>*,.grid2>*,.hero>*,.setup>*,.hof>*,.cer>*,.nem>*,.decide>*,.panel,.season,.
 .lgt-m{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--dim);grid-row:5}
 .lgt em{grid-row:4;align-self:start;justify-self:start;font-style:normal;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#C9B3FF;background:rgba(181,140,255,.12);border-radius:6px;padding:2px 6px;margin-top:2px}
 .stars{font-style:normal;color:var(--gold);letter-spacing:1px;font-size:12px}.stars span{color:var(--line2)}
+.nvid{position:fixed;inset:0;z-index:200;background:#000;display:flex;align-items:center;justify-content:center}
+.nvid video{width:100%;height:100%;object-fit:contain;background:#000}
+.nvid-b{position:absolute;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));display:flex;gap:8px}
+.tr-on{color:var(--gold);font-size:9px;vertical-align:middle}
+.winter .wmid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:14px;margin:6px 0 14px}
+.wtab{display:grid;gap:4px}.wtab>div{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:6px 10px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:13px}
+.wtab>div.me{border-color:var(--gold);background:rgba(242,193,78,.1)}.wtab b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wst{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0}.wst>div{padding:8px 10px;border-radius:10px;background:var(--card);border:1px solid var(--line)}.wst dt{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.wst dd{margin:2px 0 0;font-size:18px;font-weight:800}.wst .wide{grid-column:1/-1}
+.fm{display:inline-block;font-style:normal;font-size:12px;font-weight:700;padding:2px 6px;border-radius:6px;margin-right:4px;background:rgba(127,160,180,.18)}.fm.hi{background:rgba(70,200,120,.25)}.fm.lo{background:rgba(230,80,80,.25)}
+@media (max-width:720px){.winter .wmid{grid-template-columns:1fr}.wst{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .cntg{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:8px;max-height:330px;overflow-y:auto;padding:2px;scrollbar-width:thin}
 .cnt{display:grid;gap:5px;justify-items:start;text-align:left;padding:10px 11px;border-radius:12px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(19,35,45,.9),rgba(11,21,28,.9));cursor:pointer;transition:transform .15s var(--ease),border-color .15s,box-shadow .15s}
 .cnt:hover{transform:translateY(-2px);border-color:var(--line2)}
@@ -1469,11 +1479,11 @@ const attrF=v=>clamp(1+((v||75)-75)*.02,.55,1.5);
 function matchStats(d,gf,ga,opp,comp,cn,stage,n){
   const P=G.P,pp=PSP[P.pos]||PSP.CM,at=P.at||{},m=d.starter?1:.3,dom=(d.ts||opp)-opp;
   const rx=mkRng(hashStr(`${P.name}|${S.label}|${comp}|${cn||''}|${stage||''}|${d.nat?1:0}|${n}|${gf}:${ga}`)).f,po=l=>poissonU(l,rx());
-  const pa=Math.max(0,Math.round(pp.pa*m*clamp(1+dom*.012,.65,1.4)*(.85+rx()*.3)));
-  const ac=clamp(pp.ac+((at.pas||75)-75)*.0035+dom*.002+(rx()-.5)*.07,.5,.97),pc=Math.round(pa*ac);
-  const kp=po(pp.kp*m*attrF(at.pas)*clamp(1+dom*.015,.6,1.5)),dr=po(pp.dr*m*attrF(at.pac)*clamp(1+dom*.01,.7,1.3));
-  const tk=po(pp.tk*m*attrF(at.def)*clamp(1-dom*.012,.6,1.5));
-  const sv=P.pos==='GK'?po(3*m*clamp(Math.exp(-dom*.035),.4,2.5)*(.7+.3*attrF(((at.pac||75)+(at.def||75))/2))):0;
+  const pa=Math.max(0,Math.round(pp.pa*m*clamp(1+dom*.012,.65,1.4)*(.85+rx()*.3)*styM('pa')));
+  const ac=clamp(pp.ac+((at.pas||75)-75)*.0035+dom*.002+(rx()-.5)*.07+styM('ac'),.5,.97),pc=Math.round(pa*ac);
+  const kp=po(pp.kp*m*attrF(at.pas)*clamp(1+dom*.015,.6,1.5)*styM('kp')),dr=po(pp.dr*m*attrF(at.pac)*clamp(1+dom*.01,.7,1.3)*styM('dr'));
+  const tk=po(pp.tk*m*attrF(at.def)*clamp(1-dom*.012,.6,1.5)*styM('tk'));
+  const sv=P.pos==='GK'?po(3*m*clamp(Math.exp(-dom*.035),.4,2.5)*(.7+.3*attrF(((at.pac||75)+(at.def||75))/2))*styM('sv')):0;
   // rating: what the player did beyond what an average player of the line would do, plus a line offset that evens the averages out
   let rt=(tk-pp.tk*m)*.1+(kp-pp.kp*m)*.14+(dr-pp.dr*m)*.07+(pa>=10?(ac-pp.ac)*3:0)+pp.ro*m;
   if(P.pos==='GK')rt+=(sv-3*m*clamp(Math.exp(-dom*.035),.4,2.5))*.15;
@@ -1487,8 +1497,8 @@ function psAdd(ms,rt,d,cn,stage){
 }
 function trackRecord(d,gf,ga,opp,comp,cn,stage){
   const P=G.P,pz=POS[P.pos],b=comp==='O'?S.oly:d.nat?S.intl:S.club;
-  const q=clamp(1+(P.ovr-d.ts)*.035,.45,2.1)*(d.starter?1:.32)*d.q*(d.nat?1:(P.qMod||1));
-  const an=P.subs&&P.subs.analyst?1.08:1,gm=clamp(1+(P.at.sho-P.ovr)*.02,.6,1.5)*(hasPerk('sniper')?1.15:1)*an,am=clamp(1+(P.at.pas-P.ovr)*.02,.6,1.5)*(hasPerk('maestro')?1.2:1)*an;
+  const q=clamp(1+(P.ovr-d.ts)*.035,.45,2.1)*(d.starter?1:.32)*d.q*(d.nat?1:(P.qMod||1)*(P.formQ||1)*(trOn('hot')?1.04:1));
+  const an=P.subs&&P.subs.analyst?1.08:1,gm=clamp(1+(P.at.sho-P.ovr)*.02,.6,1.5)*(hasPerk('sniper')?1.15:1)*an*styM('g'),am=clamp(1+(P.at.pas-P.ovr)*.02,.6,1.5)*(hasPerk('maestro')?1.2:1)*an*styM('a');
   let g=0,a=0;
   if(d.m&&d.m.ex){g=Math.min(gf,d.m.fg||0);a=Math.min(gf-g,d.m.fa||0)}
   else for(let i=0;i<gf;i++){const r=RP();if(r<pz.g*gm*q)g++;else if(r<(pz.g*gm+pz.a*am)*q)a++}
@@ -1504,6 +1514,7 @@ function trackRecord(d,gf,ga,opp,comp,cn,stage){
   if(P.subs&&P.subs.analyst)rt+=.12;
   rt=clamp(rt,4.5,10);
   psAdd(ms,rt,d,cn,stage);
+  if(!d.nat&&comp!=='O')formTick(g,a,rt,ga,d);
   S.lastRt=rt;b.apps++;if(d.starter)b.starts++;b.g+=g;b.a+=a;if(ga===0&&d.starter)b.cs++;b.rs+=rt;b.gc=(b.gc||0)+ga;
   if(comp==='L'){S.lgGoals+=g;S.lgA+=a;if(ga===0&&d.starter)S.lgCS=(S.lgCS||0)+1}if(cn==='Лига чемпионов')S.uclAs=(S.uclAs||0)+a;
   if(comp==='T'){S.tg+=g;S.tapps++;S.trs+=rt;P.tournApps++}
@@ -1511,7 +1522,7 @@ function trackRecord(d,gf,ga,opp,comp,cn,stage){
   else if(RP()<.011*clamp(1-(P.at.phy-70)*.015,.5,1.5)*(hasPerk('iron')?.6:1)*injMul()){const ser=RP()<.2;const n=Math.max(1,Math.round((ser?riP(8,26):riP(1,4))*(P.own&&P.own.clinic?.5:1)));P.inj=n;S.inj.push(n);if(n>=12)comebackStart()}
 }
 function coefRes(A,B,ga,gb){const add=(id,v)=>G.cpts[id]=(G.cpts[id]||0)+v;if(ga>gb)add(A.id,2);else if(gb>ga)add(B.id,2);else{add(A.id,1);add(B.id,1)}}
-function teamExtra(){const P=G.P;return (P.rel.team-50)/60+(hasPerk('leader')?.5:0)+(hasPerk('wall')?.8:0)}
+function teamExtra(){const P=G.P;return (P.rel.team-50)/60+(hasPerk('leader')?.5:0)+(hasPerk('wall')?.8:0)+(trOn('lead')?.3:0)}
 function teamFx(T){if(!S||!S.fx)return 0;return (T.kind==='c'?S.fx.c[T.id]:S.fx.n[T.id])||0}
 /* expected goals for both sides; pure, so the live final can reuse it */
 function lambdas(A,B,o,m){
@@ -1643,7 +1654,7 @@ function* liveMatch(A,B,st,o,pre){
   let [lm,lo]=lam(mod);
   const pz=POS[P.pos],nat=me.kind==='n';
   const qBase=clamp(1+(P.ovr-op.str)*.035,.45,2.1)*(mod.force?.8:1)*(nat?1:(P.qMod||1));
-  const gm=clamp(1+(P.at.sho-P.ovr)*.02,.6,1.5)*(hasPerk('sniper')?1.15:1),am=clamp(1+(P.at.pas-P.ovr)*.02,.6,1.5)*(hasPerk('maestro')?1.2:1);
+  const gm=clamp(1+(P.at.sho-P.ovr)*.02,.6,1.5)*(hasPerk('sniper')?1.15:1)*styM('g'),am=clamp(1+(P.at.pas-P.ovr)*.02,.6,1.5)*(hasPerk('maestro')?1.2:1)*styM('a');
   let q=skip?0:qBase*(mod.q||1);
   const sc=[0,0],lines=[],tot={g:0,a:0,rt:0};
   const cel=P.cel&&CELS[P.cel]?`, празднование — ${CELS[P.cel].n.toLowerCase()}`:'';
@@ -1705,7 +1716,7 @@ function* liveMatch(A,B,st,o,pre){
     const ok=c.safe?true:rng()<c.p;
     if(km.type==='att'){
       if(c.safe)push(M,'Вы остаётесь на страховке. Угловой разыгран — без опасности.','');
-      else if(ok){myGoal(M,c.how,c.pass?'a':'g',c.sk);kmSet(true);tot.rt+=.45+(c.rt||0);S.keyHero=true;if(c.rt)S.news.push(`Ваш гол в финале (${o.log}) крутят во всех обзорах.`)}
+      else if(ok){myGoal(M,c.how,c.pass?'a':'g',c.sk);kmSet(true);tot.rt+=.45+(c.rt||0);S.keyHero=true;if(c.rt)S.news.push(st==='Финал'?`Ваш гол в финале (${o.log}) крутят во всех обзорах.`:`Ваш гол (${o.log}, ${st}) крутят во всех обзорах.`)}
       else{push(M,c.pass?'Вы отдаёте, но пас перехватывают.':rpick(['Мимо! Вы хватаетесь за голову.','Вратарь тащит! Невероятный сейв.','Штанга! Мяч отскакивает в поле.']),'miss',c.pass?null:'miss');tot.rt-=.25}
     }else{
       if(ok){if(!c.foul)S.keyHero=true;push(M,c.foul?'Вы фолите на центре поля. Жёлтая карточка, но атака остановлена.':gk?'СЕЙВ! Вы спасаете команду.':'Вы спасаете команду — мяч выбит.',c.foul?'card':'save',c.foul?null:gk?'save':'tackle');if(!c.foul)kmSet(true);tot.rt+=c.foul?.05:.45}
@@ -1767,7 +1778,7 @@ function* penalties(r,side,o,st,A,B){
     if(scored&&cell!=null){P.penHero=true;S.penHero=true}
     info={gk:false,cell,mines,txt,scored,win};
   }else{
-    const n=clamp(Math.round(2+diff/5)+(perk?1:0),1,5);
+    const n=clamp(Math.round(2+diff/5)+(perk?1:0)+(G.P.style==='pen'?1:0),1,5);
     const i=yield {kind:'pens',gk:true,comp:o.log,st,title:'Серия пенальти',me:{n:me.name,s:Math.round(me.str)},op:{n:op.name,s:Math.round(op.str)},reach:n,
       body:`В серии 4:4. Соперник бьёт пятый: отобьёшь — трофей ваш. Твой охват — ${n} ${plural(n,'клетка','клетки','клеток')} вокруг выбранной точки: чем ты сильнее бьющего, тем больше. Куда прыгаешь?`,opts:[]};
     const cell=clamp(i|0,0,8),cx=cell%3,cy=Math.floor(cell/3);
@@ -1846,15 +1857,18 @@ function snapRows(rows){const o={};for(const k in rows)o[k]={...rows[k]};return 
 function diffRows(a,b){const o={};for(const k in a){const x=a[k],y=b&&b[k]||row(x.id);o[k]={id:x.id,p:x.p-y.p,w:x.w-y.w,d:x.d-y.d,l:x.l-y.l,gf:x.gf-y.gf,ga:x.ga-y.ga,pts:x.pts-y.pts}}return o}
 const rowArr=t=>t.map(r=>[r.id,r.p,r.w,r.d,r.l,r.gf,r.ga,r.pts]);
 /* one round-robin among ids; flip swaps home and away, so two legs give every club one home game against each rival */
-function* playLeg(ids,flip,rows,cn){
+function* playLeg(ids,flip,rows,cn,kf){
   const ts=ids.map(C);
   for(let i=0;i<ts.length;i++)for(let j=i+1;j<ts.length;j++){
     const h=((i+j)%2===0)!==!!flip,A=h?ts[i]:ts[j],B=h?ts[j]:ts[i],o={c:'L',cn};
-    const r=needSync(A,B)?yield* roomPlay(A,B,o):simMatch(A,B,o);addRes(rows[A.id],rows[B.id],r.ga,r.gb)}
+    const kt=kf&&kf.size&&(isMine(A)||isMine(B))?kf.get((isMine(A)?B:A).id):null;
+    const r=needSync(A,B)?yield* roomPlay(A,B,o):kt?yield* keyLeague(A,B,o,kt):simMatch(A,B,o);addRes(rows[A.id],rows[B.id],r.ga,r.gb)}
 }
 function* simLeague(lg){
   const rows={},legs=[];lg.ids.forEach(i=>rows[i]=row(i));
-  for(let k=0;k<lgLegs(lg);k++){yield* playLeg(lg.ids,k%2,rows,lg.name);legs.push(snapRows(rows))}
+  const n=lgLegs(lg),my=!!(G.P&&!isCoach()&&G.phase!=='retired'&&lg.ids.includes(G.P.clubId)),kf=my&&keyOn()?keyPlan(lg,n):null;
+  for(let k=0;k<n;k++){yield* playLeg(lg.ids,k%2,rows,lg.name,kf&&kf[k]);legs.push(snapRows(rows));
+    if(my&&n>=2&&k===Math.floor(n/2)-1){yield* winterBreak(lg,rows);keyPlan2(lg,rows,kf,k+1)}}
   return yield* leaguePost(lg,rows,legs);
 }
 const GRP_N={2:['Чемпионская группа','Группа выживания'],3:['Чемпионская группа','Средняя группа','Группа выживания']};
@@ -2482,8 +2496,8 @@ function endSeasonPlayer(){
   const P=G.P,c=S.club,avg=c.apps?c.rs/c.apps:6.3,ratio=TR.tm?c.apps/TR.tm:0,a=P.age;
   S.teamMatches=TR.tm;
   let g=a<=19?2.5+RP()*3:a<=21?2+RP()*2.8:a<=23?1+RP()*2.4:a<=26?.2+RP()*1.6:a<=29?-.6+RP()*1.3:a<=31?-1.6+RP()*1.5:a<=33?-2.6+RP()*1.6:-3.6-RP()*1.4;
-  if(g>0){g*=.35+.9*Math.min(1,ratio/.6);g*=clamp((P.pot-P.ovr)/7,.1,1.3);g+=(S.clubStr-72)*.02;if(avg>=7.3)g+=.5;if(P.fight)g+=.4;g+=P.growMod;g*=.8;if(P.subs.trainer)g+=.35;if(P.own.house)g+=.12;if(P.own.base)g+=.5}
-  else{if(avg>=7.3)g+=.4;if(ratio>.5&&a<=31)g+=.2;g+=Math.min(0,P.growMod)*.5;if(P.diet)g*=.7;if(P.subs.trainer)g*=.85;if(P.own.base)g*=.75}
+  if(g>0){g*=.35+.9*Math.min(1,ratio/.6);g*=clamp((P.pot-P.ovr)/7,.1,1.3);g+=(S.clubStr-72)*.02;if(avg>=7.3)g+=.5;if(P.fight)g+=.4;g+=P.growMod;g*=.8;if(P.subs.trainer)g+=.35;if(P.own.house)g+=.12;if(P.own.base)g+=.5;if(trOn('pro'))g+=.3;if(trOn('party'))g-=.2;if(P.fam&&P.fam.mar)g+=.1;if(P.smm==='quiet')g+=.1;if(P.smm==='life')g-=.1}
+  else{if(avg>=7.3)g+=.4;if(ratio>.5&&a<=31)g+=.2;g+=Math.min(0,P.growMod)*.5;if(P.diet)g*=.7;if(P.subs.trainer)g*=.85;if(P.own.base)g*=.75;if(trOn('pro'))g*=.88}
   if(S.inj.some(n=>n>=12)){g-=.8;S.news.push('Тяжёлая травма замедлила прогресс.')}
   if(g>0)g+=(morale()-50)/60;
   if(g<0&&hasPerk('veteran'))g*=.8;
@@ -2518,7 +2532,7 @@ function endSeasonPlayer(){
   const bp=S.bdo?S.bdo.place:99;
   P.rep=clamp(P.rep+S.trophies.length*2+S.awards.length*3+(bp<=3?6:bp<=10?4:bp<=30?1.5:0)+Math.min(4,(c.g+c.a*.5)/8)+(S.called?1:0)+(c.apps>=25?1:0)-1.5-(a>=33?2:0),0,100);
   const cc=C(S.clubId).cc;P.cy[cc]=(P.cy[cc]||0)+1;
-  moneySeason();folSeason();nemGrow();nemCheck();
+  moneySeason();folSeason();nemGrow();nemCheck();trSeason();formSeason();protSeason();lifeSeason();
   if(P.cel==='salto'&&c.g>=5&&RP()<.06){const n=riP(2,6);P.inj=Math.max(P.inj,n);S.news.push(`Неудачное приземление после сальто: ~${n} матчей без вас в начале следующего сезона.`)}
   if(S.bdo&&(P.bdoBest==null||S.bdo.place<P.bdoBest))P.bdoBest=S.bdo.place;
   // retirement
@@ -2591,7 +2605,7 @@ function offerOpt(of,extra=''){
   const c=C(of.club),lg=LG(c.lg),role=roleOf(G.P.ovr,c.str);
   const deal=of.loan?'Аренда на сезон':`${of.fee?'Трансфер '+fmtM(of.fee):'Свободный переход'} · ${fmtW(of.wage)} · контракт ${yrs(of.years)}`;
   const foe=playedClubs(2).filter(id=>id!==c.id&&isDerby(id,c.id));
-  return {label:c.name,sub:`${lg.name} · сила ${Math.round(c.str)} · роль: ${ROLE[role]}`,detail:deal+extra,badges:compBadges(c.id)+foe.map(id=>`<span class="bdg warn">злейший враг «${esc(C(id).name)}»</span>`).join('')+(G.P.clubRel[c.id]!=null?`<span class="bdg">бывший клуб · фаны: ${relLabel(G.P.clubRel[c.id])}</span>`:'')+(of.block?`<span class="bdg warn">клуб может не отпустить · ${Math.round(of.block*100)}%</span>`:''),act:{t:'transfer',...of}};
+  return {label:c.name,sub:`${lg.name} · сила ${Math.round(c.str)} · роль: ${ROLE[role]}`,detail:deal+extra,badges:compBadges(c.id)+foe.map(id=>`<span class="bdg warn">злейший враг «${esc(C(id).name)}»</span>`).join('')+(G.P.clubRel[c.id]!=null?`<span class="bdg">бывший клуб · фаны: ${relLabel(G.P.clubRel[c.id])}</span>`:'')+(of.fit?`<span class="bdg">ищут ваш стиль</span>`:'')+(of.block?`<span class="bdg warn">клуб может не отпустить · ${Math.round(of.block*100)}%</span>`:''),act:{t:'transfer',...of}};
 }
 function makeOffer(c,free,mult=1){
   const P=G.P,v=marketValue();
@@ -2604,7 +2618,8 @@ function genOffers(n,free){
   if(pool.length<n)pool=G.clubs.filter(c=>c.id!==P.clubId).sort((a,b)=>Math.abs(a.str-P.ovr)-Math.abs(b.str-P.ovr)).slice(0,20);
   const out=[];
   (P.scouts||[]).map(C).filter(c=>c&&pool.includes(c)).slice(0,Math.max(0,n-1)).forEach(c=>{pool.splice(pool.indexOf(c),1);out.push(makeOffer(c,free));n--});
-  for(let i=0;i<n&&pool.length;i++){const c=wpickP(pool,c=>Math.exp(-Math.abs(c.str-(target+1))/3.5)*Math.pow(LG(c.lg).wealth,.35));pool.splice(pool.indexOf(c),1);out.push(makeOffer(c,free))}
+  for(let i=0;i<n&&pool.length;i++){const c=wpickP(pool,c=>Math.exp(-Math.abs(c.str-(target+1))/3.5)*Math.pow(LG(c.lg).wealth,.35)*(styFits(c)?1.5:1));pool.splice(pool.indexOf(c),1);out.push(makeOffer(c,free))}
+  out.forEach(o=>{if(styFits(C(o.club)))o.fit=1});
   return out;
 }
 function genDecisions(){
@@ -2616,6 +2631,7 @@ function genDecisions(){
     {label:`Продлить на ${yrs(renewYears)}`,sub:'Остаться в клубе',detail:`${fmtW(renewWage)} (сейчас ${fmtW(P.wage)})`,act:{t:'renew',years:renewYears,wage:renewWage}},
     {label:'Потребовать повышения',sub:`Шанс согласия ~${role>=3?60:35}%`,detail:`${fmtW(r1(renewWage*1.35))}; при отказе контракт не продлят`,act:{t:'demand',years:renewYears,wage:r1(renewWage*1.35),ch:role>=3?.6:.35}}
   ];
+  {const pd=preDealDecision();if(pd)D.push(pd)}
   if(P.contract<=0){
     const opts=genOffers(P.age>=33?riP(1,3):riP(2,4),true).map(o=>offerOpt(o));
     if(role>=1&&!(P.age>=34&&RP()<.5))opts.unshift(...renewOpts().slice(0,1).map(o=>({...o,label:`«${club.name}»: новый контракт`})));
@@ -2624,7 +2640,7 @@ function genDecisions(){
     D.push({club:true,title:'Контракт истёк',body:`Вы свободный агент — клубы могут подписать вас без компенсации. ${ctx}`,opts});
   }else{
     if(P.contract===1&&role>=2&&P.loanFrom==null)D.push({club:false,title:'Продление контракта',body:`Контракт с «${club.name}» истекает через год. Клуб предлагает новые условия. ${ctx}`,opts:[...renewOpts(),{label:'Не продлевать',sub:'Доиграть контракт',detail:'Через год станете свободным агентом',act:{t:'none'}}]});
-    let lam=.6+(avg>=7?.6:0)+(avg>=7.4?.8:0)+(P.wantOut?1.6:0)+(role<=1?.5:0)+(P.ovr>club.str+3?1:0)-(P.age>=32?.5:0)+(P.agent?1:0)+(P.subs&&P.subs.agency?.9:0)+clamp((P.rep-40)/40,-.4,1);
+    let lam=.6+(avg>=7?.6:0)+(avg>=7.4?.8:0)+(P.wantOut?1.6:0)+(role<=1?.5:0)+(P.ovr>club.str+3?1:0)-(P.age>=32?.5:0)+(P.agent?1:0)+(P.subs&&P.subs.agency?.9:0)+clamp((P.rep-40)/40,-.4,1)-(trOn('loyal')?.5:0);
     const n=clamp(poissonP(lam),0,4);
     if(n){const offers=genOffers(n,false);const block=Math.min(.7,(role>=3&&P.contract>=2?(P.wantOut?.15:.3):0)+(P.captain===club.id?.25:0));offers.forEach(o=>o.block=block);
       D.push({club:true,title:'Трансферные предложения',body:`${n===1?'Один клуб готов':'Несколько клубов готовы'} заплатить за вас. ${ctx} Контракт ещё на ${yrs(P.contract)}.`,opts:[...offers.map(o=>offerOpt(o)),{label:'Остаться',sub:`В «${club.name}»`,detail:'Отказать всем',act:{t:'none'}}]})}
@@ -2652,6 +2668,7 @@ function genDecisions(){
       {label:'Конкуренция',sub:'Лидер здесь один',detail:'50%: вы главный. Иначе меньше игрового времени',act:{t:'fx',chance:.5,roleMod:1,rep:2,log:`В споре за лидерство с ${p.name} победили вы.`,fail:{roleMod:-2,team:-6,log:`${p.name} оказался главным в «${club.name}».`}}}]})})}
   // reactions to what happened last season
   D.push(...anomalyDecisions());
+  {const pv=protDecision();if(pv)D.push(pv)}
   {const pv=promiseDecision();if(pv)D.push(pv)}
   // transfer saga and rare easter eggs
   {const sg=sagaDecision(club);if(sg)D.push(sg)}
@@ -2684,7 +2701,8 @@ function applyAct(a){
       if(a.block&&RP()<a.block){L.push(`«${from.name}» отказался отпускать вас в «${to.name}».`);break}
       if(a.army)P.army=true;
       if(a.loan){relOnMove(from,to,true);P.loanFrom=P.clubId;P.clubId=to.id;L.push(`Аренда в «${to.name}» на сезон.`);P.transfers.push({y:G.year,from:from.name,to:to.name,fee:0,loan:true})}
-      else{relOnMove(from,to,false);P.clubId=to.id;P.contract=a.years;P.wage=a.wage;P.wantOut=false;L.push(`Переход в «${to.name}»: ${a.fee?fmtM(a.fee):'свободный агент'}, контракт на ${yrs(a.years)}, ${fmtW(a.wage)}.`);P.transfers.push({y:G.year,from:from.name,to:to.name,fee:a.fee,loan:false});if(a.fee&&P.age<=22&&RP()<.5)P.buyback={club:from.id,until:G.year+2,fee:r1(a.fee*1.4)};else if(P.buyback&&P.buyback.club===to.id)P.buyback=null;P.maxFee=Math.max(P.maxFee||0,a.fee||0);nemAvoid();if(RP()<(P.rep>=70?.15:.4)){G.pending.splice(1,0,numberDecision(to));G.pendTotal++}if(G.rec.fee&&!G.rec.fee.mine&&a.fee>G.rec.fee.v)L.push(`Самый дорогой трансфер в истории футбола: ${fmtM(a.fee)}. Прежний рекорд — ${G.rec.fee.h}, €${G.rec.fee.v} млн.`)}
+      else{if(P.oath!=null&&P.oath===to.id){P.rep=clamp(P.rep-8,0,100);L.push(`Вы нарушили клятву и перешли в «${to.name}». Бывшие болельщики называют вас предателем.`);P.oath=null}
+        relOnMove(from,to,false);P.clubId=to.id;P.contract=a.years;P.wage=a.wage;P.wantOut=false;L.push(`Переход в «${to.name}»: ${a.fee?fmtM(a.fee):'свободный агент'}, контракт на ${yrs(a.years)}, ${fmtW(a.wage)}.`);P.transfers.push({y:G.year,from:from.name,to:to.name,fee:a.fee,loan:false});if(a.fee&&P.age<=22&&RP()<.5)P.buyback={club:from.id,until:G.year+2,fee:r1(a.fee*1.4)};else if(P.buyback&&P.buyback.club===to.id)P.buyback=null;P.maxFee=Math.max(P.maxFee||0,a.fee||0);nemAvoid();if(RP()<(P.rep>=70?.15:.4)){G.pending.splice(1,0,numberDecision(to));G.pendTotal++}if(G.rec.fee&&!G.rec.fee.mine&&a.fee>G.rec.fee.v)L.push(`Самый дорогой трансфер в истории футбола: ${fmtM(a.fee)}. Прежний рекорд — ${G.rec.fee.h}, €${G.rec.fee.v} млн.`)}
       G.moved=true;break}
     case 'renew':P.contract=a.years;P.wage=a.wage;L.push(`Новый контракт с «${from.name}» на ${yrs(a.years)}, ${fmtW(a.wage)}.`);break;
     case 'demand':if(RP()<a.ch){P.contract=a.years;P.wage=a.wage;L.push(`Клуб уступил: новый контракт на ${yrs(a.years)}, ${fmtW(a.wage)}.`)}else L.push(`«${from.name}» отказался поднимать зарплату. Контракт не продлён.`);break;
@@ -2749,6 +2767,7 @@ function board(m,center,extra){
 }
 function optsHtml(m,act){return `<div class="opts">${m.opts.map((o,i)=>`<button class="opt" data-a="${act}" data-i="${i}"><span class="o-l">${esc(o.label)}</span>${o.sub?`<span class="o-s">${esc(o.sub)}</span>`:''}${o.badges?`<span class="badges">${o.badges}</span>`:''}${o.detail?`<span class="o-d">${esc(o.detail)}</span>`:''}</button>`).join('')}</div>`}
 function matchView(){
+  if(MATCH.kind==='winter')return winterView(MATCH);
   const m=MATCH,pens=m.kind==='pens',res=m.kind==='result',live=m.kind==='live';
   const head=`<div class="d-top"><span class="eyebrow">Сезон ${S.label} · ${res?'Итог матча':pens?'Серия пенальти':live?'Прямой эфир':'Большой матч'}</span><span class="small muted">${esc(m.comp)} · ${esc(m.st)}</span></div>`;
   if(live){
@@ -3537,10 +3556,15 @@ const EVENTS=[
     return ev('Обложка видеоигры','Разработчики главного футбольного симулятора хотят видеть вас на обложке новой части. Фанаты уже вспоминают «проклятие обложки».',[
       ['Согласиться',`Гонорар ${fmtM(pay)}`,'Подписчики +15%, репутация растёт. Говорят, после обложки игроки проваливают сезон',{money:pay,fol:.15,rep:3,flag:'cover',chance:.75,log:'Вы на обложке видеоигры — и проклятие вас не тронуло.',fail:{money:pay,fol:.15,rep:3,flag:'cover',qMod:.93,log:'Обложка вышла, а форма ушла: «проклятие» сработало.'}}],
       ['Отказаться','Суеверие дороже','Чуть быстрее прогресс',{growMod:.2,flag:'cover',log:'Вы отказались от обложки — от греха подальше.'}]])}}
-  ,{w:3,f:()=>{const P=G.P;if(P.baby||P.age<23||P.age>34||RP()>.25)return null;
+  ,{w:4,f:()=>{const P=G.P;if((P.fam&&P.fam.p)||P.age<19||P.age>29||RP()>.3)return null;
+    return ev('Знакомство','На благотворительном вечере вы весь вечер проговорили с человеком, о котором теперь не можете перестать думать. А в родном городе вас всё ещё ждёт старая любовь.',[
+      ['Новые отношения','Звезда соцсетей','Подписчики растут, о вас пишут светские хроники',{fam:'star',fol:.08,tr:{party:5},log:'У вас начался громкий роман.'}],
+      ['Вернуться к старой любви','Человек из родного города','Спокойствие и любовь земляков',{fam:'home',fans:4,tr:{loyal:5},log:'Вы снова вместе с любовью из родного города.'}],
+      ['Не сейчас','Только футбол','Чуть быстрее прогресс',{growMod:.2,log:'Вы решили не отвлекаться от футбола.'}]])}}
+  ,{w:3,f:()=>{const P=G.P;if((P.fam?P.fam.kids:P.baby?1:0)>=3||(P.fam&&!P.fam.p)||P.age<23||P.age>36||RP()>.25)return null;
     return ev('Пополнение в семье','У вас родился ребёнок! Роды пришлись на неделю важного выезда.',[
-      ['Остаться с семьёй','Пропустить пару матчей','Болельщики растроганы, тренер понимает',{inj:2,fans:5,rep:1,fol:.04,flag:'baby',log:'Вы пропустили выезд ради рождения ребёнка.'}],
-      ['Сыграть и сразу домой','Гол — для малыша','Тренер ценит, а празднование «качаю колыбель» облетит соцсети',{coach:6,fol:.06,qMod:1.02,flag:'baby',log:'Вы сыграли и посвятили гол новорождённому.'}]])}}
+      ['Остаться с семьёй','Пропустить пару матчей','Болельщики растроганы, тренер понимает',{inj:2,fans:5,rep:1,fol:.04,flag:'baby',kid:1,log:'Вы пропустили выезд ради рождения ребёнка.'}],
+      ['Сыграть и сразу домой','Гол — для малыша','Тренер ценит, а празднование «качаю колыбель» облетит соцсети',{coach:6,fol:.06,qMod:1.02,flag:'baby',kid:1,log:'Вы сыграли и посвятили гол новорождённому.'}]])}}
   ,{w:3,f:()=>{const P=G.P,c=C(P.clubId);if(P.age>24||c.str<66||RP()>.18)return null;
     return ev('Кумир детства в команде',`В «${c.name}» подписали ветерана, на плакат которого вы смотрели в детстве. Он на вашей позиции.`,[
       ['Учиться у него','Каждая тренировка — мастер-класс','Заметно быстрее прогресс, меньше игрового времени',{growMod:.9,roleMod:-1,team:5,log:'Ваш кумир детства стал наставником.'}],
@@ -3558,7 +3582,7 @@ const EVENTS=[
       ['Отправить к агенту','Без лишнего шума','',{log:'Вы перевели разговор на агента.'}]],true)}}
   ,{w:3,f:()=>{const P=G.P;if(P.mentor||P.age<29||RP()>.3)return null;
     return ev('Подопечный из академии','Лучший юниор академии подходит после тренировки: «Можно я буду оставаться с вами?» Тренер одобрительно кивает.',[
-      ['Взять шефство','Делиться опытом','Раздевалка и тренер ценят, а ваш ученик войдёт в наследие',{team:10,coach:6,rep:2,retire:.3,flag:'mentor',log:'У вас появился ученик из академии.'}],
+      ['Взять шефство','Делиться опытом','Раздевалка и тренер ценят, а ваш ученик войдёт в наследие',{team:10,coach:6,rep:2,retire:.3,flag:'mentor',prot:1,log:'У вас появился ученик из академии.'}],
       ['Не до этого','Своя карьера важнее','Чуть больше времени на себя',{growMod:.2,log:'Вы отказали юниору.'}]])}}
   ,{w:3,f:()=>{const P=G.P;if(P.exam||P.age>19||RP()>.4)return null;
     return ev('Выпускные экзамены','Школа требует сдать экзамены, а у вас сборы и первая команда. Мама настаивает на аттестате.',[
@@ -3595,6 +3619,40 @@ const EVENTS=[
     return ev('Последний танец','Тело подсказывает: сил осталось на один сезон. Можно объявить об этом сейчас — и превратить сезон в прощальный тур.',[
       ['Объявить последний сезон','Прощальный тур','Каждый стадион аплодирует, игра на эмоциях. Карьера закончится после сезона',{lastDance:1,qMod:1.06,fans:15,rep:3,log:'Вы объявили, что этот сезон — последний.'}],
       ['Не загадывать','Пока ноги бегут','',{flag:'lastDance',log:'Вы не стали объявлять о завершении карьеры.'}]])}}
+  ,{w:4,f:()=>{if(!trOn('party')||RP()>.45)return null;
+    return ev('Вечеринка звёзд','Рэпер, с которым вы знакомы по соцсетям, зовёт на закрытую вечеринку за два дня до важного матча. Там будут все.',[
+      ['Пойти','Ненадолго','Подписчики растут. 40%: фото утекут, тренер в ярости',{chance:.6,fol:.1,log:'Вы сходили на вечеринку — никто ничего не узнал.',fail:{fol:.12,coach:-12,qMod:.95,log:'Фото с вечеринки утекли в сеть. Тренер оставил вас в запасе.'}}],
+      ['Отказаться','Матч важнее','Тренер оценит',{coach:4,tr:{party:-6,pro:4},log:'Вы отказались от вечеринки перед матчем.'}]])}}
+  ,{w:4,f:()=>{if(!trOn('lead')||RP()>.45)return null;
+    return ev('Голос раздевалки','Партнёры просят вас поговорить с руководством: клуб задерживает премиальные.',[
+      ['Пойти к президенту','За всю команду','Раздевалка горой за вас, руководство недовольно. 60%: премии выплатят',{chance:.6,team:12,coach:-3,rep:1,log:'После вашего разговора команде выплатили премии.',fail:{team:6,coach:-8,log:'Руководство отказало, но команда оценила, что вы пошли.'}}],
+      ['Это не моё дело','Каждый за себя','Раздевалка разочарована',{team:-8,tr:{lead:-8},log:'Вы отказались говорить с руководством.'}]],true)}}
+  ,{w:4,f:()=>{if(!trOn('pro')||G.P.age<23||RP()>.4)return null;
+    return ev('Режим 24/7','Клуб просит вас показать молодым, как готовиться: подъём в шесть, лёд, питание по граммам.',[
+      ['Взять молодых с собой','Пример для всех','Раздевалка и тренер ценят, прогресс быстрее',{team:6,coach:6,growMod:.3,tr:{lead:4},log:'Молодые теперь тренируются по вашему режиму.'}],
+      ['Работать в одиночку','Режим — дело личное','Ещё быстрее прогресс',{growMod:.5,log:'Вы сосредоточились на собственном режиме.'}]])}}
+  ,{w:4,f:()=>{const P=G.P,c=C(P.clubId),der=(G.derby[c.id]||[]).map(C).filter(Boolean);if(!trOn('loyal')||P.oath||!der.length||RP()>.45)return null;const r=pickP(der);
+    return ev('Клятва верности',`Ультрас «${c.name}» просят публично пообещать: вы никогда не перейдёте в «${r.name}».`,[
+      ['Поклясться','На гербе клуба','Трибуны вас обожают. Нарушите — не простят никогда',{fans:15,rep:1,oath:r.id,log:`Вы поклялись никогда не играть за «${r.name}».`}],
+      ['Отказаться','Никогда не говори никогда','Трибуны насторожились',{fans:-5,log:'Вы не стали давать клятв.'}]],true)}}
+  ,{w:4,f:()=>{if(!trOn('hot')||RP()>.45)return null;const n=riP(2,4);
+    return ev('Красная карточка',`В товарищеском матче вы толкнули арбитра после спорного свистка. Федерация грозит дисквалификацией на ${n} ${plural(n,'матч','матча','матчей')}.`,[
+      ['Обжаловать','Это была провокация','50%: дисквалификацию снимут',{chance:.5,log:'Апелляция удовлетворена.',fail:{inj:n,rep:-3,log:`Апелляцию отклонили: ${n} ${plural(n,'матч','матча','матчей')} дисквалификации.`}}],
+      ['Извиниться перед арбитром','Признать ошибку','Срок сократят',{inj:Math.max(1,n-2),rep:1,tr:{hot:-6},log:'Вы извинились, дисквалификацию сократили.'}],
+      ['Пойти на курсы управления гневом','Работа над собой','Срок полный, но характер мягче',{inj:n,tr:{hot:-15},coach:5,log:'Вы записались на курсы управления гневом.'}]])}}
+  ,{w:3,f:()=>{const P=G.P,L=styList(P.pos),cur=styOf(P);if(L.length<2||!cur||RP()>.12)return null;const alt=pickP(L.filter(s=>s[0]!==P.style));
+    return ev('Тренер меняет вашу роль',`Новая тактика: тренер видит вас не как «${cur[1].toLowerCase()}», а как «${alt[1].toLowerCase()}». ${alt[2]}.`,[
+      [`Стать: ${alt[1].toLowerCase()}`,'Довериться тренеру','Тренер доволен, статистика изменится',{style:alt[0],coach:10,log:`Ваша новая роль — ${alt[1].toLowerCase()}.`}],
+      [`Остаться: ${cur[1].toLowerCase()}`,'Это моя игра','Тренер недоволен',{coach:-8,tr:{hot:3},log:'Вы отказались менять свою роль.'}]],true)}}
+  ,{w:5,f:()=>{const P=G.P,last=G.seasons[0],f=last&&last.form;if(!f||f.maxDry<9||POS[P.pos].grp==='GK'||POS[P.pos].grp==='DEF'||RP()>.6)return null;
+    return ev('Кризис результативности',`Прошлый сезон: ${f.maxDry} ${plural(f.maxDry,'матч','матча','матчей')} подряд без яркой игры. Журналисты спрашивают, не закончился ли вы.`,[
+      ['Работа с психологом','Голова решает','Новый сезон начнёте увереннее',{money:-.1,qMod:1.05,log:'Летом вы поработали с психологом.'}],
+      ['Разбор с видеоаналитиком','Найти причину','Прогресс быстрее',{growMod:.4,tr:{pro:3},log:'Вы разобрали каждый матч прошлого сезона.'}],
+      ['«Я ещё всем покажу»','Злость','Весной статистика лучше, тренер против громких слов',{qMod:1.06,coach:-4,tr:{hot:4},log:'Вы пообещали ответить на критику голами.'}]])}}
+  ,{w:4,f:()=>{const P=G.P,last=G.seasons[0],f=last&&last.form;if(!f||f.best<8||RP()>.5)return null;
+    return ev('Серия, о которой пишут',`${f.best} ${plural(f.best,'матч','матча','матчей')} подряд в ударе — пресса сравнивает вас с легендами.`,[
+      ['Обложка журнала','Купаться в славе','Подписчики и репутация',{fol:.08,rep:2,tr:{party:3},log:'Вы на обложке футбольного журнала.'}],
+      ['Без лишних слов','Серия — это команда','Раздевалка ценит скромность',{team:6,tr:{lead:3},log:'Вы поблагодарили партнёров за свою серию.'}]])}}
 ];
 const NICKS={ATT:['Убийца','Снайпер','Молния','Танк','Кобра'],MID:['Профессор','Дирижёр','Волшебник','Мотор','Компас'],DEF:['Стена','Скала','Шериф','Бульдог','Таран'],GK:['Паук','Кошка','Великан','Спрут','Сейф']};
 const PROM_W={ga:n=>`${n} голов и передач`,cs:n=>`${n} сухих матчей`,tro:()=>'трофей'};
@@ -3621,6 +3679,7 @@ function genEvents(){
 function applyFx(fx){
   const P=G.P;
   if(fx.chance!=null&&RP()>fx.chance-(G.P&&G.P.hard?.1:0))fx=fx.fail||{};
+  trFromFx(fx);
   if(fx.rep)P.rep=clamp(P.rep+fx.rep,0,100);
   if(fx.money)P.earn+=fx.money*1e6;
   if(fx.roleMod)P.roleMod+=fx.roleMod;
@@ -3638,7 +3697,14 @@ function applyFx(fx){
   if(fx.doc)P.doc=true;
   if(fx.ntCaptain)P.ntCaptain=true;
   if(fx.captain)P.captain=P.clubId;
-  if(fx.pos){P.pos=fx.pos;syncOvr();P.posHist=(P.posHist||[]).concat({y:G.year,pos:fx.pos})}
+  if(fx.pos){P.pos=fx.pos;syncOvr();P.posHist=(P.posHist||[]).concat({y:G.year,pos:fx.pos});styFix()}
+  if(fx.style)P.style=fx.style;
+  if(fx.oath!=null)P.oath=fx.oath;
+  if(fx.fam){P.fam=P.fam||{p:null,mar:0,kids:0};P.fam.p=fx.fam}
+  if(fx.kid){P.fam=P.fam||{p:'home',mar:0,kids:0};P.fam.kids++}
+  if(fx.preDeal!=null)P.preDeal={club:fx.preDeal,y:G.year};
+  if(fx.prot&&!P.prot)P.prot=protNew();
+  if(P.prot){if(fx.protOvr)P.prot.ovr+=fx.protOvr;if(fx.protPot)P.prot.pot+=fx.protPot;if(fx.protTo!=null){P.prot.club=fx.protTo;P.prot.st=1}}
   if(fx.num)P.num=fx.num;
   if(fx.cel)P.cel=fx.cel;
   if(fx.fol)P.fol=r2((P.fol||0)*(1+fx.fol));
@@ -3666,11 +3732,269 @@ function applyFx(fx){
   if(fx.log)G.summer.push(fx.log);
 }
 
+/* ================= character, playing style, form, protégé ================= */
+const TRAITS={
+  lead:{n:'Вожак',d:'Раздевалка слушает вас: команда сильнее, отношения с партнёрами растут'},
+  pro:{n:'Профессионал',d:'Режим и сон: прогресс быстрее, травмы реже, спад после 30 мягче'},
+  party:{n:'Звезда тусовок',d:'Подписчики растут на треть быстрее, но прогресс чуть медленнее'},
+  loyal:{n:'Верный',d:'Болельщики любят сильнее, а агенты реже зовут в другие клубы'},
+  hot:{n:'Взрывной',d:'Злость помогает забивать, но тренеры такое не любят'}};
+const TR_ON=60;
+const trv=k=>{const P=G&&G.P;return P&&P.tr?P.tr[k]||0:0};
+const trOn=k=>trv(k)>=TR_ON;
+function trInit(pick){const t={};Object.keys(TRAITS).forEach(k=>t[k]=pick.includes(k)?70:25);return t}
+function trAdd(k,v){const P=G.P;if(!P.tr)P.tr=trInit([]);if(!v)return;const was=P.tr[k]>=TR_ON;P.tr[k]=Math.round(clamp(P.tr[k]+v,0,100));const now=P.tr[k]>=TR_ON;
+  if(was!==now)G.summer.push(now?`Характер: в вас всё больше видят черту «${TRAITS[k].n}».`:`Характер: черта «${TRAITS[k].n}» уходит в прошлое.`)}
+/* decisions shape the character: every effect nudges the matching trait */
+function trFromFx(fx){
+  if(fx.team>0)trAdd('lead',fx.team*.4);if(fx.captain||fx.ntCaptain)trAdd('lead',8);
+  if(fx.growMod>0)trAdd('pro',fx.growMod*8);if(fx.diet)trAdd('pro',6);
+  if(fx.fol>0)trAdd('party',fx.fol*30);if(fx.doc||fx.sponsor)trAdd('party',4);if(fx.growMod<0&&(fx.fol||fx.money>0))trAdd('party',3);
+  if(fx.wantOut)trAdd('loyal',-12);if(fx.contractAdd)trAdd('loyal',10);if(fx.fans>0)trAdd('loyal',fx.fans*.15);
+  if(fx.coach<0)trAdd('hot',-fx.coach*.4);if(fx.team<0)trAdd('hot',-fx.team*.3);if(fx.rep<0)trAdd('hot',-fx.rep*.5);
+  if(fx.tr)Object.entries(fx.tr).forEach(([k,v])=>trAdd(k,v));
+}
+function trSeason(){
+  const P=G.P;if(!P.tr)P.tr=trInit([]);const t=P.tr;
+  Object.keys(t).forEach(k=>{t[k]=Math.round(t[k]+(35-t[k])*.04)});
+  if(clubStreak()>=4)t.loyal=Math.min(100,t.loyal+3);
+  if(S.captain)t.lead=Math.min(100,t.lead+3);
+  if(P.subs&&P.subs.trainer)t.pro=Math.min(100,t.pro+2);
+  if(P.subs&&P.subs.media)t.party=Math.min(100,t.party+2);
+  if(trOn('lead'))P.rel.team=Math.min(100,P.rel.team+3);
+  if(trOn('loyal'))P.rel.fans=Math.min(100,P.rel.fans+3);
+  if(trOn('hot'))P.rel.coach=Math.max(0,P.rel.coach-3);
+}
+/* playing style inside the position: shifts goals/assists and positional stats, some leagues look for it */
+const PSTY={
+  ST:[['target','Таргетмен','Игра спиной и головой: голов чуть больше, передач меньше, много борьбы',{g:1.04,a:.85,kp:.8,dr:.7,tk:1.3,pa:.9},['ENG','SCO','GER','TUR','NED']],
+      ['poach','Финишёр','Живёт в штрафной: больше голов, меньше участия в игре',{g:1.1,a:.8,kp:.75,dr:.85,pa:.8},['ITA','FRA','POR','USA']],
+      ['f9','Ложная девятка','Опускается за мячом: меньше голов, больше передач и ключевых пасов',{g:.85,a:1.25,kp:1.3,dr:1.1,pa:1.2},['ESP','ITA','BRA','ARG']]],
+  W:[['inv','Инвертированный вингер','Смещается в центр под удар: больше голов',{g:1.1,a:.85,kp:.9},['ENG','ESP','GER']],
+     ['classic','Классический вингер','Вдоль бровки и навес: больше передач',{g:.85,a:1.18,kp:1.12,dr:.9},['ENG','NED','BRA','ARG']],
+     ['speed','Скоростной дриблёр','Обводки и рывки: больше обводок, оценки выше в больших победах',{dr:1.3,a:.95,kp:.9,pa:.85},['FRA','POR','BRA','KSA']]],
+  CAM:[['pm','Плеймейкер','Последний пас: больше передач и ключевых пасов',{g:.88,a:1.06,kp:1.08,dr:.9},['ESP','ITA','ARG','BRA']],
+       ['shadow','Теневой нападающий','Врывается в штрафную: больше голов',{g:1.1,a:.85,kp:.85},['GER','ENG','NED']],
+       ['free','Свободный художник','Импровизация: обводки и редкие шедевры',{dr:1.3,a:.9,kp:.95,ac:-.02},['BRA','ARG','POR','TUR']]],
+  CM:[['b2b','Бокс-ту-бокс','От штрафной до штрафной: голы и отборы',{g:1.12,tk:1.08,pa:.92,kp:.85,ac:-.01},['ENG','GER','SCO']],
+      ['dlp','Диспетчер','Метроном команды: больше пасов, точнее передачи',{pa:1.12,ac:.015,kp:1.1,g:.8,tk:.9,dr:.8},['ESP','ITA','POR']],
+      ['mez','Мецала','Полуфланг и рывки в полуфланг: обводки и передачи',{dr:1.25,a:1.08,tk:.8,pa:.92},['ITA','ESP','FRA']]],
+  CDM:[['dest','Разрушитель','Отбор и перехват: больше отборов',{tk:1.15,pa:.9,kp:.8,a:.8},['ENG','ITA','GER','FRA']],
+       ['reg','Региста','Пас из глубины: больше пасов и ключевых передач',{pa:1.15,kp:1.25,a:1.1,tk:.82},['ITA','ESP','BRA']],
+       ['anchor','Якорь','Позиция и надёжность: точный пас, сухие матчи',{tk:1.05,ac:.015,kp:.85,dr:.8,g:.85},['GER','NED','POR']]],
+  CB:[['stop','Стоппер','Жёсткая игра и голы головой после углов',{tk:1.1,g:1.1,pa:.9,kp:.7,ac:-.02},['ENG','SCO','TUR','GER']],
+      ['bpd','Защитник с мячом','Начинает атаки: больше пасов и ключевых передач',{pa:1.12,ac:.015,kp:1.3,tk:.88},['ESP','NED','ITA']],
+      ['lib','Либеро','Подключается к атакам: обводки и передачи',{dr:1.4,a:1.15,tk:.85,ac:-.01},['GER','ITA','BRA']]],
+  FB:[['att','Атакующий фулбек','Почти вингер: больше передач и ключевых пасов',{a:1.2,kp:1.15,tk:.82,dr:1.1},['BRA','ESP','ENG']],
+      ['solid','Надёжный защитник','Сначала оборона: больше отборов',{tk:1.12,a:.8,kp:.8,dr:.85},['ITA','GER','SCO']],
+      ['invfb','Инвертированный фулбек','Уходит в центр поля: больше пасов',{pa:1.15,ac:.015,kp:1.05,dr:.85,a:.85,tk:.95},['ENG','ESP','NED']]],
+  GK:[['sweep','Вратарь-чистильщик','Играет далеко от ворот: больше пасов, точнее передачи',{pa:1.25,ac:.02,sv:.95},['ESP','GER','NED']],
+      ['shot','Мастер сейвов','Реакция на линии: больше сейвов',{sv:1.08,pa:.9,ac:-.02},['ITA','ENG','FRA']],
+      ['pen','Пенальти-киллер','Читает пенальтистов: шире охват в сериях пенальти',{sv:.98},['ARG','BRA','POR','TUR']]]};
+const styGrp=pos=>pos==='LW'||pos==='RW'?'W':pos==='LB'||pos==='RB'?'FB':pos;
+const styList=pos=>PSTY[styGrp(pos)]||[];
+function styOf(P){P=P||(G&&G.P);if(!P||!P.style)return null;return styList(P.pos).find(s=>s[0]===P.style)||null}
+const styM=k=>{const s=styOf();return s&&s[3][k]!=null?s[3][k]:k==='ac'?0:1};
+const styFits=c=>{const s=styOf();return !!(s&&s[4].includes(c.cc))};
+function styFix(){const P=G.P;if(P.style&&!styOf(P)){const s=styList(P.pos)[0];P.style=s?s[0]:null;if(s)G.summer.push(`Новая позиция — новая роль: теперь вы ${s[1].toLowerCase()}.`)}}
+/* form: a run of good games and a dry spell, both visible and both felt */
+function formTick(g,a,rt,ga,d){
+  const P=G.P,grp=POS[P.pos].grp,f=S.form||(S.form={run:0,best:0,dry:0,maxDry:0,r:[]});
+  const hit=grp==='GK'||grp==='DEF'?(ga===0&&d.starter)||rt>=7.4:grp==='MID'?g>0||a>0||rt>=7.6:g>0||rt>=7.9;
+  if(hit){f.run++;f.dry=0;if(f.run>f.best)f.best=f.run}else{f.run=0;f.dry++;if(f.dry>f.maxDry)f.maxDry=f.dry}
+  f.r.push(r1(rt));if(f.r.length>5)f.r.shift();
+  const avg=f.r.reduce((x,y)=>x+y,0)/f.r.length;
+  P.formQ=f.run>=4?1.04:f.dry>=6||(f.r.length>=5&&avg<6.4)?.95:1;
+}
+const formWord=()=>{const g=POS[G.P.pos].grp;return g==='ATT'?'с голом или оценкой от 7,9':g==='MID'?'с голом, передачей или оценкой от 7,6':'на ноль или с оценкой от 7,4'};
+function formSeason(){
+  const P=G.P,f=S.form;P.formQ=1;if(!f)return;
+  P.st.bestRun=Math.max(P.st.bestRun||0,f.best);
+  if(f.best>=6){S.news.push(`Серия сезона: ${f.best} ${plural(f.best,'матч','матча','матчей')} подряд в ударе.`);P.rep=clamp(P.rep+1,0,100)}
+  if(f.maxDry>=10&&POS[P.pos].grp!=='GK'&&POS[P.pos].grp!=='DEF'){S.news.push(`Кризис сезона: ${f.maxDry} ${plural(f.maxDry,'матч','матча','матчей')} подряд без яркой игры. Пресса задавала неудобные вопросы.`);P.rel.coach=Math.max(0,P.rel.coach-4)}
+}
+/* protégé from the academy: grows season by season and comes back into the story */
+function protNew(){const P=G.P,c=C(P.clubId);return {name:clubPName(c,RP),pos:pickP(['ST','LW','RW','CAM','CM','CDM','CB','LB','RB','GK']),age:16,ovr:riP(50,56),pot:riP(72,90),club:c.id,st:0,y:G.year,apps:0,g:0}}
+function protSeason(){
+  const p=G.P.prot;if(!p||p.gone)return;p.age++;
+  const same=p.club===S.clubId,gr=p.age<=20?riP(2,5):p.age<=24?riP(1,3):p.age<=29?riP(0,1):-riP(0,2);
+  p.ovr=Math.max(40,Math.min(p.pot,p.ovr+gr+(same&&p.st>=1?1:0)));
+  if(p.st>=1){const c=C(p.club),k=[2,8,18,28,34][roleOf(p.ovr,c.str)];p.apps+=k;p.g+=Math.round(k*POS[p.pos].g*1.1)}
+  else if(p.age>=19&&p.ovr>=C(p.club).str-14&&p.club!==G.P.clubId){p.st=1;G.summer.push(`Ваш ученик ${p.name} дебютировал за «${C(p.club).name}».`)}
+  if(p.age>=36){p.gone=1;G.summer.push(`Ваш ученик ${p.name} завершил карьеру.`)}
+}
+function protDecision(){
+  const P=G.P,p=P.prot;if(!p||p.gone)return null;const c=C(P.clubId),same=p.club===P.clubId;
+  if(p.st===0&&same&&p.age>=18&&p.ovr>=c.str-14){p.st=1;
+    return ev('Дебют ученика',`${p.name}, которого вы взяли под крыло в академии, вызван в первую команду «${c.name}». Ему ${p.age}, и он смотрит на вас.`,[
+      ['Отдать ему пенальти в дебюте','Пусть запомнит этот день','Раздевалка и трибуны оценят',{team:6,fans:3,protOvr:1,tr:{lead:4},log:`${p.name} забил в дебюте с вашего пенальти.`}],
+      ['Пусть пробивается сам','Без поблажек','Ученик вырастет крепче',{protPot:2,tr:{pro:3},log:`${p.name} пробивается в состав без вашей помощи.`}]])}
+  if(p.st===1&&same&&!p.over&&POS[p.pos].grp===POS[P.pos].grp&&p.ovr>=P.ovr-1){p.over=1;
+    return ev('Ученик обогнал учителя',`Тренер всё чаще ставит в старт ${p.name} — на вашу позицию. Пресса пишет: «Ученик превзошёл учителя».`,[
+      ['Уступить место','Его время пришло','Меньше игрового времени, но раздевалка и пресса восхищены',{roleMod:-1,team:8,rep:2,tr:{lead:5},log:`Вы уступили место своему ученику ${p.name}.`}],
+      ['Бороться за место','Учитель ещё не сказал последнего слова','50%: место ваше',{chance:.5,roleMod:1,coach:3,log:'Вы отстояли место в составе.',fail:{roleMod:-2,tr:{hot:4},log:`${p.name} выиграл конкуренцию.`}}],
+      ['Искать новый клуб','Двум звёздам тесно','Больше предложений летом',{wantOut:1,log:'Вы решили уступить клуб ученику и искать новую команду.'}]],true)}
+  if(p.st===1&&!p.sold&&p.ovr>=74&&RP()<.4){
+    const big=G.clubs.filter(x=>x.id!==p.club&&x.str>=p.ovr-1&&x.str>=C(p.club).str+3).sort((a,b)=>b.str-a.str).slice(0,8),t=pickP(big);if(!t)return null;p.sold=1;
+    if(!same){p.club=t.id;G.summer.push(`Ваш ученик ${p.name} перешёл в «${t.name}».`);return null}
+    return ev('Гранд покупает ученика',`«${t.name}» предлагает за ${p.name} огромные деньги. Парень спрашивает вашего совета.`,[
+      ['Благословить','Такой шанс бывает раз','Ученик уходит в гранд, вы — человек, который его вырастил',{rep:2,protTo:t.id,log:`${p.name} уходит в «${t.name}» с вашего благословения.`}],
+      ['Уговорить остаться','Ещё год вместе','50%: останется. Раздевалка будет сильнее',{chance:.5,team:6,clubStr:.5,log:`${p.name} остался в команде после разговора с вами.`,fail:{protTo:t.id,log:`${p.name} всё же уходит в «${t.name}».`}}]])}
+  return null;
+}
+/* deal agreed in winter: the club comes back for you in the summer */
+function preDealDecision(){
+  const P=G.P,d=P.preDeal;if(!d)return null;P.preDeal=null;const t=C(d.club);if(!t||!allowedClub(t.id)||t.id===P.clubId)return null;
+  const of=makeOffer(t,P.contract<=0,1.05);if(P.contract<=0)of.fee=0;
+  return {club:true,title:'Договорённость с зимы',body:`Зимой вы ударили по рукам с «${t.name}». Клуб пришёл за вами, как и обещал.`,opts:[offerOpt(of),{label:'Отказаться',sub:'Передумать',detail:'Нарушить слово: репутация пострадает',act:{t:'fx',rep:-4,log:`Вы нарушили зимнюю договорённость с «${t.name}».`}}]};
+}
+/* ---- winter break: the half-way table, form and one decision ---- */
+function midTable(rows){return Object.values(rows).slice().sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga)||b.gf-a.gf||a.id-b.id)}
+function winterEvent(mid){
+  const P=G.P,f=S.form||{run:0,dry:0},c=C(P.clubId),n=mid.n,O=[];
+  const add=(w,t,b,o)=>O.push({w,t,b,o});
+  if(P.contract===1&&P.loanFrom==null&&P.rep>=25){const big=G.clubs.filter(x=>x.id!==c.id&&x.str>=c.str+2&&allowedClub(x.id)&&P.ovr>=x.str-8).sort((a,b)=>b.str-a.str).slice(0,10),t=pickP(big);
+    if(t)add(5,'Предконтракт',`Ваш контракт истекает летом, и «${t.name}» предлагает подписать предварительное соглашение: летом вы перейдёте бесплатно.`,[
+      ['Подписать',`Летом — в «${t.name}»`,'Болельщики «'+c.name+'» узнают и обидятся',{preDeal:t.id,fans:-10,tr:{loyal:-8},log:`Зимой вы договорились о переходе в «${t.name}».`}],
+      ['Отказать','Сначала — этот сезон','Клуб и трибуны оценят',{fans:4,coach:4,tr:{loyal:5},log:`Вы отказали «${t.name}» посреди сезона.`}]])}
+  if(TR.role<=1)add(4,'Мало минут','Первая половина сезона прошла на скамейке. Зимний сбор — шанс переубедить тренера.',[
+      ['Поговорить с тренером','Прямо и честно','50%: больше игрового времени весной',{chance:.5,roleNow:1,coach:4,log:'Зимой тренер пообещал вам больше минут.',fail:{coach:-6,tr:{hot:3},log:'Разговор с тренером ничего не дал.'}}],
+      ['Пахать на сборе','Доказать делом','Прогресс быстрее',{growMod:.2,tr:{pro:3},log:'На зимнем сборе вы работали больше всех.'}],
+      ['Попросить трансфер летом','Здесь мне не дадут шанса','Больше предложений летом',{wantOut:1,log:'Зимой вы попросили клуб отпустить вас летом.'}]]);
+  if(mid.pos<=2&&mid.lead<=4)add(4,'Гонка за титулом',`После первой половины — ${mid.pos}-е место${mid.pos===1?`, отрыв ${mid.lead} оч.`:`, отставание ${mid.lead} оч.`} Весна всё решит.`,[
+      ['Без отпуска','Индивидуальная работа на каникулах','Весной игра чуть лучше, 20%: перегрузка',{chance:.8,qMod:1.03,tr:{pro:4},log:'Вы провели зимние каникулы в зале.',fail:{inj:3,log:'Перегрузка на каникулах: пара матчей без вас.'}}],
+      ['«Мы будем чемпионами»','Громкое интервью','Трибуны в восторге, давление выше',{fans:8,rep:1,team:-3,tr:{hot:3},log:'Вы пообещали болельщикам титул.'}],
+      ['Отдых с семьёй','Перезагрузка','Спокойная голова',{team:2,log:'Вы перезагрузились с семьёй.'}]]);
+  if(mid.pos>n-4&&n>=10)add(4,'Клуб в зоне вылета',`«${c.name}» зимует на ${mid.pos}-м месте. Агенты уже звонят, а болельщики ждут, что звёзды останутся.`,[
+      ['Остаться и бороться','Это мой клуб','Трибуны запомнят',{fans:10,team:4,tr:{loyal:6},log:'Посреди кризиса вы публично пообещали остаться.'}],
+      ['Собрать команду','Разговор без тренера','Раздевалка сплотится',{team:8,qMod:1.02,tr:{lead:6},log:'Вы собрали команду на разговор.'}],
+      ['Слушать агента','Летом — в другой клуб','Больше предложений летом, трибуны недовольны',{wantOut:1,fans:-8,log:'Вы дали понять, что летом уйдёте.'}]]);
+  if(f.run>=4||(mid.apps>=8&&mid.g>=mid.apps*.6&&POS[P.pos].grp==='ATT'))add(4,'Вы в огне',`Вы ${f.run>=4?`${f.run} ${plural(f.run,'матч','матча','матчей')} подряд в ударе`:'забиваете почти в каждом матче'}. Все хотят кусочек вашей формы.`,[
+      ['Не сбить прицел','Никаких интервью','Форма сохранится',{qMod:1.03,tr:{pro:3},log:'Вы закрылись от прессы, чтобы не сбить форму.'}],
+      ['Интервью и реклама','Ловить момент','Подписчики и деньги',{fol:.08,money:r2(.05+P.rep*.004),tr:{party:4},log:'На волне формы вы снялись в рекламе.'}],
+      ...(P.contract<=2&&P.loanFrom==null?[['Продлить контракт сейчас','Пока вы на пике','+2 года, зарплата выше',{contractAdd:2,wageMul:1.15,log:'Зимой клуб продлил с вами контракт на пике формы.'}]]:[])]);
+  if(f.dry>=6||(mid.apps>=8&&mid.rt&&mid.rt<6.45))add(4,'Кризис формы',`${f.dry>=6?`${f.dry} ${plural(f.dry,'матч','матча','матчей')} подряд без яркой игры`:'Первая половина сезона не удалась'}. На зимнем сборе все смотрят на вас.`,[
+      ['Спортивный психолог',`${fmtM(.1)}`,'Голова чистая, весной игра лучше',{money:-.1,qMod:1.03,formReset:1,log:'Зимой вы поработали с психологом.'}],
+      ['Дополнительные тренировки','Перебить кризис работой','Прогресс быстрее, 15%: перегрузка',{chance:.85,growMod:.2,formReset:1,tr:{pro:3},log:'Вы перебили кризис работой на сборе.',fail:{inj:3,log:'Перегрузка на сборе: пара матчей без вас.'}}],
+      ['Сменить бутсы','Суеверие','50%: помогает',{chance:.5,qMod:1.04,formReset:1,fol:.02,log:'Новые бутсы — и вы снова забиваете.',fail:{fol:.02,log:'Бутсы новые, проблемы старые.'}}]]);
+  add(2,'Зимний сбор',`Половина сезона позади: ${mid.pos}-е место. Клуб выбирает, где провести сбор, и спрашивает мнение лидеров.`,[
+      ['Сбор в Дубае','Солнце и спонсоры','Подписчики растут, нагрузка лёгкая',{fol:.04,tr:{party:2},log:'Зимний сбор в Дубае.'}],
+      ['Сбор в горах','Тяжёлая работа','Прогресс чуть быстрее',{growMod:.15,tr:{pro:3},log:'Тяжёлый зимний сбор в горах.'}],
+      ['Каникулы дома','Семья и друзья детства','Отношения с болельщиками на родине',{fans:3,team:2,log:'Вы провели каникулы дома.'}]]);
+  const e=wpickP(O,x=>x.w);
+  return {title:e.t,body:e.b,opts:e.o.map(o=>({label:o[0],sub:o[1],detail:o[2],fx:o[3]}))};
+}
+function* winterBreak(lg,rows){
+  const P=G.P,t=midTable(rows),pos=t.findIndex(r=>r.id===P.clubId)+1;if(!pos)return;
+  const my=t[pos-1],c=S.club;
+  S.mid={pos,n:t.length,pts:my.pts,lead:pos===1?(t[1]?my.pts-t[1].pts:0):t[0].pts-my.pts,g:c.g,a:c.a,cs:c.cs,apps:c.apps,rt:c.apps?r1(c.rs/c.apps):0,run:S.form?S.form.run:0,dry:S.form?S.form.dry:0,r:S.form?S.form.r.slice():[]};
+  const e=winterEvent(S.mid);
+  moment(`Зимняя пауза: ${pos}-е место, ${my.pts} оч.`);
+  const i=yield {kind:'winter',comp:lg.name,st:'Зимняя пауза',title:e.title,mid:S.mid,top:t.slice(0,4).map(r=>[C(r.id).name,r.pts,r.id===P.clubId?1:0]),body:e.body,opts:e.opts.map(({label,sub,detail})=>({label,sub,detail}))};
+  const o=e.opts[i]||e.opts[0],fx=o.fx;
+  const fx2=fx.chance!=null&&RP()>fx.chance-(P.hard?.1:0)?(fx.fail||{}):fx;
+  if(fx2.roleNow)TR.role=clamp(TR.role+fx2.roleNow,0,4);
+  if(fx2.formReset&&S.form){S.form.dry=0;S.form.r=[];P.formQ=1}
+  if(fx2.qMod)P.qMod=r2((P.qMod||1)*fx2.qMod);
+  const rest={...fx2};delete rest.qMod;delete rest.chance;delete rest.fail;
+  if(rest.log)rest.log='Зима: '+rest.log;
+  applyFx(rest);
+  S.winter={t:e.title,c:o.label};
+  moment(`Зима: «${o.label}».`);
+}
+/* ---- key league matches: derby, return to a former club, title race, relegation battle ---- */
+const KEYL={derby:'Дерби',back:'Возвращение',top:'Битва за лидерство',rel:'Матч за выживание'};
+const keyOn=()=>!!(G&&G.P&&!isCoach()&&!inRoom());
+function keyPlan(lg,n){
+  const P=G.P,me=P.clubId,kf=Array.from({length:n},()=>new Map());let k=0;
+  const back=Object.keys(P.clubRel||{}).map(Number).filter(id=>lg.ids.includes(id)&&id!==me&&!(P.backSeen||{})[id]);
+  if(back.length){kf[0].set(back[0],'back');k++}
+  const der=(G.derby[me]||[]).filter(id=>lg.ids.includes(id)&&!back.includes(id));
+  if(der.length&&RP()<.85){kf[n>=2?(RP()<.5?0:1):0].set(pickP(der),'derby');k++}
+  return kf;
+}
+function keyPlan2(lg,rows,kf,leg){
+  if(!kf||leg>=kf.length)return;let used=0;kf.forEach(m=>used+=m.size);if(used>=2||S.keyL>=2)return;
+  const P=G.P,t=midTable(rows),pos=t.findIndex(r=>r.id===P.clubId),my=t[pos],n=t.length;if(pos<0)return;
+  let op=null,kind=null;
+  if(pos<=2){const r=t.slice(0,3).filter(x=>x.id!==P.clubId&&Math.abs(x.pts-my.pts)<=6&&!kf[leg].has(x.id));if(r.length){op=r[0].id;kind='top'}}
+  else if(pos>=n-4&&n>=10){const r=t.slice(n-5).filter(x=>x.id!==P.clubId&&!kf[leg].has(x.id));if(r.length){op=pickP(r).id;kind='rel'}}
+  if(op!=null)kf[leg].set(op,kind);
+}
+function keyOpts(kind,me,op){
+  const P=G.P,gk=P.pos==='GK',back=kind==='back'?(P.clubRel[op.id]??50):50;
+  if(kind==='back')return [
+    {label:'Не праздновать',sub:'Уважение к бывшим',detail:'Если забьёте — без празднования. Бывшие болельщики оценят',mod:{q:1},nb:1},
+    {label:'Доказать, что зря отпустили',sub:'Злость в ногах',detail:'Выше шанс забить, но команда теряет баланс. Бывшие трибуны не простят гола с празднованием',mod:{q:1.2,team:-.4},prove:1},
+    {label:'Поприветствовать трибуны',sub:'Круг почёта до матча',detail:back>=50?'Овация обеспечена':'Рискованно: часть трибун освистает',mod:{q:.95,team:.2},wave:1}];
+  if(kind==='derby')return gk?[
+    {label:'Завести трибуны',sub:'Кулак в небо перед матчем',detail:'Команда заряжена, болельщики в восторге при победе',mod:{team:.4},fanUp:1},
+    {label:'Холодная голова',sub:'Дерби выигрывают нервы',detail:'Меньше голов в обе стороны',mod:{own:.85,opp:.82}},
+    {label:'Провоцировать нападающих',sub:'Слова на ухо',detail:'Соперник нервничает, но и вы на грани карточки',mod:{opp:.9,team:-.3},hot:1}]:[
+    {label:'Завести трибуны',sub:'Жест перед матчем',detail:'Команда заряжена, болельщики в восторге при победе',mod:{team:.8,q:1.05},fanUp:1},
+    {label:'Холодная голова',sub:'Дерби выигрывают нервы',detail:'Меньше голов в обе стороны',mod:{own:.85,opp:.78}},
+    {label:'Провокация',sub:'Задеть их лидера',detail:'Выше шанс забить, но вы на грани удаления',mod:{q:1.2,team:-.3},hot:1}];
+  const pool=gk?[{label:'Командовать штрафной',sub:'Выходить на все навесы',detail:'Соперник забивает реже, но и ваша команда осторожнее',mod:{opp:.9,own:.94}},{label:'Играть от обороны',sub:'Команда глубоко сидит',detail:'Меньше голов в обе стороны',mod:{own:.84,opp:.8}},{label:'Начинать атаки',sub:'Длинный пас, быстрые вводы',detail:'Команда опаснее впереди, но уязвимее сзади',mod:{own:1.12,opp:1.12}}]
+    :[{label:'Взять игру на себя',sub:'Бить при любой возможности',detail:'Выше шанс забить, но команда теряет баланс',mod:{q:1.3,team:-.6}},{label:'Играть на команду',sub:'Пас, прессинг, дисциплина',detail:'Команда сильнее, личной статистики меньше',mod:{q:.8,team:1.2}},
+      kind==='rel'?{label:'Драться за каждый мяч',sub:'Как в последний раз',detail:'Команда сильнее, болельщики оценят',mod:{team:1,q:.95},fanUp:1}:{label:'Речь в раздевалке',sub:'Завести партнёров',detail:'Команда заряжена, и вы тоже',mod:{team:.9,q:1.05}}];
+  return pool;
+}
+function* keyLeague(A,B,o,kind){
+  const P=G.P,me=isMine(A)?A:B,op=me===A?B:A;
+  if(P.inj>0||TR.role<2||(S.keyL||0)>=2)return simMatch(A,B,o);
+  S.keyL=(S.keyL||0)+1;
+  const st=KEYL[kind],opts=keyOpts(kind,me,op),back=P.clubRel[op.id]??50;
+  const intro=kind==='back'?(back>=65?` Вы впервые выходите против бывшего клуба. Трибуны встречают вас аплодисментами.`:back<35?` Вы впервые выходите против бывшего клуба. Со всех сторон свист — вам не простили уход.`:' Вы впервые выходите против бывшего клуба. Трибуны настороженно молчат.')
+    :kind==='derby'?' Город разделён пополам, неделю говорят только об этом матче.':kind==='top'?' Первая и вторая строчки таблицы играют между собой.':' Проигравший почти наверняка вылетит.';
+  const i=yield {kind:'big',comp:o.cn,st,title:st,me:{n:me.name,s:Math.round(me.str)},op:{n:op.name,s:Math.round(op.str)},
+    body:`${me.name} против ${op.name}.${intro}${nemIn(op)?` У соперника — ваш заклятый соперник ${P.nem.name}.`:''} Как настроитесь?`,opts:opts.map(({label,sub,detail})=>({label,sub,detail}))};
+  const pre=opts[i]||opts[0],ga0=myGA(),lo={...o,log:o.cn},kh=S.keyHero;
+  const live=yield* liveMatch(A,B,st,lo,pre);S.keyHero=kh; // a league moment is not a final
+  const r=simMatch(A,B,{...o,mod:live.mod,force:live.force});
+  const s=me===A?`${r.ga}:${r.gb}`:`${r.gb}:${r.ga}`,f=me===A?r.ga:r.gb,x=me===A?r.gb:r.ga,won=f>x,draw=f===x;
+  const [g,a]=myGA(),dg=g-ga0[0],da=a-ga0[1],L=[];
+  L.push(dg||da?`Ваш вклад: ${dg?dg+' '+plural(dg,'гол','гола','голов'):''}${dg&&da?' и ':''}${da?da+' '+plural(da,'передача','передачи','передач'):''}, оценка ${S.lastRt.toFixed(1)}.`:`Без голов и передач, оценка ${S.lastRt.toFixed(1)}.`);
+  L.push(`Ваш выбор: «${pre.label}».`);
+  if(kind==='back'){P.backSeen=P.backSeen||{};P.backSeen[op.id]=1;const cr=P.clubRel;
+    if(pre.nb&&dg){cr[op.id]=Math.min(100,(cr[op.id]??50)+12);L.push('Вы забили и подняли руки: без празднования. Бывшие трибуны аплодируют стоя.')}
+    else if(pre.prove&&dg){cr[op.id]=Math.max(-100,(cr[op.id]??50)-10);P.rep=clamp(P.rep+1,0,100);L.push('Гол — и празднование перед бывшей трибуной. Там вас больше не ждут.')}
+    if(pre.wave){cr[op.id]=Math.min(100,(cr[op.id]??50)+(back>=50?8:-4));L.push(back>=50?'Круг почёта перед матчем: бывшие болельщики стоя приветствуют вас.':'Круг почёта перед матчем: половина стадиона свистела.')}
+    moment(`Возвращение в «${op.name}» — ${s}${back>=65?', овация':back<35?', свист трибун':''}.`);
+  }else moment(`${st}: ${op.name} ${s}. Выбор: «${pre.label}».`);
+  if(kind==='derby'){if(won&&pre.fanUp){P.rel.fans=Math.min(100,P.rel.fans+5);L.push('Победа в дерби, и трибуны поют вашу фамилию.')}
+    if(pre.hot&&RP()<.25){const n=riP(1,3);P.inj=Math.max(P.inj,n);trAdd('hot',4);L.push(`Провокация вышла боком: красная карточка и дисквалификация на ${n} ${plural(n,'матч','матча','матчей')}.`)}}
+  if(kind==='rel'&&!won&&!draw)L.push('Тяжёлое поражение в битве за выживание.');
+  if(kind==='top')L.push(won?'Важнейшие три очка в гонке за титул.':draw?'Ничья: гонка продолжается.':'Конкурент уходит в отрыв.');
+  addLog(o.cn,`${st} — ${op.name} ${s}`);
+  const keys=live.lines.filter(l=>/gl|save|miss/.test(l.k)).map(l=>`${l.m}' ${l.t}`);
+  yield {kind:'result',comp:o.cn,st,title:won?'Победа!':draw?'Ничья':'Поражение',won:won||draw,score:s,me:{n:me.name,s:Math.round(me.str)},op:{n:op.name,s:Math.round(op.str)},lines:L,keys,opts:[]};
+  return r;
+}
+/* ---- panels ---- */
+function charPanel(){
+  const P=G.P,t=P.tr||trInit([]),s=styOf(P),p=P.prot;
+  const rows=Object.entries(TRAITS).map(([k,x])=>{const v=t[k]||0,on=v>=TR_ON;return `<div class="at-row"><span>${x.n}${on?' <b class="tr-on">●</b>':''}</span><span class="trk"><i style="width:${v}%;background:${on?'var(--gold)':'var(--sky)'}"></i></span><b class="num">${v}</b></div>${on?`<p class="small dim" style="margin:-4px 0 4px">${x.d}</p>`:''}`}).join('');
+  const pr=p?`<p class="small" style="margin:12px 0 0"><b>Ученик:</b> ${esc(p.name)}, ${POS[p.pos].s}, ${p.age} лет · рейтинг <span class="num">${Math.round(p.ovr)}</span> · ${p.gone?'завершил карьеру':p.st?`«${esc(C(p.club).name)}», ${p.apps} матчей, ${p.g} голов`:`академия «${esc(C(p.club).name)}»`}</p>`:'';
+  const f=RUN&&S&&S.form?S.form:null;
+  return `<div class="attrs">${rows}</div><p class="small muted" style="margin:8px 0 0">Черта активна с ${TR_ON}. Характер меняется от ваших решений.</p>
+    <p class="small" style="margin:12px 0 0"><b>Стиль:</b> ${s?`${esc(s[1])} — ${esc(s[2])}`:'не выбран'}</p>${P.st&&P.st.bestRun?`<p class="small" style="margin:6px 0 0"><b>Лучшая серия:</b> ${P.st.bestRun} ${plural(P.st.bestRun,'матч','матча','матчей')} подряд ${formWord()}</p>`:''}${f?`<p class="small">Форма сейчас: серия ${f.run}</p>`:''}${pr}`;
+}
+function winterView(m){
+  const d=m.mid,ff=d.r&&d.r.length?d.r.map(x=>`<i class="fm ${x>=7.4?'hi':x<6.4?'lo':''}">${x.toFixed(1)}</i>`).join(''):'';
+  return `<section class="decide bigm winter" aria-live="polite"><div class="d-top"><span class="eyebrow">Сезон ${S.label} · Зимняя пауза</span><span class="small muted">${esc(m.comp)}</span></div>
+    <div class="wmid"><div class="wtab">${m.top.map((r,i)=>`<div class="${r[2]?'me':''}"><span class="num">${i+1}</span><b>${esc(r[0])}</b><span class="num">${r[1]}</span></div>`).join('')}${d.pos>m.top.length?`<div class="me"><span class="num">${d.pos}</span><b>${esc(C(G.P.clubId).name)}</b><span class="num">${d.pts}</span></div>`:''}</div>
+      <dl class="wst"><div><dt>Матчи</dt><dd class="num">${d.apps}</dd></div><div><dt>${G.P.pos==='GK'?'Сухие':'Голы'}</dt><dd class="num">${G.P.pos==='GK'?d.cs:d.g}</dd></div><div><dt>Передачи</dt><dd class="num">${d.a}</dd></div><div><dt>Оценка</dt><dd class="num">${d.rt?d.rt.toFixed(2):'—'}</dd></div>
+      <div class="wide"><dt>Форма · последние матчи</dt><dd>${ff||'—'}${d.run>=4?` <small>серия ${d.run}</small>`:d.dry>=6?` <small>${d.dry} без яркой игры</small>`:''}</dd></div></dl></div>
+    <h2>${esc(m.title)}</h2><p>${esc(m.body)}</p>${optsHtml(m,'mopt')}
+    ${S.moments.length?`<p class="eyebrow" style="margin:18px 0 0">Уже в этом сезоне</p><ul class="summer">${S.moments.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+  </section>`;
+}
+
 /* ================= life off the pitch: money, social media, nemesis, positions ================= */
 const r2=x=>Math.round(x*100)/100;
 const annual=()=>G.P.wage*52/1000;
 const cash=()=>G.P.earn/1e6;
-function injMul(){const P=G.P,w=(S&&S.injMul||1)*(P&&P.hard?1.5:1)*(P&&P.load==='low'?.65:P&&P.load==='max'?1.4:1);if(!P||!P.subs)return w;return w*(P.subs.physio?.7:1)*(P.own&&P.own.cryo?.8:1)}
+function injMul(){const P=G.P,w=(S&&S.injMul||1)*(P&&P.hard?1.5:1)*(P&&P.load==='low'?.65:P&&P.load==='max'?1.4:1);if(!P||!P.subs)return w;return w*(P.subs.physio?.7:1)*(P.own&&P.own.cryo?.8:1)*(trOn('pro')?.88:1)}
 const SUBS=[
   {id:'trainer',n:'Личный тренер',d:'Индивидуальные занятия: рост быстрее, спад после 30 медленнее',c:()=>Math.max(.15,annual()*.12)},
   {id:'physio',n:'Физиотерапевт и диетолог',d:'Травмы на 30% реже, карьера понемногу длиннее',c:()=>Math.max(.1,annual()*.08)},
@@ -3695,7 +4019,24 @@ const canBuyout=()=>{const P=G.P;return !RUN&&G.phase!=='retired'&&P.contract>0&
 const INV=[
   {id:'rest',n:'Ресторан',d:'Доход около 6% в год. Иногда рестораны закрываются',min:1},
   {id:'brand',n:'Свой бренд одежды',d:'Чем больше подписчиков, тем лучше продажи',min:2,need:()=>G.P.fol>=1,needT:'от 1 млн подписчиков'},
-  {id:'startup',n:'Стартап знакомого',d:'Может вырасти в разы, а может сгореть',min:.5}];
+  {id:'startup',n:'Стартап знакомого',d:'Может вырасти в разы, а может сгореть',min:.5},
+  {id:'realty',n:'Доходная недвижимость',d:'Квартиры в аренду: около 4% в год, стоимость растёт медленно и почти без риска',min:2},
+  {id:'esport',n:'Киберспортивная команда',d:'Растёт вместе с вашими подписчиками. Может прогореть',min:1,need:()=>G.P.fol>=.5,needT:'от 500 тыс. подписчиков'},
+  {id:'acad',n:'Детская академия',d:'Денег почти не приносит (2% в год), зато каждый сезон добавляет репутации и любви трибун',min:1.5}];
+/* family, social media strategy and charity: the Life tab beyond money */
+const SMM=[['quiet','Тишина','Минимум постов: подписчики растут медленнее, голова свободнее, прогресс чуть быстрее'],
+  ['train','Закулисье тренировок','Ролики из зала и с поля: подписчики +10%, растёт черта «Профессионал»'],
+  ['life','Лайфстайл','Тачки, вечеринки, путешествия: подписчики +40%, прогресс чуть медленнее, растёт «Звезда тусовок»'],
+  ['fans','Общение с фанатами','Ответы в комментариях и встречи: подписчики +5%, болельщики любят сильнее']];
+const smmOf=()=>G.P.smm||null;
+const CHARITY=[{id:'pitch',n:'Поле во дворе родного города',d:'Болельщики и родной город оценят',c:.3,fx:{rep:1,fans:3}},
+  {id:'hosp',n:'Детская больница',d:'Новое отделение с вашим именем на табличке',c:1,fx:{rep:3,fans:2}},
+  {id:'vets',n:'Фонд ветеранов футбола',d:'Помощь игрокам, которых забыли. Раздевалка уважает',c:3,fx:{rep:5,team:5,tr:{lead:5}}}];
+function lifeSeason(){
+  const P=G.P,f=P.fam,m=smmOf();
+  if(f&&f.kids)P.rel.fans=Math.min(100,P.rel.fans+Math.min(3,f.kids));
+  if(m==='train')trAdd('pro',2);if(m==='life')trAdd('party',4);if(m==='fans')P.rel.fans=Math.min(100,P.rel.fans+3);
+}
 const stake=x=>Math.max(x.min,Math.floor(cash()*.2*10)/10);
 function shopAct(kind,id){
   const P=G.P;if(RUN||G.phase==='retired')return;UI.shopMsg=null;
@@ -3717,6 +4058,16 @@ function shopAct(kind,id){
     if(id==='yacht')P.fol=r2(P.fol*1.06+.05);
     if(id==='owner'){const c=C(P.firstClub);c.str=clamp(c.str+2,42,94);c.base=clamp(c.base+3,42,94);P.wfx=P.wfx||[];P.wfx.push({k:`${MP.sess?MP.sess.pid:'solo'}-own-${G.year}`,club:c.id,str:2,base:3});P.rep=clamp(P.rep+3,0,100)}
     UI.shopMsg=`Куплено: ${x.n.toLowerCase()}.`;G.summer.push(`Покупка: ${x.n.toLowerCase()} за ${fmtM(x.c)}.`)}
+  else if(kind==='smm'){if(!SMM.some(x=>x[0]===id))return;P.smm=id;UI.shopMsg=`Стратегия в соцсетях: ${SMM.find(x=>x[0]===id)[1].toLowerCase()}.`}
+  else if(kind==='fam'){const f=P.fam||(P.fam={p:null,mar:0,kids:0});
+    if(id==='wed1'||id==='wed2'){if(!f.p||f.mar)return;const c=id==='wed1'?.2:1.5;if(cash()<c){UI.shopMsg=`Не хватает денег: нужно ${fmtM(c)}.`;render();return}
+      P.earn-=c*1e6;P.spent+=c;f.mar=G.year;P.rel.fans=Math.min(100,P.rel.fans+3);P.rep=clamp(P.rep+1,0,100);if(id==='wed2'){P.fol=r2(P.fol*1.08+.03);trAdd('party',5)}
+      UI.shopMsg=id==='wed1'?'Скромная свадьба для своих. Поздравляем!':'Свадьба на Мальдивах: фото разлетелись по всему миру.';G.summer.push(id==='wed1'?'Вы сыграли свадьбу.':'Вы сыграли свадьбу на Мальдивах.');sfx('coin')}
+    else if(id==='parents'){if(f.parents)return;if(cash()<1){UI.shopMsg=`Не хватает денег: нужно ${fmtM(1)}.`;render();return}
+      P.earn-=1e6;P.spent+=1;f.parents=G.year;P.rel.fans=Math.min(100,P.rel.fans+4);trAdd('loyal',4);UI.shopMsg='Родители переехали в новый дом.';G.summer.push('Вы купили дом родителям.');sfx('coin')}}
+  else if(kind==='char'){const x=CHARITY.find(c=>c.id===id);if(!x)return;P.char=P.char||{};if(P.char[id]===G.year)return;
+    if(cash()<x.c){UI.shopMsg=`Не хватает денег: нужно ${fmtM(x.c)}.`;render();return}
+    P.earn-=x.c*1e6;P.spent+=x.c;P.char[id]=G.year;P.charTot=r2((P.charTot||0)+x.c);applyFx({...x.fx,log:`Благотворительность: ${x.n.toLowerCase()}, ${fmtM(x.c)}.`});UI.shopMsg=`Спасибо! ${x.n}: ${fmtM(x.c)}.`;sfx('coin')}
   else if(kind==='inv'){const x=INV.find(s=>s.id===id);if(!x)return;const v=P.inv.find(i=>i.k===id);
     if(v){P.earn+=v.val*1e6;P.inv=P.inv.filter(i=>i!==v);UI.shopMsg=`${x.n}: продано за ${fmtM(v.val)} (вложено ${fmtM(v.amt)}).`;sfx('coin')}
     else{if(x.need&&!x.need())return;const a=stake(x);if(cash()<a){UI.shopMsg=`Минимальное вложение — ${fmtM(x.min)}.`;render();return}P.earn-=a*1e6;P.inv.push({k:id,amt:a,val:a,y:G.year,age:0});UI.shopMsg=`${x.n}: вложено ${fmtM(a)}.`;sfx('coin')}}
@@ -3729,6 +4080,9 @@ function moneySeason(){
     if(v.k==='rest'){if(RP()<.07){P.earn+=v.val*.3*1e6;L.push(`Ваш ресторан закрылся. Удалось вернуть ${fmtM(v.val*.3)}.`);return false}v.val=r2(v.val*(.9+RP()*.25));inc+=v.val*.06}
     else if(v.k==='brand'){v.val=r2(v.val*(.75+RP()*.5+clamp(Math.log10(1+P.fol)*.08,0,.25)));inc+=v.val*.04;if(v.val<.05){L.push('Бренд одежды не взлетел и закрылся.');return false}}
     else if(v.k==='startup'){if(v.age===1){const r=RP();if(r<.25){v.val=r2(v.val*riP(3,8));L.push(`Стартап выстрелил! Ваша доля стоит уже ${fmtM(v.val)}.`)}else if(r<.55){L.push(`Стартап прогорел. Вложенные ${fmtM(v.amt)} пропали.`);return false}else v.val=r2(v.val*(.9+RP()*.4))}else v.val=r2(v.val*(.92+RP()*.2))}
+    else if(v.k==='realty'){v.val=r2(v.val*(1.01+RP()*.04));inc+=v.val*.04}
+    else if(v.k==='esport'){v.val=r2(v.val*(.7+RP()*.6+clamp(Math.log10(1+P.fol)*.1,0,.3)));inc+=v.val*.03;if(v.val<.1){L.push('Киберспортивная команда распалась.');return false}}
+    else if(v.k==='acad'){inc+=v.val*.02;P.rep=clamp(P.rep+1,0,100);P.rel.fans=Math.min(100,P.rel.fans+1)}
     void x;return true});
   if(inc){P.earn+=inc*1e6;P.gross+=inc}
   P.lastInv=r2(inc);
@@ -3745,7 +4099,7 @@ function folSeason(){
   const P=G.P,c=S.club,bp=S.bdo?S.bdo.place:99,f0=P.fol;
   let add=.006+Math.pow(P.rep/100,2)*4+S.trophies.length*.1*(1+P.rep/40)+S.awards.length*.15+(bp===1?8:bp<=3?3:bp<=10?.8:0)+(c.g+c.a*.5)*.005*(1+P.rep/40)+P.fol*.07;
   if(P.age>=33)add-=P.fol*.08;
-  add*=(P.subs.media?1.35:1)*(P.cel&&CELS[P.cel]?CELS[P.cel].f:1)*(P.own.car?1.05:1)*(P.own.yacht?1.1:1)*(.85+RP()*.3);
+  add*=(P.subs.media?1.35:1)*(trOn('party')?1.3:1)*({quiet:.8,train:1.1,life:1.4,fans:1.05}[P.smm]||1)*(P.cel&&CELS[P.cel]?CELS[P.cel].f:1)*(P.own.car?1.05:1)*(P.own.yacht?1.1:1)*(.85+RP()*.3);
   P.fol=Math.max(.001,r2(P.fol+add));
   P.folHist=(P.folHist||[]).concat({y:S.label,v:P.fol});
   if(f0<1&&P.fol>=1)S.records.push('Соцсети: 1 млн подписчиков');
@@ -5776,6 +6130,7 @@ function startCareer(){
   syncOvr();G.P.ovrHist[0].ovr=Math.round(G.P.ovr);
   G.P.wage=r1(wageAt(club)*.5);
   G.P.nem=makeNem();
+  G.P.style=(styList(f.pos).find(s=>s[0]===f.style)||styList(f.pos)[0])[0];G.P.tr=trInit((f.tr||[]).slice(0,2));
   if(f.hard&&!UI.roomSeed)G.P.hard=true;
   G.euro=euroEntrants();
   G.phase='career';
@@ -5892,6 +6247,11 @@ function setupLeague(f){
       <ul>${info.map(s=>`<li>${esc(s)}</li>`).join('')}</ul></div></div>
     <div class="field"><span class="lbl">Клуб · <b>${esc(f.club)}</b> <span class="dim">— сила и ваша стартовая роль</span></span><div class="clg">${clubs}</div></div>`;
 }
+function setupChar(f){
+  const L=styList(f.pos);if(!L.some(s=>s[0]===f.style))f.style=L[0][0];const tr=f.tr||(f.tr=[]),cur=L.find(s=>s[0]===f.style);
+  return `<div class="field"><span class="lbl">Стиль · <b>${esc(cur[1])}</b></span><div class="chips">${L.map(s=>`<button type="button" class="chipb" data-a="pickSty" data-v="${s[0]}" aria-pressed="${s[0]===f.style}">${esc(s[1])}</button>`).join('')}</div><p class="small muted" style="margin:0">${esc(cur[2])}</p></div>
+    <div class="field"><span class="lbl">Характер · до двух черт</span><div class="chips">${Object.entries(TRAITS).map(([k,x])=>`<button type="button" class="chipb" data-a="pickTr" data-v="${k}" aria-pressed="${tr.includes(k)}" title="${esc(x.d)}">${esc(x.n)}</button>`).join('')}</div><p class="small muted" style="margin:0">${tr.length?tr.map(k=>esc(TRAITS[k].d)).join('. ')+'.':'Можно не выбирать: характер сложится из ваших решений.'}</p></div>`;
+}
 function viewSetup(){
   if(!UI.form.face)UI.form.face=faceFor(UI.form.nat,hashStr(UI.form.name||'x'));
   const f=UI.form,lg=S_LEAGUES.find(l=>l.id===f.lg),nat=S_NATS.find(n=>n.name===f.nat);
@@ -5920,6 +6280,7 @@ function viewSetup(){
         </div>
         ${setupFace(f)}
         ${setupPos(f)}
+        ${setupChar(f)}
         ${setupLeague(f)}
         <div class="field"><label for="f-rus">Россия в международном футболе</label><select id="f-rus">${[['random','Отстранена, но может вернуться (~10% в год)'],['off','Отстранена навсегда'],['on','Допущена с первого сезона']].map(([v,l])=>`<option value="${v}" ${f.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>
         <label class="chk"><input type="checkbox" id="f-hard" ${f.hard?'checked':''}> Хардкор: травмы чаще, рост медленнее, рискованные решения удаются реже — очки в таблице рекордов ×1,3</label>
@@ -6024,6 +6385,7 @@ function viewCareer(){
     ${roomPanel()}
     ${nemPanel()}
     <section class="grid2"><div class="panel"><div class="sec-h"><h2>Атрибуты</h2><span class="small muted">рейтинг ${Math.round(P.ovr)}</span></div>${attrPanel()}</div><div class="panel"><div class="sec-h"><h2>Отношения</h2><span class="small muted">${esc(club.name)}</span></div>${relPanel()}</div></section>
+    <section class="panel"><div class="sec-h"><h2>Характер и стиль</h2><span class="small muted">${styOf(P)?esc(styOf(P)[1]):''}</span></div>${charPanel()}</section>
     <section class="panel"><div class="sec-h"><h2>Рекорды и вехи</h2></div>${recordsPanel()}</section>
     <section class="panel"><div class="sec-h"><h2>Черты игрока</h2><span class="small muted">${P.perks.length} из ${PERKS.length}</span></div>${perkPanel()}</section>
     <section class="panel"><details><summary>Достижения · ${ACHS.filter(a=>ACH[a[0]]).length} из ${ACHS.length}</summary><div style="margin-top:12px">${achPanel()}</div></details></section>
@@ -6118,10 +6480,23 @@ function viewLife(){
     </section>
     ${!busy&&adsRewOk()&&G.phase!=='retired'&&G.adRewY!==G.year?`<section class="panel"><div class="sec-h"><h2>Рекламная интеграция</h2><span class="small muted">раз за межсезонье</span></div><p class="small muted">Снимитесь в рекламе: посмотрите короткий ролик — получите ${fmtM(adBonus())} на счёт.</p><div class="go"><button class="btn primary" data-a="adRew">Смотреть рекламу · +${fmtM(adBonus())}</button></div></section>`:''}
     ${busy?'<p class="err">Сезон идёт. Тратить деньги можно между сезонами.</p>':''}${UI.shopMsg?`<p class="note">${esc(UI.shopMsg)}</p>`:''}
+    ${lifeExtra(busy,c)}
     <section class="panel"><div class="sec-h"><h2>Личный штаб</h2><span class="small muted">оплата каждый сезон, отменить можно в любой момент</span></div><div class="shop">${subs}</div></section>
     <section class="panel"><div class="sec-h"><h2>Покупки</h2><span class="small muted">один раз и навсегда</span></div><div class="shop">${items}</div></section>
     ${buyout?`<section class="panel"><div class="sec-h"><h2>Сделки</h2><span class="small muted">деньги, которые меняют карьеру</span></div><div class="shop">${buyout}</div></section>`:''}
     <section class="panel"><div class="sec-h"><h2>Вложения</h2><span class="small muted">вкладывается 20% счёта, не меньше минимума; итог виден после сезона</span></div><div class="shop">${inv}</div></section>`;
+}
+function lifeExtra(busy,c){
+  const P=G.P,f=P.fam||{p:null,mar:0,kids:0},m=smmOf(),off=busy||G.phase==='retired';
+  const fam=`<div class="shop-i ${f.p?'on':''}"><div><b>${f.mar?'В браке':f.p?'В отношениях':'Один'}</b><span>${f.p?(f.p==='star'?'Ваша вторая половинка — звезда соцсетей.':'Вы вместе со времён родного города.'):'Знакомство случится само — в одно из межсезоний.'}${f.kids?` Детей: ${f.kids}.`:''}${f.mar?' Брак даёт спокойствие: прогресс чуть быстрее.':''}</span></div></div>
+    ${f.p&&!f.mar?`<div class="shop-i"><div><b>Скромная свадьба</b><span>Для своих: болельщики и пресса оценят</span></div><div class="shop-b"><span class="num">${fmtM(.2)}</span><button class="btn mini" data-a="shop" data-k="fam" data-id="wed1" ${off||c<.2?'disabled':''}>Сыграть</button></div></div>
+    <div class="shop-i"><div><b>Свадьба на Мальдивах</b><span>Фото облетят мир: подписчики растут</span></div><div class="shop-b"><span class="num">${fmtM(1.5)}</span><button class="btn mini" data-a="shop" data-k="fam" data-id="wed2" ${off||c<1.5?'disabled':''}>Сыграть</button></div></div>`:''}
+    <div class="shop-i ${f.parents?'on':''}"><div><b>Дом родителям</b><span>Болельщики на родине тронуты, растёт черта «Верный»</span></div><div class="shop-b"><span class="num">${fmtM(1)}</span>${f.parents?`<span class="tag">куплено в ${f.parents}</span>`:`<button class="btn mini" data-a="shop" data-k="fam" data-id="parents" ${off||c<1?'disabled':''}>Купить</button>`}</div></div>`;
+  const smm=SMM.map(([k,n,d])=>`<div class="shop-i ${m===k?'on':''}"><div><b>${n}</b><span>${d}</span></div><div class="shop-b">${m===k?'<span class="tag">сейчас</span>':`<button class="btn ghost mini" data-a="shop" data-k="smm" data-id="${k}" ${off?'disabled':''}>Выбрать</button>`}</div></div>`).join('');
+  const ch=CHARITY.map(x=>{const done=P.char&&P.char[x.id]===G.year;return `<div class="shop-i ${done?'on':''}"><div><b>${x.n}</b><span>${x.d}</span></div><div class="shop-b"><span class="num">${fmtM(x.c)}</span>${done?'<span class="tag">в этом сезоне</span>':`<button class="btn mini" data-a="shop" data-k="char" data-id="${x.id}" ${off||c<x.c?'disabled':''}>Помочь</button>`}</div></div>`}).join('');
+  return `<section class="grid2"><div class="panel"><div class="sec-h"><h2>Семья</h2></div><div class="shop">${fam}</div></div>
+    <div class="panel"><div class="sec-h"><h2>Стратегия в соцсетях</h2><span class="small muted">${m?'действует каждый сезон':'не выбрана'}</span></div><div class="shop">${smm}</div></div></section>
+    <section class="panel"><div class="sec-h"><h2>Благотворительность</h2><span class="small muted">${P.charTot?`за карьеру ${fmtM(P.charTot)}`:'раз в сезон на каждое дело'}</span></div><div class="shop">${ch}</div></section>`;
 }
 function viewSaves(){
   const list=slotsGet().sort((a,b)=>b.upd-a.upd),fresh=G&&(G.P||G.C)&&!hasProgress();
@@ -6213,7 +6588,8 @@ function render(){
   app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}${siteFoot()}</main>${consentBanner()}`+(G&&(G.P||G.C)?shareModal():'');
   try{afterRender()}catch(e){console.error(e)}
   clubTheme();goatWatch();
-  if(UI.news&&!document.querySelector('.news')){app.insertAdjacentHTML('beforeend',newsView())}
+  if(UI.news&&UI.nvid){if(!document.querySelector('.nvid'))nvidOpen()}
+  else if(UI.news&&!document.querySelector('.news')){app.insertAdjacentHTML('beforeend',newsView())}
   for(const s of ['.lgg .lgt.on','.clg .clt.on','.fp-grid .fp-i[aria-selected="true"]']){const el=document.querySelector(s);if(el){const p=el.parentElement;if(el.offsetTop<p.scrollTop||el.offsetTop+el.offsetHeight>p.scrollTop+p.clientHeight)p.scrollTop=el.offsetTop-8}}
 }
 
@@ -6634,12 +7010,16 @@ document.addEventListener('click',e=>{
   else if(a==='home'){UI.tab='home';render();window.scrollTo(0,0)}
   else if(a==='tblHalf'){UI.tblHalf=+b.dataset.v;render()}
   else if(a==='newsX')newsClose();
+  else if(a==='nvSkip')nvidClose();
+  else if(a==='nvSnd')nvidSound(b);
   else if(a==='newsGo'){UI.news=false;try{LS.setItem(NEWS_KEY,NEWS_V)}catch(e){}UI.confirmNew=false;dropEmpty();G=null;RUN=null;MATCH=null;UI.wait=null;UI.tab='career';try{LS.removeItem(ACTIVE_KEY)}catch(err){}render();window.scrollTo(0,0)}
   else if(a==='pickLg'){const f=UI.form,l=S_LEAGUES.find(x=>x.id===b.dataset.v);if(l){f.lg=l.id;f.club=l.clubs.slice().sort((p,q)=>q.str-p.str)[Math.floor(l.clubs.length/2)].name;render()}}
   else if(a==='pickCc'){const l=ccLeagues(b.dataset.v)[0];if(l){UI.form.lg=l.id;UI.form.club=l.clubs.slice().sort((p,q)=>q.str-p.str)[Math.floor(l.clubs.length/2)].name;render()}}
   else if(a==='pickConf'){UI.setConf=b.dataset.v;const l=ccLeagues(confCcs(UI.setConf)[0])[0];if(l&&ccConf(S_LEAGUES.find(x=>x.id===UI.form.lg).cc)!==UI.setConf){UI.form.lg=l.id;UI.form.club=l.clubs.slice().sort((p,q)=>q.str-p.str)[Math.floor(l.clubs.length/2)].name}render()}
   else if(a==='pickClub'){UI.form.club=b.dataset.v;render()}
-  else if(a==='pickPos'){const f=UI.form;f.pos=b.dataset.v;f.num=NUM_BY_POS[f.pos];render()}
+  else if(a==='pickPos'){const f=UI.form;f.pos=b.dataset.v;f.num=NUM_BY_POS[f.pos];f.style=null;render()}
+  else if(a==='pickSty'){UI.form.style=b.dataset.v;render()}
+  else if(a==='pickTr'){const t=UI.form.tr||(UI.form.tr=[]),k=b.dataset.v,i=t.indexOf(k);if(i>=0)t.splice(i,1);else{t.push(k);if(t.length>2)t.shift()}render()}
   else if(a==='pickFace'){UI.form.face=b.dataset.v;UI.form.faceMan=true;render()}
   else if(a==='faceReg'){UI.faceReg=b.dataset.v;render()}
   else if(a==='faceRnd'){const p=UI.faceReg&&UI.faceReg!=='fit'?(UI.faceReg==='all'?FACE_ALL:FACE_REG[UI.faceReg].map(faceId)):facePool(UI.form.nat);UI.form.face=p[Math.floor(Math.random()*p.length)];UI.form.faceMan=true;render()}
@@ -6736,19 +7116,31 @@ document.addEventListener('submit',e=>{if(e.target.id==='chatForm'){e.preventDef
 function updPrev(){const f=UI.form,el=document.getElementById('cardPrev');if(el)el.innerHTML=playerCard({ovr:'??',pos:POS[f.pos].s,age:17,num:f.num,name:f.name||'Игрок',club:f.club,nat:f.nat,posFull:POS[f.pos].n,face:f.mode==='coach'?null:f.face})}
 
 /* ---- "what's new": shown once to returning players after a big update ---- */
-const NEWS_V='2026-10-17',NEWS_KEY='legenda-polya-news';
+const NEWS_V='2026-10-18',NEWS_KEY='legenda-polya-news';
 const NEWS=[
-  ['world','Страна → дивизион → клуб','Выбор старта теперь по странам: сначала страна, потом дивизион, потом клуб. Видно, сколько дивизионов в каждой стране и какого они уровня.'],
-  ['life','16 новых событий карьеры','Кто бьёт пенальти, кумир детства в команде, тайный звонок гранда, налоговая проверка, обложка видеоигры, турне за океаном, выпускные экзамены, рождение ребёнка, «последний танец» и другие. Летом событий стало больше.'],
-  ['hall','Громкие обещания','На предсезонной пресс-конференции можно пообещать голы, сухие матчи или трофей. Через год обещание проверят: сдержите — слава, нет — придётся отвечать. А ещё у игрока может появиться прозвище, оно будет на карточке.']
+  ['world','Зимняя пауза','В середине чемпионата: таблица, ваша статистика, форма за последние матчи и решение. Предконтракт, разговор с тренером, гонка за титулом, кризис или зимний сбор.'],
+  ['ball','Дерби и ключевые матчи в эфире','До двух матчей лиги за сезон в прямом эфире: дерби, возвращение в бывший клуб (овация или свист), битва за лидерство, матч за выживание.'],
+  ['career','Форма, характер и стиль','Серии удачных матчей и спады влияют на игру. Пять черт характера меняются от ваших решений. Три стиля на каждую позицию: таргетмен, ложная девятка, региста, либеро и другие.'],
+  ['hall','Ученик из академии','Возьмите юниора под крыло: он вырастет, дебютирует, может обогнать вас или уйти в гранд.'],
+  ['life','Новая «Жизнь»','Семья и свадьба, дом родителям, стратегия в соцсетях, благотворительность, недвижимость, киберспортивная команда и детская академия.']
 ];
-function newsCheck(){try{if(LS.getItem(NEWS_KEY)===NEWS_V)return;if(slotsGet().length||G)UI.news=true;else LS.setItem(NEWS_KEY,NEWS_V)}catch(e){}}
+function newsCheck(){try{if(LS.getItem(NEWS_KEY)===NEWS_V)return;if(slotsGet().length||G){UI.news=true;UI.nvid=!EN}else LS.setItem(NEWS_KEY,NEWS_V)}catch(e){}}
 function newsClose(){UI.news=false;try{LS.setItem(NEWS_KEY,NEWS_V)}catch(e){}render()}
+/* the update trailer: full screen on the first visit after an update, then the list of changes */
+function nvidOpen(){
+  document.body.insertAdjacentHTML('beforeend',`<div class="nvid" role="dialog" aria-modal="true" aria-label="Трейлер обновления"><video src="news/trailer.mp4" poster="news/trailer.jpg" autoplay muted playsinline preload="auto"></video>
+    <div class="nvid-b"><button class="btn ghost" data-a="nvSnd">Включить звук</button><button class="btn primary" data-a="nvSkip">Пропустить</button></div></div>`);
+  const v=document.querySelector('.nvid video');if(!v)return;
+  v.addEventListener('ended',nvidClose);v.addEventListener('error',nvidClose);
+  const p=v.play();if(p&&p.catch)p.catch(()=>{});
+}
+function nvidClose(){const el=document.querySelector('.nvid');if(el)el.remove();UI.nvid=false;render()}
+function nvidSound(b){const v=document.querySelector('.nvid video');if(!v)return;v.muted=!v.muted;if(!v.muted){v.volume=1;const p=v.play();if(p&&p.catch)p.catch(()=>{})}b.textContent=v.muted?'Включить звук':'Выключить звук'}
 function newsView(){
   return `<div class="modal news" role="dialog" aria-modal="true" aria-labelledby="newsT"><div class="modal-in news-in">
-    <p class="eyebrow">Обновление «Легенды поля»</p><h2 class="disp" id="newsT">Новая гонка <em>легенд</em></h2>
+    <p class="eyebrow">Обновление «Легенды поля»</p><h2 class="disp" id="newsT">Сезон <em>ожил</em></h2>
     <ul class="news-l">${NEWS.map(([ic,t,d])=>`<li><span class="news-ic">${ico(ic)}</span><div><b>${t}</b><span>${d}</span></div></li>`).join('')}</ul>
-    <p class="small muted" style="margin:0">Новый баланс действует со следующего сезона текущей карьеры. Для участия в новых рейтингах начните новую карьеру.</p>
+    <p class="small muted" style="margin:0">Зимняя пауза, ключевые матчи, форма и «Жизнь» работают в текущей карьере со следующего сезона. Стиль и характер выбираются при создании новой карьеры.</p>
     <div class="go" style="margin-top:4px"><button class="btn primary" data-a="newsGo">Создать новую карьеру</button><button class="btn ghost" data-a="newsX">Продолжить свою</button></div></div></div>`;
 }
 
