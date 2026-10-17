@@ -1391,7 +1391,7 @@ function flushSave(){
 }
 const slotRaw=id=>{if(SV.job&&SV.job.id===id)return SV.job.json;try{return lzUnpack(LS.getItem(slotKey(id)))}catch(e){return null}};
 addEventListener('pagehide',flushSave);
-document.addEventListener('visibilitychange',()=>{const h=document.visibilityState==='hidden';if(h)flushSave();else if(UI.tab==='goat'&&typeof goatLoad==='function')goatLoad(true);sndHold('tab',h)});
+document.addEventListener('visibilitychange',()=>{const h=document.visibilityState==='hidden';if(YG&&typeof ygPlay==='function')ygPlay(!h);if(h)flushSave();else if(UI.tab==='goat'&&typeof goatLoad==='function')goatLoad(true);sndHold('tab',h)});
 /* leaving a career that has no progress yet: it is thrown away instead of taking a save slot */
 function dropEmpty(){
   if(!G||!G.slot||hasProgress())return;
@@ -6613,9 +6613,12 @@ function consentSet(v){try{LS.setItem(CONSENT_KEY,v)}catch(e){}UI.cookies=false;
 const ADS={loaded:false,lastFull:0};
 /* Yandex Games: the platform is the data operator and shows its own ads, no cookie banner of ours */
 const YGS={sdk:null};
+/* Yandex gameplay markup: on while the player is in the game, off during ads and in a hidden tab */
+function ygPlay(on){try{const g=YGS.sdk&&YGS.sdk.features.GameplayAPI;if(g)on?g.start():g.stop()}catch(e){}}
 if(YG){try{(window.YaGames?window.YaGames.init():Promise.reject()).then(sdk=>{YGS.sdk=sdk;ADS.loaded=true;
   try{const l=sdk.environment.i18n.lang;if(!LS.getItem(LANG_KEY)&&l&&(l==='ru')!==(LANG==='ru')){LS.setItem(LANG_KEY,['ru','be','uk','kk','uz'].includes(l)?'ru':'en');location.reload();return}}catch(e){}
   try{sdk.features.LoadingAPI&&sdk.features.LoadingAPI.ready()}catch(e){}
+  ygPlay(1);
   render()}).catch(()=>{})}catch(e){}}
 const isTouch=()=>{try{return matchMedia('(pointer:coarse)').matches}catch(e){return false}};
 function adsLoad(){
@@ -6625,7 +6628,7 @@ function adsLoad(){
 }
 function adsFull(force){
   if(YG){if(!YGS.sdk||(!force&&Date.now()-ADS.lastFull<240000))return;ADS.lastFull=Date.now();
-    try{YGS.sdk.adv.showFullscreenAdv({callbacks:{onOpen:()=>sndHold('ad',1),onClose:()=>sndHold('ad',0),onError:()=>sndHold('ad',0)}})}catch(e){}return}
+    try{YGS.sdk.adv.showFullscreenAdv({callbacks:{onOpen:()=>{sndHold('ad',1);ygPlay(0)},onClose:()=>{sndHold('ad',0);ygPlay(1)},onError:()=>{sndHold('ad',0);ygPlay(1)}}})}catch(e){}return}
   if(!ADS.loaded)return;const t=isTouch(),id=t?ADS_CFG.full:(ADS_CFG.fullDesk||ADS_CFG.full);if(!id)return;
   if(!force&&Date.now()-ADS.lastFull<240000)return;ADS.lastFull=Date.now();
   window.yaContextCb.push(()=>{try{window.Ya.Context.AdvManager.render({blockId:id,type:'fullscreen',platform:t?'touch':'desktop'})}catch(e){}});
@@ -6633,7 +6636,7 @@ function adsFull(force){
 const adsRewOk=()=>YG?!!YGS.sdk:ADS.loaded&&!!ADS_CFG.rew&&isTouch();
 function adsRewarded(onReward){
   if(!adsRewOk())return;
-  if(YG){let got=false;try{YGS.sdk.adv.showRewardedVideo({callbacks:{onOpen:()=>sndHold('ad',1),onRewarded:()=>{got=true},onClose:()=>{sndHold('ad',0);if(got)onReward()},onError:()=>sndHold('ad',0)}})}catch(e){}return}
+  if(YG){let got=false;try{YGS.sdk.adv.showRewardedVideo({callbacks:{onOpen:()=>{sndHold('ad',1);ygPlay(0)},onRewarded:()=>{got=true},onClose:()=>{sndHold('ad',0);ygPlay(1);if(got)onReward()},onError:()=>{sndHold('ad',0);ygPlay(1)}}})}catch(e){}return}
   window.yaContextCb.push(()=>{try{window.Ya.Context.AdvManager.render({blockId:ADS_CFG.rew,type:'rewarded',platform:'touch',onRewarded:ok=>{if(ok)onReward()}})}catch(e){}});
 }
 const adBonus=()=>Math.max(.2,annual()*.05);
@@ -7132,7 +7135,7 @@ const NEWS=[
   ['hall','Ученик из академии','Возьмите юниора под крыло: он вырастет, дебютирует, может обогнать вас или уйти в гранд.'],
   ['life','Новая «Жизнь»','Семья и свадьба, дом родителям, стратегия в соцсетях, благотворительность, недвижимость, киберспортивная команда и детская академия.']
 ];
-function newsCheck(){try{if(LS.getItem(NEWS_KEY)===NEWS_V)return;if(slotsGet().length||G){UI.news=true;UI.nvid=!EN}else LS.setItem(NEWS_KEY,NEWS_V)}catch(e){}}
+function newsCheck(){try{if(LS.getItem(NEWS_KEY)===NEWS_V)return;if(slotsGet().length||G){UI.news=true;UI.nvid=!EN&&!YG}else LS.setItem(NEWS_KEY,NEWS_V)}catch(e){}}
 function newsClose(){UI.news=false;try{LS.setItem(NEWS_KEY,NEWS_V)}catch(e){}render()}
 /* the update trailer: full screen on the first visit after an update, then the list of changes */
 function nvidOpen(){
