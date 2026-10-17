@@ -192,6 +192,13 @@ def goat_backfill():
 def board_ok(b):
     if b == "hk-all" or (b.startswith("hk-pos-") and b[7:] in HK_POS):
         return True
+    if b.startswith("hk-sc-") and 6 < len(b) <= 24 and b[6:].isalnum():
+        return True
+    if b.startswith("hk-day-") and len(b) == 15 and b[7:].isdigit():
+        today = time.strftime("%Y%m%d", time.gmtime())
+        yday = time.strftime("%Y%m%d", time.gmtime(time.time() - 86400))
+        tmrw = time.strftime("%Y%m%d", time.gmtime(time.time() + 86400))
+        return b[7:] in (today, yday, tmrw)
     if b == "all" or (b.startswith("pos-") and b[4:] in POS_KEYS) or (b.startswith("sc-") and 3 < len(b) <= 24 and b[3:].isalnum()):
         return True
     if (b.startswith("day-") or b.startswith("top-")) and len(b) == 12 and b[4:].isdigit():
@@ -466,7 +473,7 @@ class Handler(BaseHTTPRequestHandler):
                 lst = [x for x in scores.get(board, []) if x["id"] != sid] + [e]
                 lst.sort(key=lambda x: -x["score"])
                 scores[board] = lst[:100]
-                for prefix in ("day-", "top-"):
+                for prefix in ("day-", "top-", "hk-day-"):
                     days = sorted(k for k in scores if k.startswith(prefix))
                     for old in days[:-14]:
                         del scores[old]
