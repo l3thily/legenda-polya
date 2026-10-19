@@ -29,9 +29,11 @@ DONE_TTL = 2 * 24 * 3600
 ROOM_TTL = 14 * 24 * 3600
 CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
-GAMES = {"fb", "hk"}  # rooms and boards of different games never mix; old clients mean football
+GAMES = {"fb", "hk", "bb"}  # rooms and boards of different games never mix; old clients mean football
 HK_BV = 20261018
 HK_POS = ("C", "W", "D", "G", "K")
+# the newer games of the series: balance version and GOAT positions per game
+SERIES = {"hk": (HK_BV, HK_POS), "bb": (20261019, ("PG", "SG", "SF", "PF", "C", "K"))}
 
 lock = threading.Lock()
 STATS_FILE = os.path.join(os.path.dirname(DATA), "stats.json")
@@ -190,11 +192,12 @@ def goat_backfill():
 
 
 def board_ok(b):
-    if b == "hk-all" or (b.startswith("hk-pos-") and b[7:] in HK_POS):
+    g = b[:3] if b[:3] in ("hk-", "bb-") else None
+    if g and (b == g + "all" or (b.startswith(g + "pos-") and b[7:] in SERIES[g[:2]][1])):
         return True
-    if b.startswith("hk-sc-") and 6 < len(b) <= 24 and b[6:].isalnum():
+    if g and b.startswith(g + "sc-") and 6 < len(b) <= 24 and b[6:].isalnum():
         return True
-    if (b.startswith("hk-day-") or b.startswith("hk-top-")) and len(b) == 15 and b[7:].isdigit():
+    if g and (b.startswith(g + "day-") or b.startswith(g + "top-")) and len(b) == 15 and b[7:].isdigit():
         today = time.strftime("%Y%m%d", time.gmtime())
         yday = time.strftime("%Y%m%d", time.gmtime(time.time() - 86400))
         tmrw = time.strftime("%Y%m%d", time.gmtime(time.time() + 86400))
@@ -382,8 +385,9 @@ class Handler(BaseHTTPRequestHandler):
         if parts == ["api", "goat"]:
             q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
             with lock:
-                if q.get("game") == "hk":
-                    return self.reply(200, {"goat": {k: scores.get("hk-pos-" + k, [])[:10] for k in HK_POS}})
+                if q.get("game") in SERIES:
+                    gm = q.get("game")
+                    return self.reply(200, {"goat": {k: scores.get(gm + "-pos-" + k, [])[:10] for k in SERIES[gm][1]}})
                 return self.reply(200, {"goat": {k: scores.get("pos-" + k, [])[:10] for k in POS_KEYS}})
         if parts == ["api", "scores"]:
             q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
@@ -462,18 +466,19 @@ class Handler(BaseHTTPRequestHandler):
                 board, sid = clip(data.get("board"), 24), clip(data.get("id"), 24)
                 if not board_ok(board) or not sid:
                     return self.reply(400, {"error": "неверная таблица"})
-                hk = board.startswith("hk-")
-                if data.get("balanceVersion") != (HK_BV if hk else BALANCE_VERSION):
+                hk = board[:2] if board[:3] in ("hk-", "bb-") else None
+                bv = SERIES[hk][0] if hk else BALANCE_VERSION
+                if data.get("balanceVersion") != bv:
                     return self.reply(409, {"error": "Новый рейтинг: начните карьеру после обновления баланса 16 октября."})
                 by = clip(data.get("by"), 24)
-                e = {"balanceVersion": HK_BV if hk else BALANCE_VERSION, "id": sid, "nick": by or clip(data.get("nick"), 24) or "Игрок", "name": clip(data.get("name"), 40), "by": by,
-                     "pk": (clip(data.get("pk"), 1) if clip(data.get("pk"), 1) in HK_POS else "") if hk else POS_SHORT.get(clip(data.get("pk"), 4), ""), "nat": clip(data.get("nat"), 40), "score": round(num(data.get("score"), 0, 3000), 1),
+                e = {"balanceVersion": bv, "id": sid, "nick": by or clip(data.get("nick"), 24) or "Игрок", "name": clip(data.get("name"), 40), "by": by,
+                     "pk": (clip(data.get("pk"), 2) if clip(data.get("pk"), 2) in SERIES[hk][1] else "") if hk else POS_SHORT.get(clip(data.get("pk"), 4), ""), "nat": clip(data.get("nat"), 40), "score": round(num(data.get("score"), 0, 3000), 1),
                      "tier": clip(data.get("tier"), 40), "pos": clip(data.get("pos"), 6), "tro": int(num(data.get("tro"), 0, 500)),
                      "bdo": int(num(data.get("bdo"), 0, 50)), "goal": int(num(data.get("goal"), 0, 3)), "hard": bool(data.get("hard")), "t": now}
                 lst = [x for x in scores.get(board, []) if x["id"] != sid] + [e]
                 lst.sort(key=lambda x: -x["score"])
                 scores[board] = lst[:100]
-                for prefix in ("day-", "top-", "hk-day-", "hk-top-"):
+                for prefix in ("day-", "top-", "hk-day-", "hk-top-", "bb-day-", "bb-top-"):
                     days = sorted(k for k in scores if k.startswith(prefix))
                     for old in days[:-14]:
                         del scores[old]
