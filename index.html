@@ -962,6 +962,8 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 /* ===== clean pass: gold means glory and the main action, club colour means identity, two typefaces, air instead of frames ===== */
 :root{--muted:#A6B7C0;--dim:#71879A}
 body::before{background:linear-gradient(180deg,var(--bg) 0%,#081610 100%)}
+/* club colours: a soft wash of the club colour from the top of the screen */
+html.club-theme body::before{background:linear-gradient(180deg,rgba(var(--club-rgb),.32) 0%,rgba(var(--club-rgb),.12) 45%,rgba(var(--club-rgb),0) 85%),linear-gradient(180deg,var(--bg) 0%,#081610 100%)}
 .top{background:#070D12;backdrop-filter:none;-webkit-backdrop-filter:none}
 .top::after{background:var(--line)}
 .brand i{box-shadow:none}
