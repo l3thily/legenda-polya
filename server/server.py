@@ -8,6 +8,11 @@
 Только стандартная библиотека. Слушает 127.0.0.1:8095, наружу через nginx (/api/) и Caddy.
 """
 import json
+import base64
+import gzip
+import hashlib
+import math
+import random
 import re
 import os
 import secrets
@@ -23,6 +28,7 @@ YG_ORIGIN = re.compile(r"^https://([a-z0-9-]+\.)*(games\.s3\.yandex\.net|yandex\
 ORIGINS |= set(filter(None, os.environ.get("EXTRA_ORIGINS", "").split(",")))  # local testing
 ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 MAX_ROOMS, MAX_PLAYERS, MAX_BODY, MAX_FEED, MAX_CHAT = 500, 8, 120_000, 120, 80
+SYNC_BODY, SYNC_CANON = 600_000, 500_000  # hk/bb shared world snapshots outgrow MAX_BODY after a few seasons
 # inactive rooms are removed: lobby nobody started, finished games, abandoned games
 LOBBY_TTL = 12 * 3600
 DONE_TTL = 2 * 24 * 3600
@@ -273,7 +279,7 @@ def clip(value, n):
 
 def clean_setup(s):
     s = s if isinstance(s, dict) else {}
-    return {k: clip(s.get(k), 40) for k in ("nat", "nat2", "pos", "lg", "club", "num")}
+    return {k: clip(s.get(k), 40) for k in ("nat", "nat2", "pos", "lg", "club", "num", "diff")}
 
 
 # room achievements: the first player whose feed line matches wins it for the whole room
@@ -294,6 +300,136 @@ def note_firsts(room, me, line, now):
         if key in firsts or not line.startswith(prefix):
             continue
         firsts[key] = {"pid": me["id"], "name": me["name"], "t": now, "text": clip(line, 120)}
+
+
+def sport_duel(room, me, data):
+    year, key = data.get("year"), clip(data.get("key"), 100)
+    season = room.get("sportSync", {}).get(str(year), {})
+    pre = season.get("stages", {}).get("pre", {})
+    if room.get("game") not in ("hk", "bb") or not pre.get("done") or not key:
+        raise ValueError("Сначала начните общий сезон")
+    if me["id"] not in season["members"]:
+        raise ValueError("Вы не участвуете в этом сезоне")
+    matches = season.setdefault("duels", {})
+    changed = False
+    if key not in matches:
+        if len(matches) >= 250:
+            raise ValueError("Слишком много матчей")
+        spec = data.get("match") or {}
+        a, b = spec.get("a"), spec.get("b")
+        if not isinstance(a, int) or not isinstance(b, int) or a == b:
+            raise ValueError("Неверные команды")
+        players = {}
+        for pid, packed in pre["subs"].items():
+            sub = json.loads(gzip.decompress(base64.b64decode(packed)))
+            prog = sub.get("progress", {})
+            if prog.get("club") in (a, b):
+                players[pid] = {"side": 0 if prog["club"] == a else 1, "name": room["players"].get(pid, {}).get("name", "Игрок")}
+        if not players:
+            raise ValueError("В матче нет игроков комнаты")
+        strength = spec.get("strength", [70, 70])
+        if not isinstance(strength, list) or len(strength) != 2 or not all(isinstance(v, (int, float)) and math.isfinite(v) for v in strength):
+            raise ValueError("Неверная сила команд")
+        matches[key] = {"a": a, "b": b, "players": players, "strength": [max(20, min(120, v)) for v in strength],
+                        "periods": 3 if room["game"] == "hk" else int(spec.get("periods", 4)),
+                        "turn": 0, "score": [0, 0], "log": [], "picks": {}, "done": False}
+        matches[key]["periods"] = max(2, min(4, matches[key]["periods"]))
+        changed = True
+    match = matches[key]
+    choice = data.get("choice")
+    if choice is not None:
+        if me["id"] not in match["players"] or choice not in (0, 1, 2):
+            raise ValueError("Неверный ход")
+        if not match["done"] and data.get("turn") == match["turn"] and me["id"] not in match["picks"]:
+            match["picks"][me["id"]] = choice
+            changed = True
+    required = [pid for pid in match["players"] if pid in room["players"]]
+    if not match["done"] and all(pid in match["picks"] for pid in required):
+        seed = hashlib.sha256(f"{room['seed']}:{year}:{key}:{match['turn']}".encode()).hexdigest()
+        rng = random.Random(seed)
+        tactics = [[], []]
+        for pid, pl in match["players"].items():
+            tactics[pl["side"]].append(match["picks"].get(pid, 1))
+        t = [sum(v) / len(v) if v else 1 for v in tactics]
+        strength = match["strength"]
+        delta = strength[0] - strength[1]
+        ot = match["turn"] >= match["periods"]
+        if room["game"] == "hk":
+            def poisson(rate):
+                n, product = 0, 1.0
+                while product > math.exp(-rate):
+                    n += 1
+                    product *= rng.random()
+                return n - 1
+            rates = [max(.15, 1 + delta * .025 + .22 * (1-t[0]) - .15 * (t[1]-1)),
+                     max(.15, 1 - delta * .025 + .22 * (1-t[1]) - .15 * (t[0]-1))]
+            inc = [poisson(rates[0]), poisson(rates[1])]
+            if ot:
+                side = 0 if rng.random() < rates[0] / sum(rates) else 1
+                inc = [1 if side == 0 else 0, 1 if side == 1 else 0]
+        else:
+            base = 108 / match["periods"]
+            inc = [max(4, round(rng.gauss(base + delta*.18 + (1-t[0])*2 - (t[1]-1)*1.4, 4))),
+                   max(4, round(rng.gauss(base - delta*.18 + (1-t[1])*2 - (t[0]-1)*1.4, 4)))]
+            if ot: inc = [max(2, round(v*.4)) for v in inc]
+        match["score"] = [match["score"][i] + inc[i] for i in (0, 1)]
+        match["log"].append({"score": match["score"][:], "points": inc, "tactics": t})
+        match["turn"] += 1
+        match["picks"] = {}
+        if match["turn"] >= match["periods"] and match["score"][0] != match["score"][1]:
+            match["done"] = True
+        if match["turn"] >= 10 and not match["done"]:
+            match["score"][rng.randrange(2)] += 1
+            match["log"][-1]["score"] = match["score"][:]
+            match["done"] = True
+        changed = True
+    return {**{k: v for k, v in match.items() if k not in ("picks", "strength")},
+            "waiting": [pid for pid in required if pid not in match["picks"]]}, changed
+
+
+def sport_sync(room, me, data):
+    """Immutable stage submissions; a room advances only with every participating player."""
+    year, phase = data.get("year"), data.get("phase")
+    if room.get("game") not in ("hk", "bb") or room["status"] != "started":
+        raise ValueError("Синхронизация доступна в начатой спортивной комнате")
+    if not isinstance(year, int) or not 2026 <= year <= 2200 or phase not in ("pre", "regular", "playoffs"):
+        raise ValueError("Неверный этап сезона")
+    years = room.setdefault("sportSync", {})
+    key = str(year)
+    changed = False
+    if key not in years:
+        if phase != "pre":
+            raise ValueError("Сначала все игроки должны начать общий сезон")
+        years[key] = {"members": [p["id"] for p in room["players"].values()
+                                  if not (p.get("progress") or {}).get("retired")], "stages": {}}
+        changed = True
+    season = years[key]
+    if me["id"] not in season["members"]:
+        raise ValueError("Вы не участвуете в этом сезоне")
+    previous = {"regular": "pre", "playoffs": "regular"}.get(phase)
+    if previous and not season["stages"].get(previous, {}).get("done"):
+        raise ValueError("Предыдущий этап ещё не завершён")
+    stage = season["stages"].setdefault(phase, {"subs": {}, "canon": None, "done": False})
+    sub, canon = data.get("sub"), data.get("canon")
+    if me["id"] not in stage["subs"] and not stage["done"]:
+        if not isinstance(sub, str) or not sub or len(sub) > 60000:
+            raise ValueError("Нужен снимок игрока")
+        if stage["canon"] is None:
+            if not isinstance(canon, str) or not canon or len(canon) > SYNC_CANON:
+                raise ValueError("Нужен снимок общего мира")
+            stage["canon"] = canon
+        stage["subs"][me["id"]] = sub
+        changed = True
+    waiting = [pid for pid in season["members"] if pid in room["players"] and pid not in stage["subs"]]
+    if not waiting and not stage["done"]:
+        stage["done"] = True
+        changed = True
+    for old in sorted(years)[:-2]:
+        del years[old]
+    return {"year": year, "phase": phase, "done": stage["done"],
+            "waiting": [{"id": pid, "name": room["players"][pid]["name"]} for pid in waiting],
+            "canon": stage["canon"] if stage["done"] else None,
+            "subs": stage["subs"] if stage["done"] else {}}, changed
 
 
 def public(room):
@@ -355,9 +491,9 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(raw)
 
-    def body(self):
+    def body(self, limit=MAX_BODY):
         n = int(self.headers.get("Content-Length") or 0)
-        if n > MAX_BODY:
+        if n > limit:
             raise ValueError("слишком большой запрос")
         data = json.loads(self.rfile.read(n) or b"{}")
         if not isinstance(data, dict):
@@ -427,7 +563,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         parts = [p for p in self.path.split("?")[0].split("/") if p]
         try:
-            data = self.body()
+            data = self.body(SYNC_BODY if parts[-1:] == ["sync"] else MAX_BODY)
         except (ValueError, json.JSONDecodeError) as e:
             return self.reply(400, {"error": str(e)})
         now = int(time.time())
@@ -590,6 +726,26 @@ class Handler(BaseHTTPRequestHandler):
                 if len(room["matches"]) > 400:
                     for old in list(room["matches"])[:-300]:
                         del room["matches"][old]
+            elif action == "duel":
+                try:
+                    result, changed = sport_duel(room, me, data)
+                except (ValueError, KeyError, TypeError) as exc:
+                    return self.reply(409, {"error": str(exc)})
+                if changed:
+                    room["updated"] = now
+                    bump(room)
+                    persist()
+                return self.reply(200, result)
+            elif action == "sync":
+                try:
+                    result, changed = sport_sync(room, me, data)
+                except ValueError as exc:
+                    return self.reply(409, {"error": str(exc)})
+                if changed:
+                    room["updated"] = now
+                    bump(room)
+                    persist()
+                return self.reply(200, result)
             elif action == "world":
                 # canonical world per room season: the first snapshot posted for a year wins, everyone continues from it
                 year = data.get("year")
