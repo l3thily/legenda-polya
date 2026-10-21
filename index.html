@@ -53,27 +53,9 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .tab[aria-current="true"]{color:var(--gold2);background:rgba(242,193,78,.08)}
 .tab[aria-current="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;border-radius:2px;background:var(--gold);box-shadow:0 0 10px var(--gold)}
 .topact{display:flex;gap:6px;align-items:center}
-/* club colours (clubTheme): the whole night background, top bar, accents and cards take the club colours */
-html.club-theme{--line:rgba(var(--club-rgb),.32);--line2:rgba(var(--club-rgb),.5);background:color-mix(in srgb,rgb(var(--club-rgb)) 14%,#05090C)}
-html.club-theme body::before{background:
-    radial-gradient(70% 55% at 0% -8%,rgba(var(--club-rgb),.55),transparent 70%),
-    radial-gradient(60% 50% at 100% -8%,rgba(var(--club2-rgb),.3),transparent 70%),
-    radial-gradient(90% 55% at 50% 112%,rgba(var(--club-rgb),.35),transparent 70%),
-    repeating-linear-gradient(115deg,rgba(var(--club-rgb),.07) 0 60px,transparent 60px 120px),
-    linear-gradient(180deg,color-mix(in srgb,rgb(var(--club-rgb)) 22%,#05090C) 0%,#05090C 70%)}
-html.club-theme .top{background:linear-gradient(90deg,rgba(var(--club-rgb),.55),rgba(var(--club-rgb),.25) 45%,rgba(var(--club2-rgb),.22)),rgba(5,9,12,.82);border-bottom:0}
-html.club-theme .top::after,html.club-theme .bnav::before{height:3px;background:linear-gradient(90deg,var(--club),rgb(var(--club2-rgb)) 50%,var(--club))}
-html.club-theme .bnav{background:linear-gradient(0deg,rgba(var(--club-rgb),.3),rgba(var(--club-rgb),.12)),rgba(5,9,12,.92)}
-html.club-theme .tab{color:rgba(255,255,255,.78)}
-html.club-theme .tab[aria-current="true"]{color:#fff;background:rgba(var(--club-rgb),.42)}
-html.club-theme .tab[aria-current="true"]::after,html.club-theme .bn[aria-current="true"]::before{background:#fff;box-shadow:0 0 10px var(--club)}
-html.club-theme .bn[aria-current="true"]{color:#fff}
-html.club-theme .bn[aria-current="true"] .ic{filter:drop-shadow(0 0 7px rgba(var(--club-rgb),.9))}
-html.club-theme .brand i{background:radial-gradient(circle at 35% 30%,#fff 0 18%,rgba(var(--club-rgb),1) 45%,rgba(var(--club2-rgb),1) 100%);box-shadow:0 0 18px rgba(var(--club-rgb),.8)}
-html.club-theme .panel,html.club-theme .season,html.club-theme .decide{border-color:rgba(var(--club-rgb),.4);box-shadow:inset 0 3px 0 rgba(var(--club-rgb),.85),0 20px 50px -30px rgba(var(--club-rgb),.6)}
-html.club-theme .sec-h h2{text-decoration:underline;text-decoration-color:var(--club);text-decoration-thickness:3px;text-underline-offset:7px}
-html.club-theme .eyebrow{color:color-mix(in srgb,var(--club) 55%,#fff)}
-html.club-theme .stat-grid dt{color:color-mix(in srgb,var(--club) 45%,#9fb1ba)}
+/* club colours (clubTheme): identity only — a stripe under the top bar and a ring around the player's card */
+html.club-theme .top::after{height:3px;bottom:-3px;background:linear-gradient(90deg,var(--club) 0 72%,rgb(var(--club2-rgb)) 72%)}
+html.club-theme .hero .fcard{box-shadow:0 0 0 3px var(--club),0 24px 40px -24px rgba(0,0,0,.8)}
 /* GOAT */
 .goat-xi{position:relative;width:100%;max-width:440px;aspect-ratio:60/80;margin:16px auto 0;border-radius:14px;background:repeating-linear-gradient(180deg,#123b26 0 10%,#0f3420 10% 20%);box-shadow:inset 0 0 0 1px rgba(47,210,124,.25),inset 0 0 60px rgba(0,0,0,.45);overflow:hidden}
 .goat-xi svg{position:absolute;inset:3%;width:94%;height:94%;fill:none;stroke:rgba(255,255,255,.28);stroke-width:.5;vector-effect:non-scaling-stroke}
@@ -976,6 +958,72 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 .streak-gifts div b{color:var(--muted);font-size:13px}
 .streak-gifts div.on{border-style:solid;border-color:rgba(242,193,78,.55);color:var(--gold2)}.streak-gifts div.on b{color:var(--gold)}
 .streak-chip{display:inline-flex;align-items:center;gap:6px;margin:18px 0 0;padding:6px 12px;border-radius:999px;background:rgba(242,193,78,.12);color:var(--gold2);font-size:13.5px;border:0;cursor:pointer;font:inherit}
+
+/* ===== clean pass: gold means glory and the main action, club colour means identity, two typefaces, air instead of frames ===== */
+:root{--muted:#A6B7C0;--dim:#71879A}
+body::before{background:linear-gradient(180deg,var(--bg) 0%,#081610 100%)}
+.top{background:#070D12;backdrop-filter:none;-webkit-backdrop-filter:none}
+.top::after{background:var(--line)}
+.brand i{box-shadow:none}
+.tab{border-radius:0}
+.tab:hover{background:none}
+.tab[aria-current="true"]{background:none;color:var(--text)}
+.tab[aria-current="true"]::after{left:13px;right:13px;bottom:0;border-radius:0;box-shadow:none}
+.btn.hub{color:var(--text)}
+.btn:hover{border-color:var(--text)}
+.btn.primary{background:var(--gold);box-shadow:none}
+.btn.primary::after{content:none}
+.btn.primary:hover{background:var(--gold2);box-shadow:none}
+.num{font-family:var(--body);font-variant-numeric:tabular-nums;font-weight:600}
+.eyebrow,.stat-grid dt,.totals span,.facts span,.kpi span,.wst dt,.fc-age{font-size:13px;letter-spacing:0;text-transform:none;font-weight:500;color:var(--muted)}
+.fc-age{font-size:12px;color:var(--tx2)}
+.home-hero h1 em,.hero-t em{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--gold);padding-right:0}
+.fan::before,.fcard.icon::before{display:none}
+.fcard{box-shadow:inset 0 0 0 1.5px var(--rim),inset 0 0 0 7px rgba(0,0,0,.08),0 24px 40px -24px rgba(0,0,0,.8)}
+/* frames out: sections are separated by space and headings */
+main{gap:56px}
+.panel{background:none;border:0;border-radius:0;padding:0}
+.grid2{gap:56px 40px}
+.sec-h{margin-bottom:14px}
+.sec-h h2{font-size:34px}
+.season{background:var(--bg2);border:0;border-radius:16px}
+.decide{background:var(--bg2);box-shadow:inset 0 0 0 1px rgba(242,193,78,.35)}
+.opt{background:var(--card);border-color:var(--line)}
+.money,.social{background:var(--bg2);box-shadow:none}
+.cer{background:var(--bg2);box-shadow:inset 0 0 0 1px rgba(242,193,78,.35)}
+.home-card{background:var(--bg2);border-color:var(--line)}
+.home-card:hover{box-shadow:none}
+.home-card.main{background:var(--bg2);box-shadow:inset 0 0 0 1px rgba(242,193,78,.5)}
+.home-card.main .hc-ic{box-shadow:none}
+.hc-ic{box-shadow:none}
+.totals .gold b{text-shadow:none}
+.trk,.at-row .trk,.rec-row .trk{background:rgba(255,255,255,.07)}
+.at-row.key .trk i{background:var(--gold);box-shadow:none}
+.stat-grid{border-top:0}
+/* the four facts that matter on the career screen */
+.stat-grid.key4{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 24px;margin-top:22px}
+.stat-grid.key4>div{border:0;padding:0}
+.stat-grid.key4 dd{font-size:19px;font-weight:600;line-height:1.3}
+.stat-grid.key4 dd small{display:block;font-size:13px;font-weight:400;color:var(--muted)}
+.pl-head h1{font-size:clamp(44px,6.4vw,76px)}
+.sp-t{gap:2px}.sp-t b{line-height:1.1}.sp-t span,.sp-t em{line-height:1.35}
+details.more{border-top:1px solid var(--line);padding-top:14px}
+details.more>summary{font-size:15px;color:var(--text)}
+.more-in{display:grid;gap:14px;margin-top:14px}
+.field label,.field .lbl{font-size:13px;letter-spacing:0;text-transform:none;font-weight:500}
+.field .lbl b{letter-spacing:0}
+.kpi b{font-family:var(--body);font-variant-numeric:tabular-nums}
+.vs-r span,.nem-score span,.nem>.nem-h .eyebrow,.s-club span{letter-spacing:0;text-transform:none}
+.season.latest{box-shadow:none}
+.home-card.main .hc-ic{background:var(--gold)}
+@media (max-width:760px){.stat-grid.key4{grid-template-columns:repeat(2,minmax(0,1fr))}main{gap:40px}.grid2{gap:40px}}
+@media (max-width:480px){.brand{font-size:20px;min-width:0;overflow:hidden;text-overflow:ellipsis}.topin{gap:8px}.topact{gap:4px;flex:none}.topact .btn{min-width:40px;padding-inline:8px}.btn.newc span{display:none}}
+/* phone: the season button stays under the thumb, above the bottom nav */
+@media (max-width:960px){
+  .go:has(>[data-a="play"]),.go:has(>[data-a="paperOk"]){position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom,0px));z-index:29;margin:0;padding:12px 16px 10px;background:linear-gradient(0deg,#070D12 75%,rgba(7,13,18,0))}
+  .go>[data-a="play"],.go>[data-a="paperOk"]{flex:1}
+  body:has(.go>[data-a="play"]) main,body:has(.go>[data-a="paperOk"]) main{padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 
 <div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
@@ -2907,10 +2955,10 @@ function recordsPanel(){
   const keys=[...new Set([...REC_BY_LINE[line],...(line==='MID'?['goals']:[]),...(line==='GK'?[]:['bdo']),'tro','uclW','apps','caps',...lk,...(att?[...clubs].map(c=>'club_'+c):[]),...(line!=='GK'?['nat_'+N(P.nat).name]:[]),'fee',...Object.keys(rec).filter(k=>rec[k].mine)])];
   const keysOk=keys.filter(k=>rec[k]);
   const mine={...vals,uclS:best.uclS||0};[...lgs].forEach(l=>{mine['lg_'+l]=best['lg_'+l]||0;mine['lgA_'+l]=best['lgA_'+l]||0;mine['cs_'+l]=best['cs_'+l]||0});
-  const rows=keysOk.map(k=>{const r=rec[k],v=mine[k]||0,pc=Math.min(100,v/Math.max(1,r.v)*100);
+  const rows=keysOk.filter(k=>mine[k]||rec[k].mine).map(k=>{const r=rec[k],v=mine[k]||0,pc=Math.min(100,v/Math.max(1,r.v)*100);
     return `<div class="rec-row ${r.mine?'mine':''}"><div><b>${esc(r.n)}</b><span>${r.mine?`рекорд ваш · ${r.v}`:`${esc(r.h)} · ${r.v}`}</span></div><span class="trk"><i style="width:${pc.toFixed(1)}%"></i></span><span class="num">${v}</span></div>`}).join('');
   const ms=P.ms.length?`<div class="cabinet" style="margin-top:14px">${P.ms.map(k=>{const m=MILESTONES.find(x=>k.startsWith(x[0])&&x[1].includes(+k.slice(x[0].length)));return m?`<span class="aw">${k.slice(m[0].length)} · ${m[2]}</span>`:''}).join('')}</div>`:'';
-  return `<div class="recs">${rows}</div>${ms}<p class="small dim" style="margin:10px 0 0">Реальные рекорды приблизительные, на 2026 год. Справа — ваш результат (для сезонных — лучший сезон).</p>`;
+  return `${rows?`<div class="recs">${rows}</div>`:'<p class="muted">Рекорды начнут считаться с первых матчей: ваши цифры встанут рядом с рекордами Роналду, Месси и Клозе.</p>'}${ms}<p class="small dim" style="margin:10px 0 0">Реальные рекорды приблизительные, на 2026 год. Справа — ваш результат (для сезонных — лучший сезон).</p>`;
 }
 
 /* ================= panels ================= */
@@ -2951,7 +2999,8 @@ function checkPerks(){
 }
 function perkPanel(){
   const P=G.P;
-  return `<div class="perks">${PERKS.map(p=>{const on=P.perks.includes(p.id);return `<div class="perk ${on?'on':''}"><b>${p.n}</b><span>${on?p.d:'Условие: '+p.need}</span></div>`}).join('')}</div>`;
+  const on=PERKS.filter(p=>P.perks.includes(p.id)),off=PERKS.filter(p=>!P.perks.includes(p.id));
+  return `${on.length?`<div class="perks">${on.map(p=>`<div class="perk on"><b>${p.n}</b><span>${p.d}</span></div>`).join('')}</div>`:'<p class="muted">Пока ни одной. Черты открываются за достижения в карьере.</p>'}${off.length?`<details style="margin-top:12px"><summary>Как открыть остальные · ${off.length}</summary><div class="perks" style="margin-top:12px">${off.map(p=>`<div class="perk"><b>${p.n}</b><span>Условие: ${p.need}</span></div>`).join('')}</div></details>`:''}`;
 }
 
 /* ================= achievements (kept across careers, in this browser) ================= */
@@ -4588,7 +4637,7 @@ function viewHome(){
     </section>
     ${todayTop()}
     ${!YG&&BANNER.house&&BANNER.house.card?`<section class="panel"><div class="sec-h"><h2>Спонсоры</h2><span class="small muted">те, кто поддерживает игру</span></div>${sponsorCard(BANNER.house,'big')}<p class="small muted" style="margin:10px 0 0">Хотите свой бренд здесь? Пишите в Telegram: <a href="https://t.me/${AD_CONTACT.tg}" target="_blank" rel="noopener">@${AD_CONTACT.tg}</a></p></section>`:''}
-    <section class="panel"><div class="sec-h"><h2>Величайшие</h2><span class="small muted">все ваши завершённые карьеры в этом браузере, по очкам наследия</span></div>${greatsTable(20)}</section>`;
+    ${greatsGet().length?`<section class="panel"><div class="sec-h"><h2>Величайшие</h2><span class="small muted">все ваши завершённые карьеры в этом браузере, по очкам наследия</span></div>${greatsTable(20)}</section>`:''}`;
 }
 
 /* ================= museum of a career ================= */
@@ -4965,9 +5014,12 @@ function viewMuseum(){
   return `<section class="museum-h"><p class="eyebrow">Музей карьеры</p><h1 class="disp">${esc(P.name)}</h1><p class="muted">${POS[sumPos()].n} · ${G.seasons.length} ${plural(G.seasons.length,'сезон','сезона','сезонов')} · ${P.trophies.length} ${plural(P.trophies.length,'трофей','трофея','трофеев')}</p></section>
     <section><div class="sec-h"><h2>Стена футболок</h2><span class="small muted">каждый клуб — с вашим номером</span></div><div class="kits">${kits}${natKit}</div></section>
     ${G.phase==='retired'?'':legacyPanel()}
-    <section class="panel vitrine"><div class="sec-h"><h2>Витрина</h2><span class="small muted">трофеи и главные награды</span></div>${shelf}</section>
+    ${tro.length||aw.length?`<section class="panel vitrine"><div class="sec-h"><h2>Витрина</h2><span class="small muted">трофеи и главные награды</span></div>${shelf}</section>`:''}
     ${viewChrono()}
-    <section><div class="sec-h"><h2>Газетные вырезки</h2><span class="small muted">самые громкие сезоны</span></div>${clips}</section>
+    ${best.length?`<section><div class="sec-h"><h2>Газетные вырезки</h2><span class="small muted">самые громкие сезоны</span></div>${clips}</section>`:''}
+    <section class="panel"><div class="sec-h"><h2>Рекорды и вехи</h2></div>${recordsPanel()}</section>
+    <section class="panel"><div class="sec-h"><h2>Черты игрока</h2><span class="small muted">${P.perks.length} из ${PERKS.length}</span></div>${perkPanel()}</section>
+    <section class="panel"><details><summary>Достижения · ${ACHS.filter(a=>ACH[a[0]]).length} из ${ACHS.length}</summary><div style="margin-top:12px">${achPanel()}</div></details></section>
     ${rel.length?`<section class="panel"><div class="sec-h"><h2>Реликвии</h2></div><div class="perks">${rel.map(([a,b])=>`<div class="perk on"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</div></section>`:''}`;
 }
 /* deadline-day countdown: updates the open decision in place */
@@ -6181,6 +6233,7 @@ function playerCard(o){
 const SVG_SND_ON='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 const SVG_SND_OFF='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
 const TAB_IC={
+  player:'<circle cx="12" cy="7.8" r="3.6"/><path d="M4.8 20.5c.7-4 3.6-6.2 7.2-6.2s6.5 2.2 7.2 6.2"/>',
   career:'<path d="M8.2 3.5 3.5 6.3l1.8 4.4 2-.9V20.5h9.4V9.8l2 .9 1.8-4.4-4.7-2.8c-.6 1.7-2 2.8-3.8 2.8s-3.2-1.1-3.8-2.8z"/>',
   hall:'<path d="M8 4h8v5.5a4 4 0 0 1-8 0z"/><path d="M8 6H5.5a2.5 2.5 0 0 0 2.6 3.6M16 6h2.5a2.5 2.5 0 0 1-2.6 3.6M12 13.5v3.5M8.5 20.5h7M9.5 17h5"/>',
   life:'<rect x="3.5" y="6.5" width="17" height="12.5" rx="2.5"/><path d="M3.5 10.5h17M15.5 14.8h2"/><path d="M6.5 6.5 15 3.5l1.2 3"/>',
@@ -6197,7 +6250,7 @@ const TAB_IC={
 const ico=(k,c)=>`<svg class="ic ${c||''}" viewBox="0 0 24 24" aria-hidden="true">${TAB_IC[k]||''}</svg>`;
 function topbar(){
   const has=G&&(G.P||G.C),ret=has&&G.phase==='retired';
-  const list=has?[['career',ret?'Итоги':'Карьера',ret?'Итоги':'Карьера',ret?'hall':'career'],...(G.P&&!isCoach()?[['life','Жизнь','Жизнь','life'],['museum','Музей','Музей','museum']]:isCoach()?[['museum','Музей','Музей','museum']]:[]),['tables','Таблицы','Таблицы','tables'],['world','Мир','Мир','world'],...(G.room?[['multi','Комната','Комната','multi']]:[])]
+  const list=has?[['career',ret?'Итоги':'Карьера',ret?'Итоги':'Карьера',ret?'hall':'career'],...(G.P&&!isCoach()?[['player','Игрок','Игрок','player'],['life','Жизнь','Жизнь','life'],['museum','Музей','Музей','museum']]:isCoach()?[['museum','Музей','Музей','museum']]:[]),['tables','Таблицы','Таблицы','tables'],['world','Мир','Мир','world'],...(G.room?[['multi','Комната','Комната','multi']]:[])]
     :[['career','Новая карьера','Новая','new'],['goat','GOAT','GOAT','goat'],['multi','Мультиплеер','Онлайн','multi'],['saves','Сохранения','Слоты','saves']];
   const tabs=list.map(([k,l,sh])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l===sh?l:`<span class="tl">${l}</span><span class="ts">${sh}</span>`}</button>`).join('');
   const bn=list.map(([k,l,sh,ic])=>`<button class="bn" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}" aria-label="${l}">${ico(ic)}<span>${sh}</span></button>`).join('');
@@ -6286,10 +6339,12 @@ function viewSetup(){
         </div>
         ${setupFace(f)}
         ${setupPos(f)}
-        ${setupChar(f)}
         ${setupLeague(f)}
+        <details class="more"${UI.setMore?' open':''}><summary>Дополнительно: стиль, характер, хардкор</summary><div class="more-in">
+        ${setupChar(f)}
         <div class="field"><label for="f-rus">Россия в международном футболе</label><select id="f-rus">${[['random','Отстранена, но может вернуться (~10% в год)'],['off','Отстранена навсегда'],['on','Допущена с первого сезона']].map(([v,l])=>`<option value="${v}" ${f.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>
         <label class="chk"><input type="checkbox" id="f-hard" ${f.hard?'checked':''}> Хардкор: травмы чаще, рост медленнее, рискованные решения удаются реже — очки в таблице рекордов ×1,3</label>
+        </div></details>
         <p class="small muted" style="margin:0">Каждая новая карьера — новый случайный мир. Играть с друзьями в одном мире — вкладка «Мультиплеер».</p>
         <div class="go"><button class="btn primary" type="submit">Начать карьеру</button><span class="small muted">Сила сборной «${esc(f.nat)}»: ${nat?nat.str:'—'} · ${nat?CONF_RU[nat.conf]:''}</span></div>
       </form>`}
@@ -6368,9 +6423,27 @@ function viewCareer(){
   if(G.phase==='retired')return (RUN&&MATCH?`<section class="fw-wrap">${matchView()}</section>`:'')+viewHall()+lbHall()+feed();
   const y=G.year,label=`${y}/${String(y+1).slice(2)}`;
   const action=UI.wait?waitView(UI.wait,false):RUN&&MATCH&&MATCH.kind==='sync'?waitView(MATCH,true):RUN&&MATCH&&MATCH.kind==='await'?waitView(MATCH,false):RUN&&MATCH&&MATCH.kind==='h2h'?h2hView(MATCH):RUN&&MATCH?matchView():G.pending.length&&G.seasons[0]&&G.paperSeen!==G.seasons[0].label?`<div class="morning"><p class="eyebrow">Утренние газеты</p>${paperHtml(G.seasons[0],true)}<div class="go"><button class="btn primary" data-a="paperOk">К решениям лета</button></div></div>`:G.pending.length?decisionView():`${loadPick()}<div class="go"><button class="btn primary" data-a="play">Сыграть сезон ${label}</button>${UI.confirmRetire?`<span class="confirm"><span class="small muted">Завершить карьеру сейчас?</span><button class="btn warn" data-a="retYes">Да</button><button class="btn ghost" data-a="retNo">Нет</button></span>`:(P.age>=30?`<button class="btn ghost" data-a="ret">Завершить карьеру</button>`:'')}</div>${G.summer.length?`<ul class="summer">${G.summer.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`;
-  const natLine=P.intlRetired?'завершил карьеру в сборной':`${esc(nat.name)} · сила ${Math.round(nat.str)}`;
   return chalBanner()+`<section class="hero">${card}
     <div class="status"><p class="eyebrow">${POS[P.pos].n} · ${esc(nat.name)}</p><h1 class="disp">${esc(P.name)}</h1>
+      <dl class="stat-grid key4">
+        <div><dt>Клуб</dt><dd>${esc(club.name)}${P.loanFrom!=null?' <small>(аренда)</small>':''}<small>${esc(LG(club.lg).name)} · сила ${Math.round(club.str)}</small></dd></div>
+        <div><dt>Роль</dt><dd>${ROLE[role]}</dd></div>
+        <div><dt>Контракт</dt><dd>${P.contract>0?`до лета ${y+P.contract}`:'истёк'}<small>${fmtW(P.wage)}</small></dd></div>
+        <div><dt>Потенциал</dt><dd class="num">${potRange()}</dd></div>
+      </dl>
+      <div class="act">${UI.err?`<p class="err">${esc(UI.err)}</p>`:''}${action}</div>
+    </div></section>
+    ${P.tot.apps?`<section>${totals()}</section>`:''}
+    ${roomPanel()}
+    ${G.seasons.length?nemPanel():''}
+    ${G.seasons.length?feed():''}`;
+}
+/* the player page: everything about the player himself that used to crowd the career screen */
+function viewPlayer(){
+  const P=G.P,club=C(P.clubId),nat=N(P.nat),y=G.year,role=roleOf(P.ovr+(P.captain===club.id?2:0)+(P.rel.coach-50)/20,club.str);
+  const natLine=P.intlRetired?'завершил карьеру в сборной':`${esc(nat.name)} · сила ${Math.round(nat.str)}`,ar=archetype();
+  const st=[P.captain===club.id?'капитан клуба':'',P.ntCaptain&&!P.intlRetired?'капитан сборной':'',P.agent?'суперагент':'',P.diet?'личный штаб':'',P.sponsor?`спонсор ${fmtM(P.sponsor.m)}/год`:''].filter(Boolean).join(' · ');
+  return `<section class="pl-head"><p class="eyebrow">${POS[P.pos].n} · ${esc(ar[0])}, ${esc(ar[1])}</p><h1 class="disp">${esc(P.name)}</h1>
       <dl class="stat-grid">
         <div><dt>Клуб</dt><dd>${esc(club.name)}${P.loanFrom!=null?' <small>(аренда)</small>':''} <small>· ${esc(LG(club.lg).name)}</small></dd></div>
         <div><dt>Сила клуба</dt><dd class="num">${Math.round(club.str)} ${compBadges(club.id)}</dd></div>
@@ -6379,24 +6452,15 @@ function viewCareer(){
         <div><dt>Стоимость</dt><dd class="num">${fmtM(marketValue())}</dd></div>
         <div><dt>Потенциал</dt><dd class="num">${potRange()}</dd></div>
         <div><dt>Репутация</dt><dd><span class="num">${Math.round(P.rep)}</span> <small>· ${repLabel(P.rep)}</small></dd></div>
-        <div><dt>Статус</dt><dd>${[P.captain===club.id?'капитан клуба':'',P.ntCaptain&&!P.intlRetired?'капитан сборной':'',P.agent?'суперагент':'',P.diet?'личный штаб':'',P.sponsor?`спонсор ${fmtM(P.sponsor.m)}/год`:''].filter(Boolean).join(' · ')||'<small>—</small>'}</dd></div>
         <div><dt>Сборная</dt><dd>${natLine}</dd></div>
         <div><dt>Состояние</dt><dd class="num">${fmtM(P.earn/1e6)}</dd></div>
         <div><dt>Подписчики</dt><dd><span class="num">${fmtFol(P.fol)}</span> <small>· ${hypeLabel(P.fol)}</small></dd></div>
+        ${st?`<div><dt>Статус</dt><dd>${st}</dd></div>`:''}
         <div><dt>Код мира</dt><dd class="num">${esc(G.code||'—')}</dd></div>
-      </dl>
-      <div class="act">${UI.err?`<p class="err">${esc(UI.err)}</p>`:''}${action}</div>
-    </div></section>
-    <section>${totals()}</section>
-    ${roomPanel()}
-    ${nemPanel()}
+      </dl></section>
     <section class="grid2"><div class="panel"><div class="sec-h"><h2>Атрибуты</h2><span class="small muted">рейтинг ${Math.round(P.ovr)}</span></div>${attrPanel()}</div><div class="panel"><div class="sec-h"><h2>Отношения</h2><span class="small muted">${esc(club.name)}</span></div>${relPanel()}</div></section>
     <section class="panel"><div class="sec-h"><h2>Характер и стиль</h2><span class="small muted">${styOf(P)?esc(styOf(P)[1]):''}</span></div>${charPanel()}</section>
-    <section class="panel"><div class="sec-h"><h2>Рекорды и вехи</h2></div>${recordsPanel()}</section>
-    <section class="panel"><div class="sec-h"><h2>Черты игрока</h2><span class="small muted">${P.perks.length} из ${PERKS.length}</span></div>${perkPanel()}</section>
-    <section class="panel"><details><summary>Достижения · ${ACHS.filter(a=>ACH[a[0]]).length} из ${ACHS.length}</summary><div style="margin-top:12px">${achPanel()}</div></details></section>
-    <section class="grid2"><div class="panel"><div class="sec-h"><h2>Рейтинг</h2><span class="small muted">по возрасту</span></div>${chart()}</div><div class="panel"><div class="sec-h"><h2>Трофеи и награды</h2></div>${cabinet()}</div></section>
-    ${feed()}`;
+    ${P.ovrHist.length>1?`<section class="panel"><div class="sec-h"><h2>Рейтинг</h2><span class="small muted">по возрасту</span></div>${chart()}</section>`:''}`;
 }
 function feed(){
   if(!G.seasons.length)return `<section><div class="sec-h"><h2>Сезоны</h2></div><p class="muted">Здесь появится история карьеры — сезон за сезоном.</p></section>`;
@@ -6575,6 +6639,7 @@ function viewWorld(){
   <div class="panel"><div class="sec-h"><h2>Сильнейшие клубы</h2></div><p class="small muted" style="margin-top:0">Δ — изменение силы с начала карьеры.</p>${clubs}</div></section>
   <section class="panel"><div class="sec-h"><h2>Сильнейшие сборные</h2></div>${nt}</section>`;
 }
+if(typeof document!=='undefined')document.addEventListener('toggle',e=>{if(e.target.matches&&e.target.matches('details.more'))UI.setMore=e.target.open},true);
 function render(){
   const app=document.getElementById('app');
   let body;
@@ -6586,6 +6651,7 @@ function render(){
   else if(!G||(!G.P&&!G.C))body=viewSetup();
   else if(UI.tab==='tables')body=viewTables();
   else if(UI.tab==='world')body=viewWorld();
+  else if(UI.tab==='player'&&G.P&&!isCoach())body=viewPlayer();
   else if(UI.tab==='life'&&G.P&&!isCoach())body=viewLife();
   else if(UI.tab==='museum'&&G.P&&!isCoach())body=viewMuseum();
   else if(UI.tab==='museum'&&isCoach())body=viewCoachMuseum();
@@ -6789,9 +6855,9 @@ const mskDay=()=>dayKey(new Date(Date.now()+3*3600e3));
 function todayTop(){
   const b='top-'+mskDay(),l=LB.cache[b];if(l===undefined)setTimeout(()=>lbLoad(b),0);
   const top=(l||[]).slice(0,3),medal=['🥇','🥈','🥉'];
-  return `<section class="panel"><div class="sec-h"><h2>Топ-3 сегодня</h2><span class="small muted">лучшие завершённые карьеры всех игроков за день</span></div><div data-lb="${b}">${top.length?`<ol class="podium">${top.map((e,i)=>`<li class="p${i+1}"><span class="m">${medal[i]}</span><b>${esc(e.name||e.nick)}</b><span>${e.by?`от ${esc(e.by)} · `:''}${esc(e.pos||'')} · ${esc(e.tier||'')}</span><em class="num">${e.score}</em></li>`).join('')}</ol>`:l===undefined?'<p class="small muted">Загружаю…</p>':'<p class="small muted">Сегодня ещё никто не завершил карьеру. Будьте первым в таблице дня!</p>'}</div></section>`;
+  return `<section class="panel"${top.length?'':' hidden'}><div class="sec-h"><h2>Топ-3 сегодня</h2><span class="small muted">лучшие завершённые карьеры всех игроков за день</span></div><div data-lb="${b}">${top.length?`<ol class="podium">${top.map((e,i)=>`<li class="p${i+1}"><span class="m">${medal[i]}</span><b>${esc(e.name||e.nick)}</b><span>${e.by?`от ${esc(e.by)} · `:''}${esc(e.pos||'')} · ${esc(e.tier||'')}</span><em class="num">${e.score}</em></li>`).join('')}</ol>`:l===undefined?'<p class="small muted">Загружаю…</p>':'<p class="small muted">Сегодня ещё никто не завершил карьеру. Будьте первым в таблице дня!</p>'}</div></section>`;
 }
-function lbLoad(board){if(Date.now()-(LB.at[board]||0)<15000)return;LB.at[board]=Date.now();api('/scores?board='+encodeURIComponent(board)).then(d=>{LB.cache[board]=d.scores||[];const el=document.querySelector(`[data-lb="${board}"]`);if(el)el.innerHTML=board.startsWith('top-')?(todayTop().match(/<div data-lb="[^"]+">([\s\S]*)<\/div><\/section>$/)||['',''])[1]:lbList(board)}).catch(()=>{LB.cache[board]=LB.cache[board]||null;const el=document.querySelector(`[data-lb="${board}"]`);if(el)el.innerHTML='<p class="small muted">Таблица недоступна: нет связи с сервером.</p>'})}
+function lbLoad(board){if(Date.now()-(LB.at[board]||0)<15000)return;LB.at[board]=Date.now();api('/scores?board='+encodeURIComponent(board)).then(d=>{LB.cache[board]=d.scores||[];const el=document.querySelector(`[data-lb="${board}"]`);if(el){el.innerHTML=board.startsWith('top-')?(todayTop().match(/<div data-lb="[^"]+">([\s\S]*)<\/div><\/section>$/)||['',''])[1]:lbList(board);if(board.startsWith('top-')&&el.closest('section'))el.closest('section').hidden=!LB.cache[board].length}}).catch(()=>{LB.cache[board]=LB.cache[board]||null;const el=document.querySelector(`[data-lb="${board}"]`);if(el)el.innerHTML='<p class="small muted">Таблица недоступна: нет связи с сервером.</p>'})}
 function lbList(board,n=10){
   const l=LB.cache[board];if(l===undefined){setTimeout(()=>lbLoad(board),0);return '<p class="small muted">Загружаю…</p>'}
   if(!l||!l.length)return '<p class="small muted">Пока пусто — станьте первым.</p>';

@@ -757,5 +757,10 @@
  "Рекорды": "Records",
  "Лучшие по позициям": "Best by position",
  "Все игры": "All games",
- "Все игры серии «Легенда»": "All games in the Legend series"
+ "Все игры серии «Легенда»": "All games in the Legend series",
+ "Рекорды начнут считаться с первых матчей: ваши цифры встанут рядом с рекордами Роналду, Месси и Клозе.": "Records start counting from your first matches: your numbers will sit next to the records of Ronaldo, Messi and Klose.",
+ "Пока ни одной. Черты открываются за достижения в карьере.": "None yet. Traits unlock with career achievements.",
+ "Как открыть остальные · {0}": "How to unlock the rest · {0}",
+ "Условие: {0}": "Requirement: {0}",
+ "Дополнительно: стиль, характер, хардкор": "More: style, personality, hardcore"
 }
