@@ -36,4 +36,30 @@ class SportSyncTest(unittest.TestCase):
    duel('a',turn=turn,choice=0);second=duel('b',turn=turn,choice=2)
   self.assertTrue(second['done']);self.assertNotEqual(*second['score'])
   self.assertEqual(duel('a'),duel('b'))
+
+class TennisRoomTest(unittest.TestCase):
+ def setUp(self):
+  self.room={'game':'tn','status':'started','seed':'tour','players':{'a':{'id':'a','name':'Alex'},'b':{'id':'b','name':'Ben'}}}
+ def sync(self,pid,tick,phase,sub='{}'):return s.sport_sync(self.room,self.room['players'][pid],{'year':tick,'phase':phase,'sub':sub})[0]
+ def test_window_barrier_and_results(self):
+  self.assertFalse(self.sync('a',0,'pick')['done'])
+  with self.assertRaises(ValueError):self.sync('a',0,'done')
+  self.assertTrue(self.sync('b',0,'pick')['done'])
+  me=self.room['players']
+  self.assertIsNone(s.tn_result(self.room,me['b'],{'tick':0,'key':'k'})[0]['result'])
+  s.tn_result(self.room,me['a'],{'tick':0,'key':'k','result':{'winner':1,'score':'6-4 6-4'}})
+  s.tn_result(self.room,me['b'],{'tick':0,'key':'k','result':{'winner':0,'score':'x'}})
+  self.assertEqual(s.tn_result(self.room,me['b'],{'tick':0,'key':'k'})[0]['result']['winner'],1)
+  self.sync('a',0,'done');self.assertTrue(self.sync('b',0,'done')['done'])
+  for t in range(2,14,2):self.sync('a',t,'pick')
+  self.assertLessEqual(len(self.room['sportSync']),4)
+ def test_set_duel(self):
+  self.sync('a',4,'pick');self.sync('b',4,'pick');me=self.room['players']
+  body={'tick':4,'key':'4-0-itf-0-h:a-h:b','match':{'pids':['a','b'],'strength':[70,72],'need':2}}
+  d=lambda pid,**k:s.tn_duel(self.room,me[pid],{**body,**k})[0]
+  st=d('a')
+  for turn in range(5):
+   if st['done']:break
+   d('a',turn=turn,choice=0);st=d('b',turn=turn,choice=2)
+  self.assertTrue(st['done']);self.assertEqual(max(st['score']),2);self.assertEqual(d('a'),d('b'))
 if __name__=='__main__':unittest.main()

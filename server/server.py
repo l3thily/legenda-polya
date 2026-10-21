@@ -35,7 +35,7 @@ DONE_TTL = 2 * 24 * 3600
 ROOM_TTL = 14 * 24 * 3600
 CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
-GAMES = {"fb", "hk", "bb"}  # rooms and boards of different games never mix; old clients mean football
+GAMES = {"fb", "hk", "bb", "tn"}  # rooms and boards of different games never mix; old clients mean football
 HK_BV = 20261018
 HK_POS = ("C", "W", "D", "G", "K")
 # the newer games of the series: balance version and GOAT positions per game
@@ -387,18 +387,97 @@ def sport_duel(room, me, data):
             "waiting": [pid for pid in required if pid not in match["picks"]]}, changed
 
 
+def tn_window(room, me, data):
+    tick = data.get("tick")
+    if room.get("game") != "tn" or not isinstance(tick, int):
+        raise ValueError("Неверное окно календаря")
+    season = room.get("sportSync", {}).get(str(tick))
+    if not season or not season["stages"].get("pick", {}).get("done"):
+        raise ValueError("Окно ещё не началось")
+    if me["id"] not in season["members"]:
+        raise ValueError("Вы не участвуете в этом окне")
+    return season
+
+
+def tn_result(room, me, data):
+    """Results of matches a room player played against the AI: the first report is final, the others read it."""
+    season = tn_window(room, me, data)
+    key, res = clip(data.get("key"), 160), data.get("result")
+    if not key:
+        raise ValueError("Нужен ключ матча")
+    results = season.setdefault("results", {})
+    changed = False
+    if res is not None and key not in results:
+        if not isinstance(res, dict) or res.get("winner") not in (0, 1) or len(results) >= 800:
+            raise ValueError("Неверный результат")
+        results[key] = {"winner": res["winner"], "score": clip(res.get("score"), 80), "by": me["id"]}
+        changed = True
+    return {"key": key, "result": results.get(key)}, changed
+
+
+def tn_duel(room, me, data):
+    """Two room players in one draw: the server plays it set by set, both choose a plan before every set."""
+    season = tn_window(room, me, data)
+    key, spec = clip(data.get("key"), 160), data.get("match") or {}
+    matches = season.setdefault("duels", {})
+    changed = False
+    if key not in matches:
+        pids, strength, need = spec.get("pids"), spec.get("strength"), spec.get("need")
+        if not key or not isinstance(pids, list) or len(pids) != 2 or pids[0] == pids[1] or not all(p in season["members"] for p in pids):
+            raise ValueError("Неверный очный матч")
+        if not isinstance(strength, list) or len(strength) != 2 or not all(isinstance(v, (int, float)) and math.isfinite(v) for v in strength) or need not in (2, 3):
+            raise ValueError("Неверные параметры матча")
+        matches[key] = {"players": {pid: {"side": i, "name": room["players"].get(pid, {}).get("name", "Игрок")} for i, pid in enumerate(pids)},
+                        "strength": [max(20, min(120, v)) for v in strength], "need": need, "periods": need * 2 - 1,
+                        "turn": 0, "score": [0, 0], "log": [], "picks": {}, "done": False, "winner": None}
+        changed = True
+    match = matches[key]
+    choice = data.get("choice")
+    if choice is not None:
+        if me["id"] not in match["players"] or choice not in (0, 1, 2):
+            raise ValueError("Неверный ход")
+        if not match["done"] and data.get("turn") == match["turn"] and me["id"] not in match["picks"]:
+            match["picks"][me["id"]] = choice
+            changed = True
+    required = [pid for pid in match["players"] if pid in room["players"]]
+    if not match["done"] and all(pid in match["picks"] for pid in required):
+        rng = random.Random(hashlib.sha256(f"{room['seed']}:{key}:{match['turn']}".encode()).hexdigest())
+        t = [1, 1]
+        for pid, pl in match["players"].items():
+            t[pl["side"]] = match["picks"].get(pid, 1)
+        # attack (0) beats a passive defence (2) a little more often, balanced (1) is neutral
+        edge = (match["strength"][0] - match["strength"][1]) * .11 + (t[1] - t[0]) * .12
+        win = 0 if rng.random() < 1 / (1 + math.exp(-edge)) else 1
+        lose = rng.choice([0, 1, 2, 2, 3, 3, 4, 4, 5, 6])
+        games = [6, lose] if lose < 5 else [7, lose]
+        if win:
+            games.reverse()
+        match["score"][win] += 1
+        match["log"].append({"points": games, "score": match["score"][:], "tactics": t})
+        match["turn"] += 1
+        match["picks"] = {}
+        if match["score"][win] >= match["need"]:
+            match["done"], match["winner"] = True, win
+        changed = True
+    return {**{k: v for k, v in match.items() if k not in ("picks", "strength")},
+            "waiting": [pid for pid in required if pid not in match["picks"]]}, changed
+
+
 def sport_sync(room, me, data):
     """Immutable stage submissions; a room advances only with every participating player."""
     year, phase = data.get("year"), data.get("phase")
-    if room.get("game") not in ("hk", "bb") or room["status"] != "started":
+    tennis = room.get("game") == "tn"
+    if room.get("game") not in ("hk", "bb", "tn") or room["status"] != "started":
         raise ValueError("Синхронизация доступна в начатой спортивной комнате")
-    if not isinstance(year, int) or not 2026 <= year <= 2200 or phase not in ("pre", "regular", "playoffs"):
+    # tennis: "year" is the two-week window (tick), every window has a pick and a done stage
+    phases, first = (("pick", "done"), "pick") if tennis else (("pre", "regular", "playoffs"), "pre")
+    if not isinstance(year, int) or not (0 <= year <= 100000 if tennis else 2026 <= year <= 2200) or phase not in phases:
         raise ValueError("Неверный этап сезона")
     years = room.setdefault("sportSync", {})
     key = str(year)
     changed = False
     if key not in years:
-        if phase != "pre":
+        if phase != first:
             raise ValueError("Сначала все игроки должны начать общий сезон")
         years[key] = {"members": [p["id"] for p in room["players"].values()
                                   if not (p.get("progress") or {}).get("retired")], "stages": {}}
@@ -406,7 +485,7 @@ def sport_sync(room, me, data):
     season = years[key]
     if me["id"] not in season["members"]:
         raise ValueError("Вы не участвуете в этом сезоне")
-    previous = {"regular": "pre", "playoffs": "regular"}.get(phase)
+    previous = {"regular": "pre", "playoffs": "regular", "done": "pick"}.get(phase)
     if previous and not season["stages"].get(previous, {}).get("done"):
         raise ValueError("Предыдущий этап ещё не завершён")
     stage = season["stages"].setdefault(phase, {"subs": {}, "canon": None, "done": False})
@@ -414,7 +493,7 @@ def sport_sync(room, me, data):
     if me["id"] not in stage["subs"] and not stage["done"]:
         if not isinstance(sub, str) or not sub or len(sub) > 60000:
             raise ValueError("Нужен снимок игрока")
-        if stage["canon"] is None:
+        if stage["canon"] is None and not tennis:
             if not isinstance(canon, str) or not canon or len(canon) > SYNC_CANON:
                 raise ValueError("Нужен снимок общего мира")
             stage["canon"] = canon
@@ -424,7 +503,7 @@ def sport_sync(room, me, data):
     if not waiting and not stage["done"]:
         stage["done"] = True
         changed = True
-    for old in sorted(years)[:-2]:
+    for old in sorted(years, key=int)[:-(4 if tennis else 2)]:
         del years[old]
     return {"year": year, "phase": phase, "done": stage["done"],
             "waiting": [{"id": pid, "name": room["players"][pid]["name"]} for pid in waiting],
@@ -726,9 +805,14 @@ class Handler(BaseHTTPRequestHandler):
                 if len(room["matches"]) > 400:
                     for old in list(room["matches"])[:-300]:
                         del room["matches"][old]
-            elif action == "duel":
+            elif action in ("duel", "tnres"):
                 try:
-                    result, changed = sport_duel(room, me, data)
+                    if action == "tnres":
+                        result, changed = tn_result(room, me, data)
+                    elif room.get("game") == "tn":
+                        result, changed = tn_duel(room, me, data)
+                    else:
+                        result, changed = sport_duel(room, me, data)
                 except (ValueError, KeyError, TypeError) as exc:
                     return self.reply(409, {"error": str(exc)})
                 if changed:
