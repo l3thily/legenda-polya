@@ -84,27 +84,9 @@ h1,h2,h3{text-wrap:balance;margin:0}
 .tab[aria-current="true"]{color:var(--gold2);background:rgba(242,193,78,.08)}
 .tab[aria-current="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:3px;height:2px;border-radius:2px;background:var(--gold);box-shadow:0 0 10px var(--gold)}
 .topact{display:flex;gap:6px;align-items:center}
-/* club colours (clubTheme): the whole night background, top bar, accents and cards take the club colours */
-html.club-theme{--line:rgba(var(--club-rgb),.32);--line2:rgba(var(--club-rgb),.5);background:color-mix(in srgb,rgb(var(--club-rgb)) 14%,#05090C)}
-html.club-theme body::before{background:
-    radial-gradient(70% 55% at 0% -8%,rgba(var(--club-rgb),.55),transparent 70%),
-    radial-gradient(60% 50% at 100% -8%,rgba(var(--club2-rgb),.3),transparent 70%),
-    radial-gradient(90% 55% at 50% 112%,rgba(var(--club-rgb),.35),transparent 70%),
-    repeating-linear-gradient(115deg,rgba(var(--club-rgb),.07) 0 60px,transparent 60px 120px),
-    linear-gradient(180deg,color-mix(in srgb,rgb(var(--club-rgb)) 22%,#05090C) 0%,#05090C 70%)}
-html.club-theme .top{background:linear-gradient(90deg,rgba(var(--club-rgb),.55),rgba(var(--club-rgb),.25) 45%,rgba(var(--club2-rgb),.22)),rgba(5,9,12,.82);border-bottom:0}
-html.club-theme .top::after,html.club-theme .bnav::before{height:3px;background:linear-gradient(90deg,var(--club),rgb(var(--club2-rgb)) 50%,var(--club))}
-html.club-theme .bnav{background:linear-gradient(0deg,rgba(var(--club-rgb),.3),rgba(var(--club-rgb),.12)),rgba(5,9,12,.92)}
-html.club-theme .tab{color:rgba(255,255,255,.78)}
-html.club-theme .tab[aria-current="true"]{color:#fff;background:rgba(var(--club-rgb),.42)}
-html.club-theme .tab[aria-current="true"]::after,html.club-theme .bn[aria-current="true"]::before{background:#fff;box-shadow:0 0 10px var(--club)}
-html.club-theme .bn[aria-current="true"]{color:#fff}
-html.club-theme .bn[aria-current="true"] .ic{filter:drop-shadow(0 0 7px rgba(var(--club-rgb),.9))}
-html.club-theme .brand i{background:radial-gradient(circle at 35% 30%,#fff 0 18%,rgba(var(--club-rgb),1) 45%,rgba(var(--club2-rgb),1) 100%);box-shadow:0 0 18px rgba(var(--club-rgb),.8)}
-html.club-theme .panel,html.club-theme .season,html.club-theme .decide{border-color:rgba(var(--club-rgb),.4);box-shadow:inset 0 3px 0 rgba(var(--club-rgb),.85),0 20px 50px -30px rgba(var(--club-rgb),.6)}
-html.club-theme .sec-h h2{text-decoration:underline;text-decoration-color:var(--club);text-decoration-thickness:3px;text-underline-offset:7px}
-html.club-theme .eyebrow{color:color-mix(in srgb,var(--club) 55%,#fff)}
-html.club-theme .stat-grid dt{color:color-mix(in srgb,var(--club) 45%,#9fb1ba)}
+/* club colours (clubTheme): identity only — a stripe under the top bar and a ring around the player's card */
+html.club-theme .top::after{height:3px;bottom:-3px;background:linear-gradient(90deg,var(--club) 0 72%,rgb(var(--club2-rgb)) 72%)}
+html.club-theme .hero .fcard{box-shadow:0 0 0 3px var(--club),0 24px 40px -24px rgba(0,0,0,.8)}
 /* GOAT */
 .goat-xi{position:relative;width:100%;max-width:440px;aspect-ratio:60/80;margin:16px auto 0;border-radius:14px;background:repeating-linear-gradient(180deg,#123b26 0 10%,#0f3420 10% 20%);box-shadow:inset 0 0 0 1px rgba(47,210,124,.25),inset 0 0 60px rgba(0,0,0,.45);overflow:hidden}
 .goat-xi svg{position:absolute;inset:3%;width:94%;height:94%;fill:none;stroke:rgba(255,255,255,.28);stroke-width:.5;vector-effect:non-scaling-stroke}
@@ -1007,10 +989,76 @@ button.brand:hover{opacity:.85}button.brand:hover i{box-shadow:0 0 26px rgba(242
 .streak-gifts div b{color:var(--muted);font-size:13px}
 .streak-gifts div.on{border-style:solid;border-color:rgba(242,193,78,.55);color:var(--gold2)}.streak-gifts div.on b{color:var(--gold)}
 .streak-chip{display:inline-flex;align-items:center;gap:6px;margin:18px 0 0;padding:6px 12px;border-radius:999px;background:rgba(242,193,78,.12);color:var(--gold2);font-size:13.5px;border:0;cursor:pointer;font:inherit}
+
+/* ===== clean pass: gold means glory and the main action, club colour means identity, two typefaces, air instead of frames ===== */
+:root{--muted:#A6B7C0;--dim:#71879A}
+body::before{background:linear-gradient(180deg,var(--bg) 0%,#081610 100%)}
+.top{background:#070D12;backdrop-filter:none;-webkit-backdrop-filter:none}
+.top::after{background:var(--line)}
+.brand i{box-shadow:none}
+.tab{border-radius:0}
+.tab:hover{background:none}
+.tab[aria-current="true"]{background:none;color:var(--text)}
+.tab[aria-current="true"]::after{left:13px;right:13px;bottom:0;border-radius:0;box-shadow:none}
+.btn.hub{color:var(--text)}
+.btn:hover{border-color:var(--text)}
+.btn.primary{background:var(--gold);box-shadow:none}
+.btn.primary::after{content:none}
+.btn.primary:hover{background:var(--gold2);box-shadow:none}
+.num{font-family:var(--body);font-variant-numeric:tabular-nums;font-weight:600}
+.eyebrow,.stat-grid dt,.totals span,.facts span,.kpi span,.wst dt,.fc-age{font-size:13px;letter-spacing:0;text-transform:none;font-weight:500;color:var(--muted)}
+.fc-age{font-size:12px;color:var(--tx2)}
+.home-hero h1 em,.hero-t em{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:var(--gold);padding-right:0}
+.fan::before,.fcard.icon::before{display:none}
+.fcard{box-shadow:inset 0 0 0 1.5px var(--rim),inset 0 0 0 7px rgba(0,0,0,.08),0 24px 40px -24px rgba(0,0,0,.8)}
+/* frames out: sections are separated by space and headings */
+main{gap:56px}
+.panel{background:none;border:0;border-radius:0;padding:0}
+.grid2{gap:56px 40px}
+.sec-h{margin-bottom:14px}
+.sec-h h2{font-size:34px}
+.season{background:var(--bg2);border:0;border-radius:16px}
+.decide{background:var(--bg2);box-shadow:inset 0 0 0 1px rgba(242,193,78,.35)}
+.opt{background:var(--card);border-color:var(--line)}
+.money,.social{background:var(--bg2);box-shadow:none}
+.cer{background:var(--bg2);box-shadow:inset 0 0 0 1px rgba(242,193,78,.35)}
+.home-card{background:var(--bg2);border-color:var(--line)}
+.home-card:hover{box-shadow:none}
+.home-card.main{background:var(--bg2);box-shadow:inset 0 0 0 1px rgba(242,193,78,.5)}
+.home-card.main .hc-ic{box-shadow:none}
+.hc-ic{box-shadow:none}
+.totals .gold b{text-shadow:none}
+.trk,.at-row .trk,.rec-row .trk{background:rgba(255,255,255,.07)}
+.at-row.key .trk i{background:var(--gold);box-shadow:none}
+.stat-grid{border-top:0}
+/* the four facts that matter on the career screen */
+.stat-grid.key4{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px 24px;margin-top:22px}
+.stat-grid.key4>div{border:0;padding:0}
+.stat-grid.key4 dd{font-size:19px;font-weight:600;line-height:1.3}
+.stat-grid.key4 dd small{display:block;font-size:13px;font-weight:400;color:var(--muted)}
+.pl-head h1{font-size:clamp(44px,6.4vw,76px)}
+.sp-t{gap:2px}.sp-t b{line-height:1.1}.sp-t span,.sp-t em{line-height:1.35}
+details.more{border-top:1px solid var(--line);padding-top:14px}
+details.more>summary{font-size:15px;color:var(--text)}
+.more-in{display:grid;gap:14px;margin-top:14px}
+.field label,.field .lbl{font-size:13px;letter-spacing:0;text-transform:none;font-weight:500}
+.field .lbl b{letter-spacing:0}
+.kpi b{font-family:var(--body);font-variant-numeric:tabular-nums}
+.vs-r span,.nem-score span,.nem>.nem-h .eyebrow,.s-club span{letter-spacing:0;text-transform:none}
+.season.latest{box-shadow:none}
+.home-card.main .hc-ic{background:var(--gold)}
+@media (max-width:760px){.stat-grid.key4{grid-template-columns:repeat(2,minmax(0,1fr))}main{gap:40px}.grid2{gap:40px}}
+@media (max-width:480px){.brand{font-size:20px;min-width:0;overflow:hidden;text-overflow:ellipsis}.topin{gap:8px}.topact{gap:4px;flex:none}.topact .btn{min-width:40px;padding-inline:8px}.btn.newc span{display:none}}
+/* phone: the season button stays under the thumb, above the bottom nav */
+@media (max-width:960px){
+  .go:has(>[data-a="play"]),.go:has(>[data-a="paperOk"]){position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom,0px));z-index:29;margin:0;padding:12px 16px 10px;background:linear-gradient(0deg,#070D12 75%,rgba(7,13,18,0))}
+  .go>[data-a="play"],.go>[data-a="paperOk"]{flex:1}
+  body:has(.go>[data-a="play"]) main,body:has(.go>[data-a="paperOk"]) main{padding-bottom:calc(170px + env(safe-area-inset-bottom,0px))}
+}
 </style>
 
 <div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
 
-<script src="app.cb9878021c.js" defer></script>
+<script src="app.db2a763cc3.js" defer></script>
 
 </html>
