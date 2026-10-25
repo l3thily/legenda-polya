@@ -35,7 +35,7 @@ DONE_TTL = 2 * 24 * 3600
 ROOM_TTL = 14 * 24 * 3600
 CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
-GAMES = {"fb", "hk", "bb", "tn"}  # rooms and boards of different games never mix; old clients mean football
+GAMES = {"fb", "hk", "bb", "tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs"}  # rooms and boards of different games never mix; old clients mean football
 HK_BV = 20261018
 HK_POS = ("C", "W", "D", "G", "K")
 # the newer games of the series: balance version and GOAT positions per game
@@ -466,8 +466,9 @@ def tn_duel(room, me, data):
 def sport_sync(room, me, data):
     """Immutable stage submissions; a room advances only with every participating player."""
     year, phase = data.get("year"), data.get("phase")
-    tennis = room.get("game") == "tn"
-    if room.get("game") not in ("hk", "bb", "tn") or room["status"] != "started":
+    # tennis, F1 and esports disciplines sync small per-player snapshots step by step: "year" is the calendar window / race weekend / event
+    tennis = room.get("game") in ("tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs")
+    if room.get("game") not in ("hk", "bb", "tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs") or room["status"] != "started":
         raise ValueError("Синхронизация доступна в начатой спортивной комнате")
     # tennis: "year" is the two-week window (tick), every window has a pick and a done stage
     phases, first = (("pick", "done"), "pick") if tennis else (("pre", "regular", "playoffs"), "pre")

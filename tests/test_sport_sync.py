@@ -37,6 +37,40 @@ class SportSyncTest(unittest.TestCase):
   self.assertTrue(second['done']);self.assertNotEqual(*second['score'])
   self.assertEqual(duel('a'),duel('b'))
 
+class F1RoomTest(unittest.TestCase):
+ def test_weekend_barrier_without_world_snapshot(self):
+  room={'game':'f1','status':'started','seed':'grid','players':{'a':{'id':'a','name':'Alex'},'b':{'id':'b','name':'Ben'}}}
+  sync=lambda pid,tick:s.sport_sync(room,room['players'][pid],{'year':tick,'phase':'pick','sub':'{"snap":{}}'})[0]
+  self.assertFalse(sync('a',0)['done']);d=sync('b',0)
+  self.assertTrue(d['done']);self.assertEqual(sorted(d['subs']),['a','b']);self.assertIsNone(d['canon'])
+  for t in range(1,30):sync('a',t)
+  self.assertLessEqual(len(room['sportSync']),4)
+  with self.assertRaises(ValueError):s.tn_result(room,room['players']['a'],{'tick':29,'key':'k'})
+
+class CsRoomTest(unittest.TestCase):
+ def test_event_barrier_without_world_snapshot(self):
+  room={'game':'cs','status':'started','seed':'major','players':{'a':{'id':'a','name':'Alex'},'b':{'id':'b','name':'Ben'}}}
+  sync=lambda pid,tick:s.sport_sync(room,room['players'][pid],{'year':tick,'phase':'pick','sub':'{"snap":{}}'})[0]
+  self.assertFalse(sync('a',0)['done']);d=sync('b',0)
+  self.assertTrue(d['done']);self.assertEqual(sorted(d['subs']),['a','b']);self.assertIsNone(d['canon'])
+  for t in range(1,27):sync('a',t)
+  self.assertLessEqual(len(room['sportSync']),4)
+  self.assertIn('cs',s.GAMES)
+
+class EsportsWorldsTest(unittest.TestCase):
+ def test_each_discipline_has_an_independent_small_snapshot_barrier(self):
+  for game in ('dota','lol','val','fn','cr','bs'):
+   with self.subTest(game=game):
+    self.assertIn(game,s.GAMES)
+    room={'game':game,'status':'started','seed':'world','players':{'a':{'id':'a','name':'Alex'},'b':{'id':'b','name':'Ben'}}}
+    sync=lambda pid,tick:s.sport_sync(room,room['players'][pid],{'year':tick,'phase':'pick','sub':'{"snap":{"team":"t26"}}'})[0]
+    self.assertFalse(sync('a',0)['done'])
+    with self.assertRaises(ValueError):s.sport_sync(room,room['players']['a'],{'year':0,'phase':'pre','sub':'{}'})
+    d=sync('b',0);self.assertTrue(d['done']);self.assertIsNone(d['canon']);self.assertEqual(sorted(d['subs']),['a','b'])
+    self.assertEqual(sync('a',0),d)
+    for tick in range(1,20):sync('a',tick)
+    self.assertLessEqual(len(room['sportSync']),4)
+
 class TennisRoomTest(unittest.TestCase):
  def setUp(self):
   self.room={'game':'tn','status':'started','seed':'tour','players':{'a':{'id':'a','name':'Alex'},'b':{'id':'b','name':'Ben'}}}
