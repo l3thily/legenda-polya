@@ -18,6 +18,7 @@ import os
 import secrets
 import threading
 import time
+from datetime import date
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HOST, PORT = "127.0.0.1", int(os.environ.get("PORT", "8095"))
@@ -47,6 +48,13 @@ stats: dict = {}  # day (Moscow) -> counters; nothing about people: no IP, no id
 OOPS: list = []  # last boot failures (memory only)
 online: dict = {}  # throwaway tab token -> last ping time, memory only, forgotten after ONLINE_TTL
 ONLINE_TTL = 150
+online_game: dict = {}  # tab token -> game id, same lifetime as `online`
+STAT_GAMES = {"hub": "Главная", "fb": "Футбол", "hk": "Хоккей", "bb": "Баскетбол", "tn": "Теннис", "f1": "F1", "cs": "CS2",
+              "dota": "Dota 2", "lol": "LoL", "val": "Valorant", "fn": "Fortnite", "cr": "Clash Royale", "bs": "Brawl Stars", "ufc": "UFC"}
+STAT_LANGS = ("ru", "en", "es", "fr", "ar", "hi", "it", "zh", "de")
+MILESTONES = {"first_visit", "career_start", "first_season", "return_d1", "return_d7"}
+STAT_REFS = {"google": "Google", "yandex": "Яндекс", "bing": "Bing", "telegram": "Telegram", "vk": "ВКонтакте", "reddit": "Reddit",
+             "youtube": "YouTube", "social": "Другие соцсети", "other": "Другие сайты", "direct": "Прямой заход"}
 STATS_KEY = os.environ.get("STATS_KEY", "")
 TG_TOKEN, TG_CHAT = os.environ.get("TG_TOKEN", ""), os.environ.get("TG_CHAT", "")
 SCORES_FILE = os.path.join(os.path.dirname(DATA), "scores.json")
@@ -116,24 +124,97 @@ def persist_stats():
 def online_now(now):
     for k in [k for k, t in online.items() if now - t > ONLINE_TTL]:
         del online[k]
+        online_game.pop(k, None)
     return len(online)
+
+
+def online_by_game(now):
+    online_now(now)
+    out = {}
+    for k in online:
+        g = online_game.get(k, "fb")
+        out[g] = out.get(g, 0) + 1
+    return out
+
+
+def stat_bump(d, key, sub, n=1):
+    d.setdefault(key, {})
+    d[key][sub] = d[key].get(sub, 0) + n
+
+
+def game_row(d, g):
+    return d.setdefault("games", {}).setdefault(g, {"visitors": 0, "visits": 0, "careers": 0, "seasons": 0})
 
 
 def day_stats(day):
     return stats.setdefault(day, {"visitors": 0, "visits": 0, "careers": 0, "seasons": 0, "rooms": 0, "en": 0, "peak": 0})
 
 
+def record_milestone(day, game, name, cohort):
+    """Aggregate a browser's first-session funnel without receiving a browser identifier."""
+    if not isinstance(game, str) or game not in STAT_GAMES or game == "hub" or not isinstance(name, str) or name not in MILESTONES:
+        return False
+    try:
+        age = (date.fromisoformat(day) - date.fromisoformat(cohort)).days
+    except (TypeError, ValueError):
+        return False
+    if not 0 <= age <= 120 or (name == "first_visit" and age != 0) or (name == "return_d1" and age != 1) or (name == "return_d7" and age != 7):
+        return False
+    stat_bump(day_stats(day), "milestones", name)
+    stat_bump(game_row(day_stats(day), game), "milestones", name)
+    stat_bump(day_stats(cohort).setdefault("cohorts", {}).setdefault(game, {}), "milestones", name)
+    return True
+
+
 def stats_text(days=7):
     keys = sorted(stats)[-days:]
     if not keys:
-        return "Легенда поля: статистики пока нет."
+        return "Легенда: статистики пока нет."
     now = int(time.time())
-    lines = [f"⚽ Легенда поля · онлайн сейчас: {online_now(now)}", ""]
+    by_game = online_by_game(now)
+    live = ", ".join(f"{STAT_GAMES.get(g, g)} {n}" for g, n in sorted(by_game.items(), key=lambda x: -x[1]))
+    lines = [f"🎮 Легенда · онлайн сейчас: {online_now(now)}" + (f" ({live})" if live else ""), ""]
     for d in reversed(keys):
         x = stats[d]
         lines.append(f"{d[8:10]}.{d[5:7]}: {x['visitors']} уникальных · {x['visits']} визитов · пик онлайн {x['peak']} · "
-                     f"{x['careers']} карьер · {x['seasons']} сезонов · {x['rooms']} в комнатах · EN {x['en']}")
+                     f"{x['careers']} карьер · {x['seasons']} сезонов · {x['rooms']} в комнатах")
     week = [stats[d] for d in keys]
+    games, langs, refs = {}, {}, {}
+    for x in week:
+        for g, r in x.get("games", {}).items():
+            row = games.setdefault(g, {"visitors": 0, "visits": 0, "careers": 0, "seasons": 0})
+            for k in row:
+                row[k] += r.get(k, 0)
+        for k, n in x.get("langs", {}).items():
+            langs[k] = langs.get(k, 0) + n
+        for k, n in x.get("refs", {}).items():
+            refs[k] = refs.get(k, 0) + n
+    if games:
+        lines += ["", f"По играм за {len(week)} дн. (уникальные · визиты · карьеры · сезоны):"]
+        for g, r in sorted(games.items(), key=lambda x: (-x[1]["visits"], x[0])):
+            lines.append(f"— {STAT_GAMES.get(g, g)}: {r['visitors']} · {r['visits']} · {r['careers']} · {r['seasons']}")
+    # Cohort counters are browser-side flags, not account-based unique people.
+    funnel = {}
+    for x in week:
+        for g, r in x.get("games", {}).items():
+            m = funnel.setdefault(g, {})
+            for k, n in r.get("milestones", {}).items():
+                m[k] = m.get(k, 0) + n
+    if funnel:
+        lines += ["", "Первый путь (браузеры; визит · старт · первый сезон):"]
+        for g, m in sorted(funnel.items()):
+            lines.append(f"— {STAT_GAMES.get(g, g)}: {m.get('first_visit', 0)} · {m.get('career_start', 0)} · {m.get('first_season', 0)}")
+        eligible = [(d, x) for d, x in stats.items() if d in keys]
+        for lag, name in ((1, "return_d1"), (7, "return_d7")):
+            cohort_rows = [x for d, x in eligible if (date.fromisoformat(msk_day(now)) - date.fromisoformat(d)).days >= lag]
+            starts = sum(m.get("first_visit", 0) for x in cohort_rows for g in x.get("cohorts", {}).values() for m in [g.get("milestones", {})])
+            returns = sum(m.get(name, 0) for x in cohort_rows for g in x.get("cohorts", {}).values() for m in [g.get("milestones", {})])
+            if starts:
+                lines.append(f"Возврат D{lag}: {returns}/{starts} ({returns / starts:.0%}) по созревшим когортам")
+    if langs:
+        lines += ["", "Языки: " + ", ".join(f"{k} {n}" for k, n in sorted(langs.items(), key=lambda x: -x[1]))]
+    if refs:
+        lines += ["Откуда пришли: " + ", ".join(f"{STAT_REFS.get(k, k)} {n}" for k, n in sorted(refs.items(), key=lambda x: -x[1]))]
     fails = sum(x.get("fails", 0) for x in week)
     if fails:
         lines += ["", f"⚠️ Не запустилось у {fails} посетителей за {len(week)} дн. Последние ошибки:"]
@@ -660,19 +741,34 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(200, {"ok": True})
             if parts in (["api", "ping"], ["api", "hi"]):
                 # anonymous counters: a browser says "first visit today" itself; the tab token only keeps the online count
+                # football pings without a game id; every other page says which game (or "hub") it is
                 tab = clip(data.get("tab"), 32)
+                game = data.get("game") if data.get("game") in STAT_GAMES else "fb"
+                lang = data.get("lang") if data.get("lang") in STAT_LANGS else None
                 d = day_stats(msk_day(now))
                 if tab:
                     if tab not in online:
                         d["visits"] += 1
+                        game_row(d, game)["visits"] += 1
                     online[tab] = now
+                    online_game[tab] = game
                 if data.get("new"):
                     d["visitors"] += 1
-                    if data.get("lang") == "en":
+                    if lang == "en":
                         d["en"] += 1
+                    if lang:
+                        stat_bump(d, "langs", lang)
+                if data.get("gnew"):
+                    game_row(d, game)["visitors"] += 1
+                if data.get("ref") in STAT_REFS:
+                    stat_bump(d, "refs", data["ref"])
                 ev = data.get("ev")
                 if ev in ("careers", "seasons", "rooms"):
                     d[ev] += 1
+                    if ev != "rooms":
+                        game_row(d, game)[ev] += 1
+                if data.get("milestone"):
+                    record_milestone(msk_day(now), game, data.get("milestone"), data.get("cohort"))
                 d["peak"] = max(d["peak"], online_now(now))
                 for old in sorted(stats)[:-120]:
                     del stats[old]

@@ -2,15 +2,21 @@
 # Translates the page (i18n/i18n.js: Russian source + English via EN?…:…) and wraps it into a standalone document for the server.
 set -e
 cd "$(dirname "$0")"
+SHARED_SPORT=../sport
+[ -d "$SHARED_SPORT/core" ] || SHARED_SPORT=../legenda-sport
 mkdir -p dist
 [ -d i18n/node_modules ] || (cd i18n && npm install --silent)
 node i18n/i18n.js build i18n/index.built.html
 {
 cat <<'HEAD'
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-game="fb">
 <head>
 <meta charset="utf-8">
+<script src="countries.js"></script>
+<script src="site.js"></script>
+<link rel="stylesheet" href="site.css">
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070D12">
 <meta name="rating" content="12+">
@@ -24,6 +30,13 @@ cat <<'HEAD'
 <meta property="og:title" content="Легенда поля">
 <meta property="og:url" content="https://legendapolya.com/fb/">
 <meta property="og:description" content="Создай игрока и проведи его от академии до Золотого мяча.">
+<script src="locales.js"></script>
+<script src="names.js"></script>
+<script src="surface.js" defer></script>
+<link rel="stylesheet" href="choices.css">
+<script src="geo.js" defer></script>
+<script src="choice-art.js" defer></script>
+<script src="choices.js" defer></script>
 <script>
 /* boot guard: if the game hasn't started in 9 s, say so on the splash and send the errors (no personal data) for diagnosis */
 (function(){var errs=[];
@@ -39,9 +52,19 @@ try{var x=new XMLHttpRequest();x.open('POST','/api/oops');x.setRequestHeader('Co
 <link rel="manifest" href="manifest.webmanifest">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 HEAD
+printf '<style>\n'
+cat "$SHARED_SPORT/core/major-fx.css"
+printf '\n</style>\n<script>\n'
+cat "$SHARED_SPORT/core/major-fx.js"
+printf '\n</script>\n'
 cat i18n/index.built.html
 printf '\n</html>\n'
 } > dist/index.html
 cp -R static/. dist/
+cp "$SHARED_SPORT/hub/locales.js" dist/locales.js
+for locale in es fr ar hi it zh de; do cp "$SHARED_SPORT/hub/locales-$locale.js" dist/; done
+for asset in choices.css geo.js choice-art.js choices.js site.js site.css countries.js names.js surface.js; do cp "$SHARED_SPORT/core/$asset" dist/; done
 python3 platforms/split_js.py dist/index.html
 echo "built dist/index.html ($(wc -c < dist/index.html) bytes)"
+
+for locale in ru ar hi zh; do cp "$SHARED_SPORT/hub/names-$locale.js" dist/; done

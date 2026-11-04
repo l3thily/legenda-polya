@@ -1,7 +1,7 @@
 <title>Легенда поля</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600;700&family=JetBrains+Mono:wght@500;700&family=Sofia+Sans+Extra+Condensed:ital,wght@0,800;0,900;1,900&family=Old+Standard+TT:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600;700&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+Arabic:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Sofia+Sans+Extra+Condensed:ital,wght@0,800;0,900;1,900&family=Old+Standard+TT:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* Layout: a night match under floodlights. Broadcast graphics over a dark pitch, gold reserved for glory, a cream newspaper as the one warm surface. */
 :root{
@@ -12,7 +12,7 @@
   --paper:#EEE7D6;--paper-ink:#1D1A15;--paper-dim:#6B6355;
   --amber:var(--gold);--amber2:var(--gold2);--grass:var(--turf);
   --disp:"Sofia Sans Extra Condensed","Arial Narrow",Impact,sans-serif;
-  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --body:"Golos Text","Noto Sans Arabic","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   --news:"Old Standard TT",Georgia,"Times New Roman",serif;
   --r:16px;--ease:cubic-bezier(.2,.8,.2,1);
@@ -79,7 +79,7 @@ html.club-theme .hero .fcard{box-shadow:0 0 0 3px var(--club),0 24px 40px -24px 
 .gr-who .flag-i{width:16px;height:12px}
 .goat-l em{font-style:normal;font-weight:700;color:var(--gold2)}
 @media (max-width:600px){.gx-p{width:78px;padding:4px 3px}.gx-p b{font-size:10.5px;letter-spacing:-.01em}.goat-grid{grid-template-columns:1fr}.goat-l li{grid-template-columns:20px minmax(0,1fr) auto}.goat-l .gr-st{display:none}}
-.lng{font:700 12px/1 var(--mono);letter-spacing:.06em;min-width:40px;padding-inline:8px}
+.lng{font:700 12px/1 var(--mono);letter-spacing:.04em;min-width:100px;max-width:130px;padding:8px;background:#0C151D;color:var(--text);cursor:pointer}
 .foot{display:flex;gap:12px;align-items:center;justify-content:center;margin:28px 0 8px;color:var(--dim)}
 .chat-log{list-style:none;margin:0;padding:0;max-height:260px;overflow:auto;display:grid;gap:6px}
 .chat-log li{display:grid;gap:1px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:7px 10px}
@@ -1047,11 +1047,15 @@ const SS=(()=>{try{const s=window.sessionStorage;s.getItem('x');return s}catch(e
 const PLATFORM=(()=>{try{return window.__PLATFORM||'web'}catch(e){return 'web'}})();
 const YG=PLATFORM==='yg';
 const LANG_KEY='legenda-polya-lang';
-const LANG=(()=>{let q=null;try{q=new URLSearchParams(location.search).get('lang')}catch(e){}
-  try{if(q==='ru'||q==='en'){LS.setItem(LANG_KEY,q);return q}const s=LS.getItem(LANG_KEY);if(s==='ru'||s==='en')return s}catch(e){}
-  try{const n=String(navigator.language||'ru').slice(0,2).toLowerCase();return ['ru','uk','be','kk','ky','uz','tg','hy','az','ka'].includes(n)?'ru':'en'}catch(e){return 'ru'}})();
-const EN=LANG==='en';
-const LANG_OTHER=EN?'Русский':'English'; // i18n:skip — the other language is always named in its own language
+const LANG_CODES=window.LegendSite?.registry.locales.map(l=>l.id)||["ru","en","es","fr","ar","hi","it","zh","de"];
+const LANG_NAMES={ru:'Русский',en:'English',es:'Español',fr:'Français',ar:'العربية',hi:'हिन्दी',it:'Italiano',zh:'中文',de:'Deutsch'}; // i18n:skip — language names stay in their own language
+const LANG_LABEL={ru:'Язык',en:'Language',es:'Idioma',fr:'Langue',ar:'اللغة',hi:'भाषा',it:'Lingua',zh:'语言',de:'Sprache'}; // i18n:skip — localized directly
+const LANG=window.LegendSite?window.LegendSite.locale:(()=>{try{const p=location.pathname.split('/')[1],q=new URLSearchParams(location.search).get('lang'),l=LANG_CODES.includes(p)?p:LANG_CODES.includes(q)?q:LS.getItem(LANG_KEY)||'en';return LANG_CODES.includes(l)?l:'en'}catch(e){return 'ru'}})();
+const EN=LANG!=='ru';
+try{document.documentElement.lang=LANG;document.documentElement.dir=LANG==='ar'?'rtl':'ltr'}catch(e){}
+try{document.title=LANG==='ru'?'Легенда поля':localize('Legend of the Pitch')}catch(e){}
+let LOCALIZE_TEMPLATES=null;
+function localize(s){if(!s||LANG==='ru'||LANG==='en')return s;const dict=window.LEGENDA_LOCALES&&window.LEGENDA_LOCALES[LANG];if(!dict)return s;const direct=dict[s];if(direct)return direct;if(!LOCALIZE_TEMPLATES){LOCALIZE_TEMPLATES=Object.entries(dict).filter(([k])=>k.includes('{')).map(([k,v])=>[new RegExp('^'+k.split(/\{\d+\}/).map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('([\\s\\S]*?)')+'$'),v,(k.match(/\{\d+\}/g)||[]).length])}for(const [re,value,count] of LOCALIZE_TEMPLATES){const m=String(s).match(re);if(m){let out=value,j=1;out=out.replace(/\{\d+\}/g,()=>m[j++]||'');return out}}return s}
 const I18N_NAMES={};
 const I18N_EN={};
 const CYR=/[А-Яа-яЁё]/;
@@ -1073,7 +1077,7 @@ function trProse(s){
 /* results are cached: the same club and player names come back on every render */
 const TRC=new Map();
 function trText(s){
-  if(!EN||!s||!CYR.test(s))return s;
+  if(!EN||!s||!CYR.test(s))return s;const country=window.LegendCountries?.code(s.trim());if(country)return s.replace(s.trim(),LegendCountries.name(country,LANG));
   const c=TRC.get(s);if(c!==undefined)return c;
   const r=trText0(s);if(TRC.size>20000)TRC.clear();TRC.set(s,r);return r;
 }
@@ -1104,20 +1108,20 @@ function trText0(s){
 }
 /* English ordinals for numbers the Russian templates leave bare: «2 place» → «2nd place», «3th» → «3rd» */
 const ordEn=n=>{const v=n%100;return n+(v>=11&&v<=13?'th':['th','st','nd','rd'][n%10]||'th')};
-const enOrd=s=>EN&&/\d/.test(s)?s.replace(/\b(\d+)th\b/g,(_,n)=>ordEn(+n)).replace(/\b(\d+)(?= (place|among|in the Ballon|lost final|strongest))/g,(_,n)=>ordEn(+n)):s;
+const enOrd=s=>LANG==='en'&&/\d/.test(s)?s.replace(/\b(\d+)th\b/g,(_,n)=>ordEn(+n)).replace(/\b(\d+)(?= (place|among|in the Ballon|lost final|strongest))/g,(_,n)=>ordEn(+n)):s;
 const TR_ATTR=['title','aria-label','placeholder','alt'];
 function trNode(n){
-  if(n.nodeType===3){if(n.parentNode&&n.parentNode.getAttribute&&n.parentNode.getAttribute('lang')==='ru')return;const v=n.nodeValue;const t=enOrd(CYR.test(v)?trText(v):v);if(t!==v)n.nodeValue=t;return}
+  if(n.nodeType===3){if(n.parentElement?.closest('select.lng,[data-lang-select],#lang-select'))return;if(n.parentNode&&n.parentNode.getAttribute&&n.parentNode.getAttribute('lang')==='ru')return;const v=n.nodeValue;const base=CYR.test(v)?trText(v):v;const trim=base.trim(),localized=localize(trim);const t=enOrd(trim&&localized!==trim?base.replace(trim,localized):base);if(t!==v)n.nodeValue=t;return}
   if(n.nodeType!==1||n.tagName==='SCRIPT'||n.tagName==='STYLE'||n.getAttribute('lang')==='ru')return;
   for(const a of TR_ATTR){const v=n.getAttribute(a);if(v&&CYR.test(v)){const t=trText(v);if(t!==v)n.setAttribute(a,t)}}
   for(let c=n.firstChild;c;c=c.nextSibling)trNode(c);
 }
 if(EN&&typeof MutationObserver!=='undefined'&&typeof document!=='undefined'){
-  try{document.documentElement.lang='en';document.title='Legend of the Pitch'}catch(e){}
+  try{document.documentElement.lang=LANG;document.title=window.LegendSite?.registry.games.find(g=>g.id==='fb')?.titles[LANG]||localize('Legend of the Pitch')}catch(e){}
   new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')trNode(m.target);else if(m.type==='attributes')trNode(m.target);else m.addedNodes.forEach(trNode)}})
     .observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:TR_ATTR});
 }
-function setLang(l){try{LS.setItem(LANG_KEY,l)}catch(e){}try{const u=new URL(location.href);u.searchParams.delete('lang');location.href=u.toString()}catch(e){location.reload()}}
+function setLang(l){if(!LANG_CODES.includes(l))return;if(window.LegendSite)return window.LegendSite.switchLanguage(l);try{LS.setItem(LANG_KEY,l)}catch(e){}const u=new URL(location.href);u.searchParams.set('lang',l);location.href=u.href}
 /* ================= utils ================= */
 /* two seeded streams: RW drives the world (same world code = same world), RPR drives everything about the player */
 function mkRng(seed){const o={s:seed>>>0};o.f=()=>{o.s=(o.s+0x6D2B79F5)>>>0;let t=o.s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296};return o}
@@ -1406,6 +1410,11 @@ const CONF_RU={UEFA:'УЕФА',CONMEBOL:'КОНМЕБОЛ',CONCACAF:'КОНКА�
 const S_LEAGUES=LEAGUE_DATA.map(([id,cc,name,tier,wealth,list])=>({id,cc,name,tier,clubs:list.split('|').map(s=>{const k=s.lastIndexOf(' ');return {name:s.slice(0,k),str:+s.slice(k+1)}})}));
 const S_NATS=[];Object.entries(NAT_DATA).forEach(([conf,l])=>l.split('|').forEach(s=>{const k=s.lastIndexOf(' ');S_NATS.push({name:s.slice(0,k),conf,str:+s.slice(k+1)})}));
 
+/* Identity-only countries do not add fake teams to the modeled world or change room snapshots. */
+function fbIdentityNation(value){if(!window.LegendCountries||!String(value).startsWith('country:'))return null;const c=LegendCountries.get(value);return c?{id:'country:'+c.code,name:LegendCountries.name(c.code,'ru'),cc:c.code,kind:'n',conf:'IDENTITY',str:0,base:0,init:0,identityOnly:true}:null}
+function fbNationalityChoices(){if(!window.LegendCountries)return S_NATS;const out=S_NATS.map(n=>({...n,code:LegendCountries.code(n.name)})),seen=new Set(out.map(n=>n.code));for(const c of LegendCountries.list(true))if(!seen.has(c.code)){out.push({name:'country:'+c.code,code:c.code,str:0,conf:'IDENTITY',identityOnly:true});seen.add(c.code)}return out}
+function fbNationalityLabel(n){return n.code&&window.LegendCountries?LegendCountries.name(n.code):trText(n.name)}
+
 /* ================= state ================= */
 let G=null,S=null,TR=null;
 const UI={tab:'career',confirmNew:false,confirmRetire:false,tblLg:null,form:{name:EN?'Jack Wilson':'Илья Соколов',nat:EN?'Англия':'Россия',pos:'ST',lg:EN?'ENG2':'RUS1',club:EN?'Сандерленд':'Зенит',rus:'random',num:9,mode:'player',cage:40,nat2:'',code:genCode()}};
@@ -1485,12 +1494,12 @@ function load(){
 }
 
 const C=id=>G.clubs[id];
-const N=id=>G.nations[id];
+const N=id=>G.nations[id]||fbIdentityNation(id);
 const LG=id=>G.leagues.find(l=>l.id===id);
 const topLeague=cc=>G.leagues.find(l=>l.cc===cc&&l.tier===1);
 const allowedClub=id=>G.set.russia||C(id).cc!=='RUS';
-const allowedNat=n=>G.set.russia||n.name!=='Россия';
-const natByName=name=>G.nations.find(n=>n.name===name);
+const allowedNat=n=>!n.identityOnly&&(G.set.russia||n.name!=='Россия');
+const natByName=name=>G.nations.find(n=>n.name===name)||fbIdentityNation(name);
 
 function buildWorld(rusMode){const russia=rusMode==='on';
   const W={balanceVersion:20261016,year:2026,clubs:[],leagues:[],nations:[],rivals:[],coef:{},won:{},tables:{},chron:[],seasons:[],pending:[],pendTotal:0,summer:[],set:{russia,rusMode},P:null,euro:null,moved:false};
@@ -2160,7 +2169,7 @@ function wageAt(c){return Math.max(.5,.9*Math.exp((G.P.ovr-60)*.11)*LG(c.lg).wea
 function potRange(){const P=G.P,w=P.age<=19?6:P.age<=22?4:P.age<=25?2:0;if(!w)return 'раскрыт';const c=Math.round(P.pot)+P.potOff,t=P.potTrend||0;return `${Math.max(Math.round(P.ovr),c-w)}–${c+w}${t>0?' <span class="trend-up">▲</span>':t<0?' <span class="trend-down">▼</span>':''}`}
 
 /* ================= season ================= */
-function trophy(n){S.trophies.push(n);G.P.trophies.push({n,y:S.label,club:S.clubName})}
+function trophy(n){S.trophies.push(n);G.P.trophies.push({n,y:S.label,club:S.clubName});if((BIGCOMP.test(n)||n==='Олимпийское золото')&&typeof majorWin==='function')majorWin({sport:'football',title:trText(n),subtitle:majorL('Чемпионский сезон · ','Championship season · ')+S.label,art:trophyIcon(n)})}
 function award(n){S.awards.push(n);G.P.awards.push({n,y:S.label})}
 function addB2(m,id,v){m[id]=(m[id]||0)+v}
 const DEPTH={'1/4 финала':1,'1/2 финала':2,'Финал':3,'Победитель':3};
@@ -2178,7 +2187,7 @@ function* seasonGen(){
   worldEvent();
   {const ln=LNEWS[lg.id];if(ln&&G.seasons.every(s=>s.lgId!==lg.id))S.news.push(ln[0])}
   if(!P.nem&&!P.nemNo&&!P.feud&&P.age<=28){P.nem=makeNem();S.news.push(`Пресса нашла вам заклятого соперника: ${P.nem.name} (${N(P.nem.nat).name}, «${C(P.nem.club).name}»). Ровесник, та же линия — сравнивать вас будут всю карьеру.`)}else if(!P.nem)P.nemNo=true;
-  const called=!P.intlRetired&&!P.skipNT&&P.age>=18&&P.ovr>=nat.str-10;
+  const called=!nat.identityOnly&&!P.intlRetired&&!P.skipNT&&P.age>=18&&P.ovr>=nat.str-10;
   TR={tm:0,role:S.role,called,nrole:natRole(P.ovr+(P.ntCaptain?2:0)+(hasPerk('patriot')?2:0),nat.str)};
   S.captain=P.captain===club.id;
   S.called=called;S.natRole=called?TR.nrole:null;
@@ -3200,7 +3209,7 @@ function anomalyDecisions(){
 function dualDecision(){
   const P=G.P;if(P.nat2==null)return null;
   if(P.tournApps>0){P.nat2=null;return null}
-  const a=N(P.nat),b=N(P.nat2);
+  const a=N(P.nat),b=N(P.nat2);if(a.identityOnly||b.identityOnly)return null;
   if(P.age<18||(P.ovr<a.str-10&&P.ovr<b.str-10))return null;
   return {club:false,title:'Две сборные хотят вас',body:`У вас двойное гражданство, и вызов прислали обе федерации: ${a.name} и ${b.name}. Как только сыграете на официальном турнире, выбор станет окончательным.`,
     opts:[{label:a.name,sub:`Сила ${Math.round(a.str)} · ${CONF_RU[a.conf]}`,detail:'Играть за эту сборную',act:{t:'fx',natSet:a.id,nat2Clear:1,log:`Вы выбрали сборную: ${a.name}.`}},
@@ -4892,6 +4901,7 @@ const FLAGS=`Испания=H:AA151B,F1BF00,AA151B/1,2,1;O:AA151B,.3,.5,.06
 const FLAG_MAP=new Map(FLAGS.split('\n').map(l=>{const i=l.indexOf('=');return [l.slice(0,i),l.slice(i+1)]}));
 /* real flags (flag-icons, MIT) with the drawn ones as a fallback */
 const FLAG_ISO=new Map('Испания:es|Франция:fr|Англия:gb-eng|Португалия:pt|Нидерланды:nl|Германия:de|Италия:it|Бельгия:be|Хорватия:hr|Норвегия:no|Швейцария:ch|Дания:dk|Турция:tr|Австрия:at|Швеция:se|Сербия:rs|Украина:ua|Польша:pl|Чехия:cz|Шотландия:gb-sct|Венгрия:hu|Россия:ru|Греция:gr|Уэльс:gb-wls|Словакия:sk|Грузия:ge|Ирландия:ie|Словения:si|Румыния:ro|Босния и Герцеговина:ba|Албания:al|Финляндия:fi|Исландия:is|Израиль:il|Северная Македония:mk|Черногория:me|Северная Ирландия:gb-nir|Косово:xk|Болгария:bg|Беларусь:by|Казахстан:kz|Армения:am|Азербайджан:az|Люксембург:lu|Кипр:cy|Латвия:lv|Литва:lt|Фарерские острова:fo|Эстония:ee|Молдова:md|Мальта:mt|Андорра:ad|Лихтенштейн:li|Гибралтар:gi|Сан-Марино:sm|Аргентина:ar|Бразилия:br|Уругвай:uy|Колумбия:co|Эквадор:ec|Парагвай:py|Чили:cl|Венесуэла:ve|Перу:pe|Боливия:bo|США:us|Мексика:mx|Канада:ca|Панама:pa|Коста-Рика:cr|Ямайка:jm|Гондурас:hn|Кюрасао:cw|Гаити:ht|Гватемала:gt|Суринам:sr|Сальвадор:sv|Тринидад и Тобаго:tt|Никарагуа:ni|Доминиканская Республика:do|Куба:cu|Гайана:gy|Бермуды:bm|Пуэрто-Рико:pr|Гренада:gd|Сент-Китс и Невис:kn|Белиз:bz|Антигуа и Барбуда:ag|Сент-Люсия:lc|Сент-Винсент и Гренадины:vc|Барбадос:bb|Доминика:dm|Аруба:aw|Багамы:bs|Каймановы острова:ky|Монтсеррат:ms|Британские Виргинские острова:vg|Виргинские острова США:vi|Ангилья:ai|Теркс и Кайкос:tc|Марокко:ma|Сенегал:sn|Кот-д’Ивуар:ci|Египет:eg|Нигерия:ng|Алжир:dz|Камерун:cm|Мали:ml|Гана:gh|Тунис:tn|ДР Конго:cd|ЮАР:za|Буркина-Фасо:bf|Кабо-Верде:cv|Гвинея:gn|Габон:ga|Ангола:ao|Замбия:zm|Уганда:ug|Бенин:bj|Экваториальная Гвинея:gq|Мавритания:mr|Кения:ke|Танзания:tz|Мозамбик:mz|Ливия:ly|Коморы:km|Гамбия:gm|Мадагаскар:mg|Судан:sd|Того:tg|Зимбабве:zw|Республика Конго:cg|Сьерра-Леоне:sl|Намибия:na|Гвинея-Бисау:gw|Нигер:ne|Руанда:rw|Малави:mw|Бурунди:bi|Эфиопия:et|Либерия:lr|Ботсвана:bw|ЦАР:cf|Лесото:ls|Эсватини:sz|Южный Судан:ss|Чад:td|Маврикий:mu|Сан-Томе и Принсипи:st|Джибути:dj|Эритрея:er|Сомали:so|Сейшелы:sc|Япония:jp|Южная Корея:kr|Иран:ir|Австралия:au|Узбекистан:uz|Саудовская Аравия:sa|Катар:qa|Ирак:iq|Иордания:jo|ОАЭ:ae|Оман:om|Китай:cn|Индонезия:id|Бахрейн:bh|Сирия:sy|Палестина:ps|Вьетнам:vn|Таиланд:th|Таджикистан:tj|Кыргызстан:kg|Малайзия:my|КНДР:kp|Ливан:lb|Кувейт:kw|Филиппины:ph|Индия:in|Туркменистан:tm|Гонконг:hk|Сингапур:sg|Йемен:ye|Мьянма:mm|Афганистан:af|Бангладеш:bd|Непал:np|Камбоджа:kh|Монголия:mn|Лаос:la|Мальдивы:mv|Шри-Ланка:lk|Гуам:gu|Макао:mo|Бруней:bn|Восточный Тимор:tl|Бутан:bt|Новая Зеландия:nz|Новая Каледония:nc|Фиджи:fj|Соломоновы Острова:sb|Таити:pf|Папуа — Новая Гвинея:pg|Вануату:vu|Самоа:ws|Острова Кука:ck|Тонга:to|Американское Самоа:as'.split('|').map(x=>x.split(':')));
+if(window.LegendCountries)for(const c of LegendCountries.list(true))FLAG_ISO.set(LegendCountries.name(c.code,'ru'),c.code);
 const FLAG_CDN=YG?'flags/':'https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/flags/4x3/';
 let FLAG_N=0;
 function flagSvg(name,cls='flag'){
@@ -5035,7 +5045,7 @@ function dlTick(){
 }
 
 /* ================= multiplayer rooms ================= */
-const API=(()=>{try{const o=LS.getItem('legenda-polya-api');if(o)return o}catch(e){}try{if(/(^|\.)legendapolya\.com$/.test(location.host))return '/api'}catch(e){}return 'https://legenda-polya.88-218-121-40.sslip.io/api'})();
+const API=(()=>{try{const o=LS.getItem('legenda-polya-api');if(o)return o}catch(e){}try{if(/(^|\.)legendapolya\.com$/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))return '/api'}catch(e){}return 'https://legenda-polya.88-218-121-40.sslip.io/api'})();
 const MP_KEY='legenda-polya-room';
 const MP={sess:null,room:null,err:null,busy:false,lastStatus:null,tick:0,pushT:null};
 try{MP.sess=JSON.parse(LS.getItem(MP_KEY)||'null')}catch(e){MP.sess=null}
@@ -5087,15 +5097,16 @@ setInterval(()=>{if(MP.sess)mpListen()},3000);
 /* one room = one career per device: an existing room slot is reopened instead of starting a second career in another world */
 function mpBegin(){
   if(!MP.room||MP.room.status!=='started'||!MP.room.seed)return;
-  const code=MP.sess.code,old=slotsGet().find(m=>m.room===code);
-  if(old&&loadSlot(old.id)&&G.room&&G.room.code===code){
+  const room=MP.room,code=MP.sess.code,old=slotsGet().find(m=>m.room===code),loaded=old&&loadSlot(old.id);
+  MP.room=room; // loading the save clears the live room cache; retain this accepted snapshot
+  if(loaded&&G.room&&G.room.code===code){
     if(G.code!==MP.room.seed){MP.err=`Сохранённая карьера этой комнаты создана в другом мире (${G.code}). Удалите её во вкладке «Сохранения» и начните заново.`;UI.tab='multi';render();return}
     G.room={code,pid:MP.sess.pid,token:MP.sess.token};save();UI.tab='career';mpProgress('quiet');render();window.scrollTo(0,0);return}
   const me=mpMe(),su=me&&me.setup||{},f=UI.form,keep={...f};
   // the player set up in the lobby lives on the server: after a reload the local form is back to defaults
   if(me&&me.name)f.name=me.name;
   // no career may be loaded yet (G is null), so check names against the static list, not G.nations
-  const natOk=n=>S_NATS.some(x=>x.name===n);
+  const natOk=n=>fbNationalityChoices().some(x=>x.name===n);
   if(su.nat&&natOk(su.nat))f.nat=su.nat;
   f.nat2=su.nat2&&natOk(su.nat2)?su.nat2:'';
   if(su.pos&&POS[su.pos])f.pos=su.pos;
@@ -5128,7 +5139,7 @@ function mpProgress(force){
     ovrF:r1(P.ovr),posK:P.pos,tfx:r1(teamExtra()),wfx:(P.wfx||[]).slice(-6),
     roleNext:roleOf(P.ovr+P.roleMod+(P.captain===P.clubId?2:0)+(P.rel.coach-50)/20,C(P.clubId).str),
     nroleNext:natRole(P.ovr+(P.ntCaptain?2:0)+(hasPerk('patriot')?2:0),N(P.nat).str),
-    calledNext:!P.intlRetired&&!P.skipNT&&P.age>=18&&P.ovr>=N(P.nat).str-10};
+    calledNext:!N(P.nat).identityOnly&&!P.intlRetired&&!P.skipNT&&P.age>=18&&P.ovr>=N(P.nat).str-10};
   // the room feed is written in Russian from structured data; every client shows it in its own language (trText)
   const feed=mpFeed(s);
   if(s)G.room.posted=s.label;save();
@@ -5173,11 +5184,11 @@ function viewMulti(){
     <div class="panel" style="margin-top:16px"><div class="sec-h"><h2>Открытые комнаты</h2><span class="small muted">ждут игроков прямо сейчас</span></div><div id="pubRooms">${mpPubHtml()}</div></div>
   </section>`;
   const r=MP.room,lobby=!r||r.status==='lobby',mine=G&&G.room&&G.room.code===MP.sess.code;
-  const lg=S_LEAGUES.find(l=>l.id===f.lg),nats=S_NATS.slice().sort((a,b)=>trText(a.name).localeCompare(trText(b.name),LANG));
+  const lg=S_LEAGUES.find(l=>l.id===f.lg),nats=fbNationalityChoices().slice().sort((a,b)=>fbNationalityLabel(a).localeCompare(fbNationalityLabel(b),LANG));
   const setup=lobby?`<div class="panel"><div class="sec-h"><h2>Ваш игрок</h2></div><div class="form" style="margin-top:0">
       <div class="row2 namerow"><div class="field"><label for="m-name">Имя игрока</label><input id="m-name" maxlength="24" value="${esc(f.name)}"></div><div class="field"><label for="m-num">Номер</label><input id="m-num" type="number" min="1" max="99" value="${esc(f.num)}"></div></div>
-      <div class="row2"><div class="field"><label for="m-nat">Сборная</label><select id="m-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}">${esc(n.name)}</option>`).join('')}</select></div>
-        <div class="field"><label for="m-nat2">Второе гражданство</label><select id="m-nat2"><option value="" ${!f.nat2?'selected':''}>нет</option>${nats.filter(n=>n.name!==f.nat).map(n=>`<option ${n.name===f.nat2?'selected':''} value="${esc(n.name)}">${esc(n.name)}</option>`).join('')}</select></div></div>
+      <div class="row2"><div class="field"><label for="m-nat">Гражданство</label><select id="m-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div>
+        <div class="field"><label for="m-nat2">Второе гражданство</label><select id="m-nat2"><option value="" ${!f.nat2?'selected':''}>нет</option>${nats.filter(n=>n.name!==f.nat).map(n=>`<option ${n.name===f.nat2?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div></div>
       <div class="field"><label for="m-pos">Позиция</label><select id="m-pos">${Object.entries(POS).map(([k,p])=>`<option value="${k}" ${k===f.pos?'selected':''}>${p.n}</option>`).join('')}</select></div>
       <div class="row2"><div class="field"><label for="m-lg">Лига</label><select id="m-lg">${S_LEAGUES.map(l=>`<option value="${l.id}" ${l.id===f.lg?'selected':''}>${esc(l.name)} · ${COUNTRIES[l.cc][0]}</option>`).join('')}</select></div>
         <div class="field"><label for="m-club">Клуб (сила)</label><select id="m-club">${lg.clubs.map(c=>`<option value="${esc(c.name)}" ${c.name===f.club?'selected':''}>${esc(c.name)} · ${c.str}</option>`).join('')}</select></div></div>
@@ -5830,7 +5841,7 @@ function* coachNationYear(Y,SB,ch){
 }
 function coachComp(name,teams,winId,loseId){const C0=G.C;if(!teams.some(t=>isCoachT(t)))return;const win=isCoachT(C(winId));S.comps.push({n:name,st:win?'победа':'поражение',win});if(win)coachTrophy(name)}
 function coachStage(name,reached){const C0=G.C,id=C0.job==='club'?C0.clubId:C0.natId,st=reached[id];if(!st)return;S.comps.push({n:name,st,win:st==='Победитель'});if(st==='Победитель')coachTrophy(name)}
-function coachTrophy(n){S.trophies.push(n);G.C.trophies.push({n,y:S.label,club:G.C.job==='club'?C(G.C.clubId).name:N(G.C.natId).name});const j=G.C.jobs[G.C.jobs.length-1];if(j)j.tro++}
+function coachTrophy(n){S.trophies.push(n);G.C.trophies.push({n,y:S.label,club:G.C.job==='club'?C(G.C.clubId).name:N(G.C.natId).name});const j=G.C.jobs[G.C.jobs.length-1];if(j)j.tro++;if((BIGCOMP.test(n)||n==='Олимпийское золото')&&typeof majorWin==='function')majorWin({sport:'football',title:trText(n),subtitle:majorL('Чемпионский сезон · ','Championship season · ')+S.label,art:trophyIcon(n)})}
 function coachTableNow(){const C0=G.C;if(C0.job!=='club')return null;const c=C(C0.clubId),rows=sortT(Object.values(S.rows[c.lg]));return {pos:rows.findIndex(r=>r.id===c.id)+1,n:rows.length,pts:rows.find(r=>r.id===c.id).pts,lead:rows[0].pts}}
 function coachWinterReport(){
   const C0=G.C,m=S.midTable;if(!m)return;
@@ -6257,10 +6268,10 @@ function topbar(){
   const tabs=list.map(([k,l,sh])=>`<button class="tab" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}">${l===sh?l:`<span class="tl">${l}</span><span class="ts">${sh}</span>`}</button>`).join('');
   const bn=list.map(([k,l,sh,ic])=>`<button class="bn" data-a="tab" data-v="${k}" aria-current="${UI.tab===k}" aria-label="${l}">${ico(ic)}<span>${sh}</span></button>`).join('');
   const nb=has?`<button class="btn ghost newc" data-a="newYes" title="Новая карьера" aria-label="Новая карьера">${ico('new')}<span>Новая<span class="nb-long"> карьера</span></span></button>`:'';
-  const lng=`<button class="btn ghost lng" data-a="lang" lang="${EN?'ru':'en'}" title="${LANG_OTHER}" aria-label="${LANG_OTHER}">${EN?'RU':'EN'}</button>`;
+  const lng=`<label class="language-select"><select class="btn ghost lng" id="lang-select" aria-label="${LANG_LABEL[LANG]}">${LANG_CODES.map(k=>`<option value="${k}"${LANG===k?' selected':''}>${LANG_NAMES[k]}</option>`).join('')}</select></label>`;
   const snd=`<button class="btn ghost snd" data-a="snd" aria-pressed="${SND.on}" aria-label="${SND.on?'Выключить звук':'Включить звук'}" title="${SND.on?'Звук включён':'Звук выключен'}">${SND.on?SVG_SND_ON:SVG_SND_OFF}</button>`;
   const hub=!YG&&hubSite()?`<a class="btn ghost hub" href="/" title="Все игры серии «Легенда»" aria-label="Все игры">${ico('hub')}<span>Все игры</span></a>`:'';
-  return `<header class="top"><div class="wrap topin"><button class="brand" data-a="home" aria-label="Главное меню" aria-current="${UI.tab==='home'}"><i></i>Легенда поля</button><nav class="tabs" aria-label="Разделы">${tabs}</nav><div class="topact">${hub}${lng}${snd}${nb}</div></div></header>
+  return `<header class="top"><div class="wrap topin"><button class="brand" data-a="home" aria-label="Главное меню" aria-current="${UI.tab==='home'}"><i></i>${esc(window.LegendSite?.registry.games.find(g=>g.id==='fb')?.titles[LANG]||'Легенда поля')}</button><nav class="tabs" aria-label="Разделы">${tabs}</nav><div class="topact">${hub}${lng}${snd}${nb}</div></div></header>
   <nav class="bnav" aria-label="Разделы" style="--n:${list.length}">${bn}</nav>`;
 }
 /* ---- new-career screen: pitch for the position, league map by continent, club cards, portrait picker ---- */
@@ -6299,9 +6310,9 @@ function setupLeague(f){
   const info=[f2.d||`${(lg.clubs.length-1)*2} туров, два круга`,pb?`Выход наверх: ${pb.d}`:'',pa?`Вылет: ${pa.down} ${plural(pa.down,'клуб','клуба','клубов')} напрямую`:'',lg.tier===1?CONT_PATH[conf]:''].filter(Boolean);
   const clubs=lg.clubs.slice().sort((a,b)=>b.str-a.str).map(c=>{const r=roleOf(58,c.str);return `<button type="button" class="clt ${c.name===f.club?'on':''}" data-a="pickClub" data-v="${esc(c.name)}" aria-pressed="${c.name===f.club}">
     <b>${esc(c.name)}</b><span class="clt-s"><i style="width:${clamp((c.str-50)*2.4,6,100)}%"></i></span><span class="clt-m"><span class="num">${c.str}</span><span class="r${r}">${ROLE[r]}</span></span></button>`}).join('');
-  return `<div class="field"><span class="lbl">Страна · ${new Set(S_LEAGUES.map(l=>l.cc)).size} на выбор, ${S_LEAGUES.length} лиг</span>
-    <div class="seg conf">${tabs}</div>
-    <div class="cntg" role="group" aria-label="Страна">${cnt}</div></div>
+  return `<div class="field"><label for="f-lg">Страна и лига · ${new Set(S_LEAGUES.map(l=>l.cc)).size} стран, ${S_LEAGUES.length} лиг</label>
+    <select id="f-lg" data-choice="league">${S_LEAGUES.map(l=>`<option value="${l.id}" data-country="${esc(COUNTRIES[l.cc][0])}" data-tier="${l.tier}" data-teams="${l.clubs.length}" ${l.id===f.lg?'selected':''}>${esc(l.name)}</option>`).join('')}</select>
+    <p class="small muted" style="margin-top:8px">Гражданство и страна клуба выбираются независимо. Найди лигу на карте или через континент и регион.</p></div>
     <div class="field"><span class="lbl">Дивизион · <b>${esc(COUNTRIES[lg.cc][0])}</b></span>
     <div class="lgg lgg-div">${tiles}</div>
     <div class="lgi"><div class="lgi-h">${flagSvg(COUNTRIES[lg.cc][0],'lg-flag')}<div><p class="eyebrow">${esc(COUNTRIES[lg.cc][0])}</p><h3 class="disp">${esc(lg.name)}</h3></div></div>
@@ -6316,7 +6327,7 @@ function setupChar(f){
 function viewSetup(){
   if(!UI.form.face)UI.form.face=faceFor(UI.form.nat,hashStr(UI.form.name||'x'));
   const f=UI.form,lg=S_LEAGUES.find(l=>l.id===f.lg),nat=S_NATS.find(n=>n.name===f.nat);
-  const nats=S_NATS.slice().sort((a,b)=>trText(a.name).localeCompare(trText(b.name),LANG));
+  const nats=fbNationalityChoices().slice().sort((a,b)=>fbNationalityLabel(a).localeCompare(fbNationalityLabel(b),LANG));
   const clubsN=S_LEAGUES.reduce((s,l)=>s+l.clubs.length,0);
   return `<section class="setup">
     <div>
@@ -6327,7 +6338,7 @@ function viewSetup(){
       <div class="seg" role="group" aria-label="Режим"><button type="button" class="tab" data-a="setMode" data-v="player" aria-current="${f.mode!=='coach'&&f.mode!=='chal'}">Карьера игрока</button><button type="button" class="tab" data-a="setMode" data-v="coach" aria-current="${f.mode==='coach'}">Карьера тренера</button><button type="button" class="tab" data-a="setMode" data-v="chal" aria-current="${f.mode==='chal'}">Испытания</button></div>
       ${f.mode==='chal'?viewChallenges():f.mode==='coach'?`<form class="form" id="coachForm">
         <div class="row2 namerow"><div class="field"><label for="f-name">Имя тренера</label><input id="f-name" maxlength="40" value="${esc(f.name)}" autocomplete="off"></div><div class="field"><label for="f-cage">Возраст</label><select id="f-cage">${[35,36,37,38,39,40,41,42,43,44,45].map(a=>`<option ${+f.cage===a?'selected':''}>${a}</option>`).join('')}</select></div></div>
-        <div class="field"><label for="f-nat">Гражданство</label><select id="f-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}">${esc(n.name)}</option>`).join('')}</select></div>
+        <div class="field"><label for="f-nat">Гражданство</label><select id="f-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div>
         <div class="field"><label for="f-rus">Россия в международном футболе</label><select id="f-rus">${[['random','Отстранена, но может вернуться (~10% в год)'],['off','Отстранена навсегда'],['on','Допущена с первого сезона']].map(([v,l])=>`<option value="${v}" ${f.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>
         <p class="small muted" style="margin:0">Старт без громкого имени: клубы предложат работу по вашей репутации. Полный состав из 25 игроков, схема и стиль, трансферы в летнее и зимнее окно, цели президента. Бывшие игроки начинают тренерскую карьеру из Зала славы: с бонусом к репутации и в том же мире.</p>
         <div class="go"><button class="btn primary" type="submit">Начать тренерскую карьеру</button></div>
@@ -6336,8 +6347,8 @@ function viewSetup(){
           <div class="field"><label for="f-num">Номер</label><input id="f-num" type="number" min="1" max="99" inputmode="numeric" value="${esc(f.num)}"></div>
         </div>
         <div class="row2">
-          <div class="field"><label for="f-nat">Сборная</label><select id="f-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}">${esc(n.name)}</option>`).join('')}</select></div>
-          <div class="field"><label for="f-nat2">Второе гражданство</label><select id="f-nat2"><option value="" ${!f.nat2?'selected':''}>нет</option>${nats.filter(n=>n.name!==f.nat).map(n=>`<option ${n.name===f.nat2?'selected':''} value="${esc(n.name)}">${esc(n.name)}</option>`).join('')}</select></div>
+          <div class="field"><label for="f-nat">Гражданство</label><select id="f-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div>
+          <div class="field"><label for="f-nat2">Второе гражданство</label><select id="f-nat2"><option value="" ${!f.nat2?'selected':''}>нет</option>${nats.filter(n=>n.name!==f.nat).map(n=>`<option ${n.name===f.nat2?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div>
         </div>
         ${setupFace(f)}
         ${setupPos(f)}
@@ -6717,7 +6728,7 @@ const SHOW_PRIVACY=false;
 const AD_CONTACT={tg:'nowayarkady'}; // Telegram for advertisers
 function siteFoot(){
   if(YG)return '';
-  return `<footer class="foot"><span class="age-mark" title="Возрастная категория">12+</span><a class="small" href="https://t.me/${AD_CONTACT.tg}" target="_blank" rel="noopener">Реклама в игре: @${AD_CONTACT.tg}</a>${SHOW_PRIVACY?'<a class="small" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>':''}${adsOn()?'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>':''}${G&&(G.P||G.C)?`<button class="btn ghost mini" data-a="clubTheme" aria-pressed="${clubThemeOn()}">Цвета клуба: ${clubThemeOn()?'вкл':'выкл'}</button>`:''}<button class="btn ghost mini" data-a="lang" lang="${EN?'ru':'en'}">${LANG_OTHER}</button></footer>`;
+  return `<footer class="foot"><span class="age-mark" title="Возрастная категория">12+</span><a class="small" href="https://t.me/${AD_CONTACT.tg}" target="_blank" rel="noopener">Реклама в игре: @${AD_CONTACT.tg}</a>${SHOW_PRIVACY?'<a class="small" href="privacy.html" target="_blank" rel="noopener">Политика конфиденциальности</a>':''}${adsOn()?'<button class="btn ghost mini" data-a="consentReset">Настройки cookie</button>':''}${G&&(G.P||G.C)?`<button class="btn ghost mini" data-a="clubTheme" aria-pressed="${clubThemeOn()}">Цвета клуба: ${clubThemeOn()?'вкл':'выкл'}</button>`:''}<select class="btn ghost mini lng" data-lang-select aria-label="${LANG_LABEL[LANG]}">${LANG_CODES.map(k=>`<option value="${k}"${LANG===k?' selected':''}>${LANG_NAMES[k]}</option>`).join('')}</select></footer>`;
 }
 
 /* ================= challenges: daily, scenarios, hardcore, leaderboards ================= */
@@ -7076,7 +7087,7 @@ function moveListen(){
   try{if(location.origin!==MOVED_TO||!new URLSearchParams(location.search).has('import')||!window.opener)return}catch(e){return}
   window.addEventListener('message',e=>{if(!OLD_SITES.includes(e.origin)||!e.data||e.data.type!=='lp-import')return;
     const n=moveImport(e.data.data);try{e.source.postMessage({type:'lp-imported',slots:n},e.origin)}catch(err){}
-    try{history.replaceState(null,'',location.pathname)}catch(err){}
+    try{const keep=new URL(location.href);keep.searchParams.delete('import');keep.searchParams.delete('lang');history.replaceState(null,'',keep.pathname+keep.search+keep.hash)}catch(err){}
     location.reload()});
   OLD_SITES.forEach(o=>{try{window.opener.postMessage({type:'lp-ready'},o)}catch(e){}});
 }
@@ -7173,6 +7184,7 @@ document.addEventListener('input',e=>{
 });
 document.addEventListener('change',e=>{
   const id=e.target.id,f=UI.form;
+  if(id==='lang-select'||e.target.hasAttribute('data-lang-select')){setLang(e.target.value);return}
   if(id==='f-nat'){f.nat=e.target.value;if(!f.faceMan)f.face=faceFor(f.nat,hashStr(f.name||'x'));render()}
   else if(id==='f-pos'){f.pos=e.target.value;f.num=NUM_BY_POS[f.pos];const n=document.getElementById('f-num');if(n)n.value=f.num;updPrev()}
   else if(id==='f-lg'){f.lg=e.target.value;f.club=S_LEAGUES.find(l=>l.id===f.lg).clubs[0].name;render()}
@@ -7232,7 +7244,7 @@ function start(data){
   if(G&&G.room&&G.room.token&&!MP.sess){MP.sess={code:G.room.code,pid:G.room.pid,token:G.room.token};mpSave()}
   if(data&&data.UI)Object.assign(UI,data.UI);
   else if(!G&&slotsGet().length)UI.tab='home';
-  try{const q=new URLSearchParams(location.search).get('room');if(q&&/^[A-Z0-9]{4,6}$/i.test(q)){UI.mpCode=q.toUpperCase();UI.tab='multi';if(MP.sess&&MP.sess.code!==UI.mpCode)UI.mpSwitch=true;history.replaceState(null,'',location.pathname)}}catch(e){}
+  try{const q=new URLSearchParams(location.search).get('room');if(q&&/^[A-Z0-9]{4,6}$/i.test(q)){UI.mpCode=q.toUpperCase();UI.tab='multi';if(MP.sess&&MP.sess.code!==UI.mpCode)UI.mpSwitch=true;{const keep=new URL(location.href);keep.searchParams.delete('lang');history.replaceState(null,'',keep.pathname+keep.search+keep.hash)}}}catch(e){}
   adsLoad();
   newsCheck();
   render();

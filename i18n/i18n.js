@@ -95,7 +95,7 @@ function build(html){
     if(u.k==='s'){
       if(!ss.length||tr.every(x=>x==null))return js.slice(u.s,u.e);
       let en='',p=0;ss.forEach((s,i)=>{en+=u.text.slice(p,s.a)+(tr[i]??u.text.slice(s.a,s.b));p=s.b});en+=u.text.slice(p);
-      return `(EN?${JSON.stringify(en)}:${u.raw})`;
+      return `(EN?localize(${JSON.stringify(en)}):${u.raw})`;
     }
     // template
     const ph=t=>escT(t).replace(PHRE,(_,i)=>'${'+exs[+i]+'}');
@@ -105,9 +105,9 @@ function build(html){
       // order of placeholders in en
       const order=[];en.replace(/\{(\d+)\}/g,(_,i)=>{order.push(+i)});
       const inOrder=order.every((v,i)=>v===i);
-      if(inOrder){const e='`'+escT(en).replace(/\\?\{(\d+)\}/g,(_,i)=>'${'+exs[s.map[+i]]+'}')+'`';return `\${EN?${e}:${ru}}`}
+      if(inOrder){const e='`'+escT(en).replace(/\\?\{(\d+)\}/g,(_,i)=>'${'+exs[s.map[+i]]+'}')+'`';return `\${EN?localize(${e}):${ru}}`}
       const e='`'+escT(en).replace(/\{(\d+)\}/g,(_,i)=>'${_'+i+'}')+'`';
-      return `\${EN?((${s.map.map((_,i)=>'_'+i).join(',')})=>${e})(${s.map.map(j=>exs[j]).join(',')}):${ru}}`;
+      return `\${EN?localize(((${s.map.map((_,i)=>'_'+i).join(',')})=>${e})(${s.map.map(j=>exs[j]).join(',')})):${ru}}`;
     };
     let out='`',p=0;
     ss.forEach((s,i)=>{out+=ph(u.text.slice(p,s.a));out+=tr[i]==null?ph(u.text.slice(s.a,s.b)):segCode(s,tr[i]);p=s.b});

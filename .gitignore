@@ -4,6 +4,7 @@ i18n/node_modules/
 i18n/index.built.html
 i18n/todo.json
 dist-yg/
+dist-yg-preview/
 platforms/.cache/
 platforms/*.zip
 
