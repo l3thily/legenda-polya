@@ -145,6 +145,16 @@ main>*,.grid2>*,.hero>*,.setup>*,.hof>*,.cer>*,.nem>*,.decide>*,.panel,.season,.
 .field label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .field input,.field select{background:rgba(11,21,28,.8);border:1px solid var(--line2);border-radius:12px;padding:12px 13px;width:100%;min-width:0;transition:border-color .2s,box-shadow .2s}
 .field input:focus,.field select:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(242,193,78,.15)}
+.nat-btn{display:flex;align-items:center;gap:10px;width:100%;min-height:51px;text-align:left;background:rgba(11,21,28,.8);border:1px solid var(--line2);border-radius:12px;padding:10px 13px;cursor:pointer}
+.nat-btn:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(242,193,78,.15)}
+.nat-btn b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nat-btn .nat-caret{margin-left:auto;color:var(--muted);font-size:12px}
+.nat-list{display:grid;gap:6px;max-height:min(58vh,560px);overflow:auto;padding:2px;scrollbar-width:thin}
+.nat-o{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer}
+.nat-o b{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nat-o em{font-style:normal;color:var(--muted);font-size:12px;white-space:nowrap}
+.nat-o[aria-pressed="true"]{border-color:var(--gold);background:rgba(242,193,78,.1)}
+.nat-empty{margin:0;color:var(--muted)}
 .check{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:13.5px;cursor:pointer}
 .check input{margin-top:3px;accent-color:var(--gold)}
 .facts{display:flex;gap:26px;flex-wrap:wrap;margin-top:24px}
@@ -5184,11 +5194,11 @@ function viewMulti(){
     <div class="panel" style="margin-top:16px"><div class="sec-h"><h2>Открытые комнаты</h2><span class="small muted">ждут игроков прямо сейчас</span></div><div id="pubRooms">${mpPubHtml()}</div></div>
   </section>`;
   const r=MP.room,lobby=!r||r.status==='lobby',mine=G&&G.room&&G.room.code===MP.sess.code;
-  const lg=S_LEAGUES.find(l=>l.id===f.lg),nats=fbNationalityChoices().slice().sort((a,b)=>fbNationalityLabel(a).localeCompare(fbNationalityLabel(b),LANG));
+  const lg=S_LEAGUES.find(l=>l.id===f.lg),nats=natChoices();
   const setup=lobby?`<div class="panel"><div class="sec-h"><h2>Ваш игрок</h2></div><div class="form" style="margin-top:0">
       <div class="row2 namerow"><div class="field"><label for="m-name">Имя игрока</label><input id="m-name" maxlength="24" value="${esc(f.name)}"></div><div class="field"><label for="m-num">Номер</label><input id="m-num" type="number" min="1" max="99" value="${esc(f.num)}"></div></div>
-      <div class="row2"><div class="field"><label for="m-nat">Гражданство</label><select id="m-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div>
-        <div class="field"><label for="m-nat2">Второе гражданство</label><select id="m-nat2"><option value="" ${!f.nat2?'selected':''}>нет</option>${nats.filter(n=>n.name!==f.nat).map(n=>`<option ${n.name===f.nat2?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div></div>
+      <div class="row2">${natSelect('m-nat','Гражданство',f.nat,nats,{key:'nat',multi:true})}
+        ${natSelect('m-nat2','Второе гражданство',f.nat2,nats.filter(n=>n.name!==f.nat),{key:'nat2',multi:true,allowNone:true,noneLabel:'нет'})}</div>
       <div class="field"><label for="m-pos">Позиция</label><select id="m-pos">${Object.entries(POS).map(([k,p])=>`<option value="${k}" ${k===f.pos?'selected':''}>${p.n}</option>`).join('')}</select></div>
       <div class="row2"><div class="field"><label for="m-lg">Лига</label><select id="m-lg">${S_LEAGUES.map(l=>`<option value="${l.id}" ${l.id===f.lg?'selected':''}>${esc(l.name)} · ${COUNTRIES[l.cc][0]}</option>`).join('')}</select></div>
         <div class="field"><label for="m-club">Клуб (сила)</label><select id="m-club">${lg.clubs.map(c=>`<option value="${esc(c.name)}" ${c.name===f.club?'selected':''}>${esc(c.name)} · ${c.str}</option>`).join('')}</select></div></div>
@@ -6296,6 +6306,31 @@ function setupPos(f){
     <svg viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true"><rect x="1" y="1" width="98" height="58" rx="2"/><path d="M50 1V59M1 18H14V42H1M99 18H86V42H99M1 25H5V35H1M99 25H95V35H99"/><circle cx="50" cy="30" r="8"/></svg>
     ${Object.entries(POS_XY).map(([k,[x,y]])=>`<button type="button" class="pp-b" role="radio" aria-checked="${f.pos===k}" style="left:${x}%;top:${y}%" data-a="pickPos" data-v="${k}" title="${POS[k].n}">${POS[k].s}</button>`).join('')}</div></div>`;
 }
+function natChoices(){return fbNationalityChoices().slice().sort((a,b)=>fbNationalityLabel(a).localeCompare(fbNationalityLabel(b),LANG))}
+function natFlag(n,cls){return flagSvg(n.code&&window.LegendCountries?LegendCountries.name(n.code,'ru'):n.name,cls)}
+function natMeta(n){return n.identityOnly?'':`${Math.round(n.str)} · ${CONF_RU[n.conf]||''}`}
+function natSelect(id,label,value,nats,opt={}){
+  const n=nats.find(x=>x.name===value);
+  return `<div class="field"><label for="${id}">${label}</label><button type="button" class="nat-btn" id="${id}" data-a="natOpen" data-target="${opt.key}" data-none="${opt.allowNone?'1':''}" data-multi="${opt.multi?'1':''}" aria-haspopup="dialog">
+    ${n?`${natFlag(n,'flag-i')}<b>${esc(fbNationalityLabel(n))}</b>`:`<span class="muted">${opt.noneLabel}</span>`}<span class="nat-caret" aria-hidden="true">▾</span></button></div>`;
+}
+function natPickItems(){
+  const p=UI.natPick,f=UI.form;if(!p)return'';
+  const q=(UI.natQ||'').trim().toLowerCase(),nats=natChoices().filter(n=>p.key==='nat2'?n.name!==f.nat:true);
+  const found=nats.filter(n=>!q||fbNationalityLabel(n).toLowerCase().includes(q)||String(n.name).toLowerCase().includes(q));
+  const none=p.allowNone&&!q?`<button type="button" class="nat-o" data-a="pickNat" data-v="" aria-pressed="${!f[p.key]}"><span class="muted">Без второго гражданства</span></button>`:'';
+  return none+found.map(n=>`<button type="button" class="nat-o" data-a="pickNat" data-v="${esc(n.name)}" aria-pressed="${f[p.key]===n.name}">${natFlag(n,'flag-i')}<b>${esc(fbNationalityLabel(n))}</b>${natMeta(n)?`<em>${natMeta(n)}</em>`:''}</button>`).join('')||'<p class="nat-empty small">Страна не найдена.</p>';
+}
+function natPickModal(){
+  const p=UI.natPick;if(!p)return'';
+  const title=p.key==='nat2'?'Второе гражданство':'Гражданство';
+  return `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="natPickT"><div class="modal-in nat-modal">
+    <div class="sec-h"><h2 id="natPickT">${title}</h2><button class="btn ghost mini" data-a="natClose">Закрыть</button></div>
+    <div class="field"><label for="nat-q">Найти страну</label><input id="nat-q" value="${esc(UI.natQ||'')}" autocomplete="off" inputmode="search"></div>
+    <div class="nat-list" id="natList">${natPickItems()}</div>
+  </div></div>`;
+}
+function refreshNatPick(){const el=document.getElementById('natList');if(el)el.innerHTML=natPickItems()}
 const ccLeagues=cc=>S_LEAGUES.filter(l=>l.cc===cc).sort((a,b)=>a.tier-b.tier);
 const confCcs=cf=>[...new Set(S_LEAGUES.filter(l=>ccConf(l.cc)===cf).map(l=>l.cc))].sort((a,b)=>lgStars(ccLeagues(b)[0])-lgStars(ccLeagues(a)[0])||trText(COUNTRIES[a][0]).localeCompare(trText(COUNTRIES[b][0]),LANG));
 function setupLeague(f){
@@ -6326,8 +6361,7 @@ function setupChar(f){
 }
 function viewSetup(){
   if(!UI.form.face)UI.form.face=faceFor(UI.form.nat,hashStr(UI.form.name||'x'));
-  const f=UI.form,lg=S_LEAGUES.find(l=>l.id===f.lg),nat=S_NATS.find(n=>n.name===f.nat);
-  const nats=fbNationalityChoices().slice().sort((a,b)=>fbNationalityLabel(a).localeCompare(fbNationalityLabel(b),LANG));
+  const f=UI.form,lg=S_LEAGUES.find(l=>l.id===f.lg),nats=natChoices(),nat=nats.find(n=>n.name===f.nat);
   const clubsN=S_LEAGUES.reduce((s,l)=>s+l.clubs.length,0);
   return `<section class="setup">
     <div>
@@ -6338,7 +6372,7 @@ function viewSetup(){
       <div class="seg" role="group" aria-label="Режим"><button type="button" class="tab" data-a="setMode" data-v="player" aria-current="${f.mode!=='coach'&&f.mode!=='chal'}">Карьера игрока</button><button type="button" class="tab" data-a="setMode" data-v="coach" aria-current="${f.mode==='coach'}">Карьера тренера</button><button type="button" class="tab" data-a="setMode" data-v="chal" aria-current="${f.mode==='chal'}">Испытания</button></div>
       ${f.mode==='chal'?viewChallenges():f.mode==='coach'?`<form class="form" id="coachForm">
         <div class="row2 namerow"><div class="field"><label for="f-name">Имя тренера</label><input id="f-name" maxlength="40" value="${esc(f.name)}" autocomplete="off"></div><div class="field"><label for="f-cage">Возраст</label><select id="f-cage">${[35,36,37,38,39,40,41,42,43,44,45].map(a=>`<option ${+f.cage===a?'selected':''}>${a}</option>`).join('')}</select></div></div>
-        <div class="field"><label for="f-nat">Гражданство</label><select id="f-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div>
+        ${natSelect('f-nat','Гражданство',f.nat,nats,{key:'nat'})}
         <div class="field"><label for="f-rus">Россия в международном футболе</label><select id="f-rus">${[['random','Отстранена, но может вернуться (~10% в год)'],['off','Отстранена навсегда'],['on','Допущена с первого сезона']].map(([v,l])=>`<option value="${v}" ${f.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>
         <p class="small muted" style="margin:0">Старт без громкого имени: клубы предложат работу по вашей репутации. Полный состав из 25 игроков, схема и стиль, трансферы в летнее и зимнее окно, цели президента. Бывшие игроки начинают тренерскую карьеру из Зала славы: с бонусом к репутации и в том же мире.</p>
         <div class="go"><button class="btn primary" type="submit">Начать тренерскую карьеру</button></div>
@@ -6347,8 +6381,8 @@ function viewSetup(){
           <div class="field"><label for="f-num">Номер</label><input id="f-num" type="number" min="1" max="99" inputmode="numeric" value="${esc(f.num)}"></div>
         </div>
         <div class="row2">
-          <div class="field"><label for="f-nat">Гражданство</label><select id="f-nat">${nats.map(n=>`<option ${n.name===f.nat?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div>
-          <div class="field"><label for="f-nat2">Второе гражданство</label><select id="f-nat2"><option value="" ${!f.nat2?'selected':''}>нет</option>${nats.filter(n=>n.name!==f.nat).map(n=>`<option ${n.name===f.nat2?'selected':''} value="${esc(n.name)}" data-country="${n.code||''}">${esc(fbNationalityLabel(n))}</option>`).join('')}</select></div>
+          ${natSelect('f-nat','Гражданство',f.nat,nats,{key:'nat'})}
+          ${natSelect('f-nat2','Второе гражданство',f.nat2,nats.filter(n=>n.name!==f.nat),{key:'nat2',allowNone:true,noneLabel:'нет'})}
         </div>
         ${setupFace(f)}
         ${setupPos(f)}
@@ -6670,7 +6704,7 @@ function render(){
   else if(UI.tab==='museum'&&isCoach())body=viewCoachMuseum();
   else body=viewCareer();
   const enter=UI.shown!==UI.tab;UI.shown=UI.tab;
-  app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}${siteFoot()}</main>${consentBanner()}`+(G&&(G.P||G.C)?shareModal():'');
+  app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}${siteFoot()}</main>${consentBanner()}`+(G&&(G.P||G.C)?shareModal():'')+natPickModal();
   try{afterRender()}catch(e){console.error(e)}
   clubTheme();goatWatch();
   if(UI.news&&UI.nvid){if(!document.querySelector('.nvid'))nvidOpen()}
@@ -7113,6 +7147,9 @@ document.addEventListener('click',e=>{
   else if(a==='pickFace'){UI.form.face=b.dataset.v;UI.form.faceMan=true;render()}
   else if(a==='faceReg'){UI.faceReg=b.dataset.v;render()}
   else if(a==='faceRnd'){const p=UI.faceReg&&UI.faceReg!=='fit'?(UI.faceReg==='all'?FACE_ALL:FACE_REG[UI.faceReg].map(faceId)):facePool(UI.form.nat);UI.form.face=p[Math.floor(Math.random()*p.length)];UI.form.faceMan=true;render()}
+  else if(a==='natOpen'){UI.natPick={key:b.dataset.target,allowNone:b.dataset.none==='1',multi:b.dataset.multi==='1'};UI.natQ='';render();setTimeout(()=>{const q=document.getElementById('nat-q');if(q)q.focus()},0)}
+  else if(a==='natClose'){UI.natPick=null;UI.natQ='';render()}
+  else if(a==='pickNat'){const p=UI.natPick,f=UI.form,v=b.dataset.v;if(p&&p.key){f[p.key]=v;if(p.key==='nat'){if(f.nat2===f.nat)f.nat2='';if(!f.faceMan)f.face=faceFor(f.nat,hashStr(f.name||'x'))}if(p.multi)mpPushSetupSoon()}UI.natPick=null;UI.natQ='';render()}
   else if(a==='farewell'){if(!RUN&&G&&G.P&&!G.P.farewell){RUN=farewellGen();stepSeason()}}
   else if(a==='lang'){setLang(EN?'ru':'en')}
   else if(a==='consentAll'){consentSet('all')}
@@ -7180,6 +7217,7 @@ document.addEventListener('input',e=>{
   else if(id==='m-code'){UI.mpCode=e.target.value.toUpperCase()}
   else if(id==='m-pub'){UI.mpPublic=e.target.checked}
   else if(id==='f-hard'){UI.form.hard=e.target.checked}
+  else if(id==='nat-q'){UI.natQ=e.target.value;refreshNatPick()}
   else if(id==='lb-by'){UI.lbBy=e.target.value;if(UI.lbErr&&e.target.value.trim()){UI.lbErr=null;const er=document.querySelector('.lb-err');if(er)er.remove()}}
 });
 document.addEventListener('change',e=>{

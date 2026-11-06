@@ -1,7 +1,11 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-game="fb">
 <head>
 <meta charset="utf-8">
+<script src="countries.js"></script>
+<script src="site.js"></script>
+<link rel="stylesheet" href="site.css">
+
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070D12">
 <meta name="rating" content="12+">
@@ -15,6 +19,13 @@
 <meta property="og:title" content="Легенда поля">
 <meta property="og:url" content="https://legendapolya.com/fb/">
 <meta property="og:description" content="Создай игрока и проведи его от академии до Золотого мяча.">
+<script src="locales.js"></script>
+<script src="names.js"></script>
+<script src="surface.js" defer></script>
+<link rel="stylesheet" href="choices.css">
+<script src="geo.js" defer></script>
+<script src="choice-art.js" defer></script>
+<script src="choices.js" defer></script>
 <script>
 /* boot guard: if the game hasn't started in 9 s, say so on the splash and send the errors (no personal data) for diagnosis */
 (function(){var errs=[];
@@ -29,10 +40,52 @@ try{var x=new XMLHttpRequest();x.open('POST','/api/oops');x.setRequestHeader('Co
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+.major-win{--major-accent:#f2c14e;--major-rgb:242,193,78;position:fixed;inset:0;z-index:10000;display:grid;place-items:center;overflow:auto;padding:max(24px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));background:#05090df5;color:#f8f4e8;font-family:var(--body,"Golos Text",system-ui,sans-serif);opacity:0;isolation:isolate}.major-win.is-on{opacity:1;transition:opacity .35s ease}.major-scene,.major-content{position:absolute;inset:0}.major-scene{overflow:hidden;pointer-events:none}.major-scene:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 46%,rgba(var(--major-rgb),.2),transparent 35%),linear-gradient(180deg,transparent 50%,#030609 100%)}.major-beams{position:absolute;inset:-20%;filter:blur(5px);opacity:.65}.major-beams i{position:absolute;left:50%;top:-15%;width:16%;height:115%;transform-origin:50% 0;background:linear-gradient(180deg,rgba(var(--major-rgb),.32),transparent 75%);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);animation:majorBeam 5s ease-in-out infinite alternate}.major-beams i:first-child{transform:rotate(-34deg);animation-delay:-1.7s}.major-beams i:nth-child(2){transform:rotate(34deg);animation-delay:-3.2s}.major-beams i:nth-child(3){width:10%;opacity:.5;animation-duration:6.5s}.major-arena{position:absolute;left:-10%;right:-10%;bottom:-25%;height:63%;border-radius:50% 50% 0 0;background:repeating-linear-gradient(90deg,rgba(var(--major-rgb),.055) 0 9%,transparent 9% 18%),radial-gradient(ellipse at 50% 0,rgba(var(--major-rgb),.26),#07110d 65%);border-top:2px solid rgba(var(--major-rgb),.38);transform:perspective(550px) rotateX(57deg);box-shadow:0 -15px 80px rgba(var(--major-rgb),.14)}.major-grid{position:absolute;left:15%;right:15%;bottom:8%;height:24%;border:1px solid rgba(var(--major-rgb),.18);border-radius:50%;box-shadow:0 0 70px rgba(var(--major-rgb),.14),inset 0 0 70px rgba(var(--major-rgb),.1)}.major-content{position:relative;inset:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;width:min(900px,100%);min-height:min(720px,calc(100dvh - 48px));margin:auto;text-align:center}.major-kicker{margin:0 0 8px;color:var(--major-accent);font:700 12px/1.2 var(--mono,monospace);letter-spacing:.32em;text-transform:uppercase;text-shadow:0 0 20px rgba(var(--major-rgb),.6)}.major-art{position:relative;width:min(330px,67vw);height:min(310px,37vh);display:grid;place-items:center;margin:0 0 8px;filter:drop-shadow(0 25px 28px #000a);animation:majorTrophy 1s cubic-bezier(.16,.85,.22,1.18) both}.major-art:before{content:"";position:absolute;width:90%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(var(--major-rgb),.28),transparent 66%);animation:majorHalo 2.4s ease-in-out infinite alternate;z-index:-1}.major-art:after{content:"";position:absolute;inset:5% 15%;background:linear-gradient(115deg,transparent 35%,#fff7 46%,transparent 56%);transform:translateX(-170%);animation:majorShine 2.8s .9s ease-in-out infinite;mix-blend-mode:screen;pointer-events:none}.major-art>svg{display:block;width:100%;height:100%;max-height:100%;color:var(--major-accent);overflow:visible}.major-art>.ic,.major-art>.cup{fill:currentColor;stroke:none}.major-art>.cup .h{fill:none;stroke:currentColor;stroke-width:2}.major-art>.cup text{fill:#241704}.major-art>.major-belt-svg{width:125%;max-width:none}.major-content h1{max-width:900px;margin:0;color:#fff8df;font:900 clamp(46px,8vw,94px)/.88 var(--disp,"Arial Narrow",Impact,sans-serif);letter-spacing:.01em;text-transform:uppercase;text-wrap:balance;text-shadow:0 4px 30px #000,0 0 45px rgba(var(--major-rgb),.2);animation:majorCopy .65s .35s ease both}.major-subtitle{max-width:620px;margin:18px 0 0;color:#d8dee2;font-size:clamp(14px,2.2vw,19px);line-height:1.5;text-wrap:balance;animation:majorCopy .65s .48s ease both}.major-continue{display:inline-flex;align-items:center;justify-content:center;gap:18px;min-height:52px;margin-top:28px;padding:13px 25px;border:1px solid #ffe9a4;border-radius:12px;background:linear-gradient(180deg,#fff0ad,var(--major-accent) 55%,#b97b19);box-shadow:0 10px 38px rgba(var(--major-rgb),.25),inset 0 1px #fff9;color:#211606;font:900 23px/1 var(--disp,"Arial Narrow",Impact,sans-serif);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;animation:majorCopy .65s .6s ease both}.major-continue:hover{filter:brightness(1.08);transform:translateY(-2px)}.major-continue:focus-visible{outline:3px solid #fff;outline-offset:4px}.major-continue span{font:400 25px/1 system-ui}.major-more{margin:12px 0 0;color:#aeb9c0;font-size:12px}.major-particles{position:absolute;inset:0}.major-particles i{position:absolute;top:-8%;left:var(--x);width:8px;height:14px;border-radius:2px;background:var(--major-accent);animation:majorConfetti var(--dur) var(--delay) linear infinite;box-shadow:0 0 8px rgba(var(--major-rgb),.3)}.major-particles i:nth-child(3n){width:6px;height:6px;border-radius:50%;background:#fff4c2}.major-particles i:nth-child(4n){background:var(--major-accent);clip-path:polygon(50% 0,100% 100%,0 100%)}.major-particles i:nth-child(5n){background:#d9e8ef}.major-football{--major-accent:#68e39e;--major-rgb:71,218,139}.major-hockey{--major-accent:#a5e7ff;--major-rgb:95,199,255}.major-hockey .major-arena{background:repeating-linear-gradient(90deg,transparent 0 24%,#e53d4626 24% 25%,transparent 25% 49%,#5ab5ed38 49% 50%,transparent 50% 74%,#e53d4626 74% 75%,transparent 75%),radial-gradient(ellipse at 50% 0,#bcecff45,#0b2331 68%)}.major-hockey .major-particles i{width:5px;height:5px;border-radius:50%;background:#e9faff;clip-path:none}.major-basketball{--major-accent:#ffbd66;--major-rgb:244,142,48}.major-basketball .major-arena{background:repeating-linear-gradient(90deg,#9b4c1930 0 8%,#d17b3330 8% 16%),radial-gradient(ellipse at 50% 0,#ffb25536,#221008 70%)}.major-tennis{--major-accent:#d9ee78;--major-rgb:174,211,84}.major-tennis .major-arena{background:repeating-linear-gradient(90deg,#2f8b5e26 0 12%,#256c4d26 12% 24%),radial-gradient(ellipse at 50% 0,#8edb8540,#09231c 68%)}.major-f1{--major-accent:#ffdf75;--major-rgb:255,76,65}.major-f1 .major-arena{background:repeating-conic-gradient(#eeeeee20 0 25%,#11111120 0 50%) 0 0/70px 70px,radial-gradient(ellipse at 50% 0,#ff493a38,#1d0a09 70%)}.major-f1 .major-grid{border-radius:0;transform:skewX(-24deg);border-width:0 0 3px;box-shadow:15px 0 #eee,30px 0 #111,45px 0 #eee}.major-cs{--major-accent:#e0b1ff;--major-rgb:158,82,255}.major-cs .major-arena{border-radius:0;background:linear-gradient(#a54eff18 1px,transparent 1px),linear-gradient(90deg,#a54eff18 1px,transparent 1px),radial-gradient(ellipse at 50% 0,#7d32c73d,#10091d 70%);background-size:40px 40px,40px 40px,auto}.major-ufc{--major-accent:#ffd56d;--major-rgb:232,66,63}.major-ufc .major-arena{border-radius:0;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:repeating-linear-gradient(60deg,#ffffff0a 0 2px,transparent 2px 22px),repeating-linear-gradient(-60deg,#ffffff0a 0 2px,transparent 2px 22px),radial-gradient(ellipse at 50% 0,#e8423f38,#160d0e 70%)}.major-ufc .major-grid{border-radius:0;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}@keyframes majorBeam{from{translate:-12% 0;opacity:.45}to{translate:12% 0;opacity:.9}}@keyframes majorTrophy{0%{opacity:0;transform:translateY(70px) scale(.45) rotate(-7deg)}65%{opacity:1;transform:translateY(-8px) scale(1.06) rotate(2deg)}100%{opacity:1;transform:none}}@keyframes majorHalo{from{transform:scale(.85);opacity:.55}to{transform:scale(1.15);opacity:1}}@keyframes majorShine{0%,20%{transform:translateX(-170%)}70%,100%{transform:translateX(170%)}}@keyframes majorCopy{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}@keyframes majorConfetti{from{transform:translate3d(0,-10vh,0) rotate(var(--rot))}to{transform:translate3d(var(--drift),120vh,0) rotate(calc(var(--rot) + 720deg))}}@media(max-width:600px){.major-content{min-height:calc(100dvh - 48px)}.major-art{width:min(270px,70vw);height:min(250px,34vh);margin-top:8px}.major-art>.major-belt-svg{width:135%}.major-content h1{font-size:clamp(40px,14vw,68px)}.major-kicker{font-size:10px}.major-subtitle{margin-top:12px}.major-continue{margin-top:22px}.major-beams{inset:-5% -45%}.major-grid{left:3%;right:3%}}@media(max-height:650px){.major-content{min-height:560px}.major-art{height:220px;width:240px}.major-content h1{font-size:48px}.major-continue{margin-top:18px}}.major-belt-svg .major-belt-name{fill:#271704;font:900 48px Impact,"Arial Black",sans-serif;letter-spacing:-2px}.major-belt-svg .major-belt-caption{fill:#4a2b05;font:700 9px Arial,sans-serif;letter-spacing:3px}@media(prefers-reduced-motion:reduce){.major-win,.major-win *,.major-win *:before,.major-win *:after{animation:none!important;transition:none!important}.major-particles{display:none}.major-art:after{display:none}.major-beams{opacity:.35}}
+
+</style>
+<script>
+/* Major trophy ceremonies and the shared championship-belt artwork. */
+const majorQueue=[];
+let majorActive=null,majorSvgId=0,majorReturnFocus=null,majorBodyOverflow='';
+function majorTrophySvg(kind='cup',title=''){
+  const id='major'+(++majorSvgId),label=title||(kind==='belt'?'Чемпионский пояс UFC':'Чемпионский кубок');
+  if(kind==='belt')return `<svg class="major-belt-svg" viewBox="0 0 360 210" role="img" aria-label="${esc(label)}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7b4a08"/><stop offset=".2" stop-color="#fff0a6"/><stop offset=".43" stop-color="#d99a22"/><stop offset=".65" stop-color="#fff3ad"/><stop offset="1" stop-color="#8b550c"/></linearGradient><linearGradient id="${id}l" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#38271d"/><stop offset=".5" stop-color="#120e0c"/><stop offset="1" stop-color="#302017"/></linearGradient><radialGradient id="${id}j"><stop stop-color="#fff"/><stop offset=".25" stop-color="#c8f5ff"/><stop offset=".55" stop-color="#56b9df"/><stop offset="1" stop-color="#123a56"/></radialGradient><filter id="${id}s" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="9" stdDeviation="7" flood-color="#000" flood-opacity=".65"/></filter></defs><g filter="url(#${id}s)"><path d="M16 91Q75 54 119 69L241 69Q285 54 344 91L329 151Q277 126 235 139H125Q83 126 31 151Z" fill="url(#${id}l)" stroke="#5b3b24" stroke-width="3"/><path d="M26 98Q77 70 111 79M249 79Q283 70 334 98M35 134Q76 112 111 121M249 121Q284 112 325 134" fill="none" stroke="#8f6741" stroke-opacity=".48" stroke-width="2" stroke-dasharray="3 5"/><g fill="url(#${id}g)" stroke="#ffe89a" stroke-width="1.5"><path d="M73 75L113 77L120 130L80 135L62 106Z"/><path d="M287 75L247 77L240 130L280 135L298 106Z"/></g><g fill="#30200e"><circle cx="85" cy="104" r="9"/><circle cx="275" cy="104" r="9"/></g><g fill="url(#${id}g)" stroke="#6e450d" stroke-width="2"><path d="M180 30L231 51L253 103L231 157L180 180L129 157L107 103L129 51Z"/></g><path d="M180 39L224 57L243 103L224 150L180 169L136 150L117 103L136 57Z" fill="none" stroke="#fff0a6" stroke-width="2"/><path d="M180 49L216 63L232 103L216 143L180 158L144 143L128 103L144 63Z" fill="#b47813" stroke="#6f460e" stroke-width="2"/><path d="M180 53L212 66L227 103L212 139L180 153L148 139L133 103L148 66Z" fill="url(#${id}g)"/><g fill="url(#${id}j)" stroke="#e9fbff" stroke-width=".8"><circle cx="145" cy="66" r="4"/><circle cx="215" cy="66" r="4"/><circle cx="235" cy="103" r="4"/><circle cx="215" cy="141" r="4"/><circle cx="145" cy="141" r="4"/><circle cx="125" cy="103" r="4"/></g><path d="M151 78H209L199 88H161Z" fill="#fff2b0" opacity=".65"/><text class="major-belt-name" x="180" y="116" text-anchor="middle">UFC</text><path d="M153 124H207" stroke="#6c4108" stroke-width="2"/><text class="major-belt-caption" x="180" y="139" text-anchor="middle">CHAMPION</text><path d="M128 58Q180 25 232 58" fill="none" stroke="#fff7c9" stroke-opacity=".55" stroke-width="3"/></g></svg>`;
+  return `<svg class="major-cup-svg" viewBox="0 0 240 260" role="img" aria-label="${esc(label)}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="${id}g" x1="0" x2="1"><stop stop-color="#8c570c"/><stop offset=".22" stop-color="#fff2ac"/><stop offset=".43" stop-color="#e5ac32"/><stop offset=".67" stop-color="#fff0a0"/><stop offset="1" stop-color="#8c550b"/></linearGradient></defs><path d="M57 35H21Q16 104 70 113M183 35H219Q224 104 170 113" fill="none" stroke="url(#${id}g)" stroke-width="15"/><path d="M53 22H187V78Q184 139 120 153Q56 139 53 78Z" fill="url(#${id}g)" stroke="#ffeaa0" stroke-width="2"/><path d="M72 36V78Q75 115 102 130" fill="none" stroke="#fff8ce" stroke-width="8" stroke-linecap="round" opacity=".55"/><path d="M108 151H132V191H108Z" fill="url(#${id}g)"/><path d="M83 188H157L170 216H70Z" fill="url(#${id}g)"/><path d="M57 216H183V239H57Z" rx="5" fill="url(#${id}g)" stroke="#ffeaa0" stroke-width="2"/><path d="M94 61L120 42L146 61L138 96H102Z" fill="#fff4b3" opacity=".45"/></svg>`;
+}
+function majorL(ru,en){if(typeof L==='function')return L(ru,en);if(typeof T==='function')return T(ru+'|'+en);return document.documentElement.lang==='ru'?ru:en}
+function majorReduced(){try{return !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches}catch(e){return false}}
+function majorShow(){
+  const o=majorQueue.shift();if(!o)return;
+  const sport=['football','hockey','basketball','tennis','f1','cs','ufc'].includes(o.sport)?o.sport:'football';
+  const art=o.art||majorTrophySvg(sport==='ufc'?'belt':'cup',o.title);
+  const particles=Array.from({length:30},(_,i)=>`<i style="--x:${(i*37)%101}%;--drift:${(i%2?-1:1)*(18+(i*13)%65)}px;--delay:-${(i%10)*.43}s;--dur:${3.8+(i%7)*.42}s;--rot:${i*47}deg;--shade:${i%4}"></i>`).join('');
+  const el=document.createElement('div');el.className=`major-win major-${sport}`;el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-labelledby','major-win-title');
+  el.innerHTML=`<div class="major-scene" aria-hidden="true"><div class="major-beams"><i></i><i></i><i></i></div><div class="major-arena"></div><div class="major-grid"></div><div class="major-particles">${particles}</div></div><div class="major-content"><p class="major-kicker">${esc(majorL('ГЛАВНЫЙ ТРОФЕЙ','MAJOR TROPHY'))}</p><div class="major-art">${art}</div><h1 id="major-win-title">${esc(o.title||majorL('Чемпион!','Champion!'))}</h1>${o.subtitle?`<p class="major-subtitle">${esc(o.subtitle)}</p>`:''}<button class="major-continue" type="button">${esc(majorL('Продолжить','Continue'))}<span aria-hidden="true">→</span></button>${majorQueue.length?`<p class="major-more">${esc(majorL('Ещё трофеев: ','More trophies: '))}${majorQueue.length}</p>`:''}</div>`;
+  document.body.appendChild(el);majorActive=el;
+  const close=()=>majorClose();el.querySelector('.major-continue').addEventListener('click',close);
+  el._majorKey=e=>{if(e.key==='Escape'){e.preventDefault();close()}else if(e.key==='Tab'){e.preventDefault();el.querySelector('.major-continue').focus()}};
+  document.addEventListener('keydown',el._majorKey);
+  requestAnimationFrame(()=>{el.classList.add('is-on');el.querySelector('.major-continue').focus({preventScroll:true})});
+  if(o.sound!==false&&typeof sfx==='function')setTimeout(()=>sfx('fanfare'),100);
+}
+function majorClose(){
+  const el=majorActive;if(!el)return;majorActive=null;document.removeEventListener('keydown',el._majorKey);el.remove();
+  if(majorQueue.length){majorShow();return}
+  document.body.style.overflow=majorBodyOverflow;
+  if(majorReturnFocus?.isConnected)majorReturnFocus.focus({preventScroll:true});majorReturnFocus=null;
+}
+function majorWin(o){
+  if(!o||!document.body)return;
+  if(!majorActive&&!majorQueue.length){majorReturnFocus=document.activeElement;majorBodyOverflow=document.body.style.overflow;document.body.style.overflow='hidden'}
+  majorQueue.push(o);if(!majorActive)majorShow();
+}
+
+</script>
 <title>Легенда поля</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600;700&family=JetBrains+Mono:wght@500;700&family=Sofia+Sans+Extra+Condensed:ital,wght@0,800;0,900;1,900&family=Old+Standard+TT:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;600;700&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+Arabic:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Sofia+Sans+Extra+Condensed:ital,wght@0,800;0,900;1,900&family=Old+Standard+TT:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* Layout: a night match under floodlights. Broadcast graphics over a dark pitch, gold reserved for glory, a cream newspaper as the one warm surface. */
 :root{
@@ -43,7 +96,7 @@ try{var x=new XMLHttpRequest();x.open('POST','/api/oops');x.setRequestHeader('Co
   --paper:#EEE7D6;--paper-ink:#1D1A15;--paper-dim:#6B6355;
   --amber:var(--gold);--amber2:var(--gold2);--grass:var(--turf);
   --disp:"Sofia Sans Extra Condensed","Arial Narrow",Impact,sans-serif;
-  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --body:"Golos Text","Noto Sans Arabic","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   --news:"Old Standard TT",Georgia,"Times New Roman",serif;
   --r:16px;--ease:cubic-bezier(.2,.8,.2,1);
@@ -110,7 +163,7 @@ html.club-theme .hero .fcard{box-shadow:0 0 0 3px var(--club),0 24px 40px -24px 
 .gr-who .flag-i{width:16px;height:12px}
 .goat-l em{font-style:normal;font-weight:700;color:var(--gold2)}
 @media (max-width:600px){.gx-p{width:78px;padding:4px 3px}.gx-p b{font-size:10.5px;letter-spacing:-.01em}.goat-grid{grid-template-columns:1fr}.goat-l li{grid-template-columns:20px minmax(0,1fr) auto}.goat-l .gr-st{display:none}}
-.lng{font:700 12px/1 var(--mono);letter-spacing:.06em;min-width:40px;padding-inline:8px}
+.lng{font:700 12px/1 var(--mono);letter-spacing:.04em;min-width:100px;max-width:130px;padding:8px;background:#0C151D;color:var(--text);cursor:pointer}
 .foot{display:flex;gap:12px;align-items:center;justify-content:center;margin:28px 0 8px;color:var(--dim)}
 .chat-log{list-style:none;margin:0;padding:0;max-height:260px;overflow:auto;display:grid;gap:6px}
 .chat-log li{display:grid;gap:1px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:7px 10px}
@@ -176,6 +229,16 @@ main>*,.grid2>*,.hero>*,.setup>*,.hof>*,.cer>*,.nem>*,.decide>*,.panel,.season,.
 .field label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .field input,.field select{background:rgba(11,21,28,.8);border:1px solid var(--line2);border-radius:12px;padding:12px 13px;width:100%;min-width:0;transition:border-color .2s,box-shadow .2s}
 .field input:focus,.field select:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(242,193,78,.15)}
+.nat-btn{display:flex;align-items:center;gap:10px;width:100%;min-height:51px;text-align:left;background:rgba(11,21,28,.8);border:1px solid var(--line2);border-radius:12px;padding:10px 13px;cursor:pointer}
+.nat-btn:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(242,193,78,.15)}
+.nat-btn b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nat-btn .nat-caret{margin-left:auto;color:var(--muted);font-size:12px}
+.nat-list{display:grid;gap:6px;max-height:min(58vh,560px);overflow:auto;padding:2px;scrollbar-width:thin}
+.nat-o{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer}
+.nat-o b{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nat-o em{font-style:normal;color:var(--muted);font-size:12px;white-space:nowrap}
+.nat-o[aria-pressed="true"]{border-color:var(--gold);background:rgba(242,193,78,.1)}
+.nat-empty{margin:0;color:var(--muted)}
 .check{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:13.5px;cursor:pointer}
 .check input{margin-top:3px;accent-color:var(--gold)}
 .facts{display:flex;gap:26px;flex-wrap:wrap;margin-top:24px}
@@ -1061,6 +1124,6 @@ details.more>summary{font-size:15px;color:var(--text)}
 
 <div id="app"><div class="splash" aria-busy="true"><i></i><b>Легенда поля</b><span>загрузка · loading</span></div></div>
 
-<script src="app.db2a763cc3.js" defer></script>
+<script src="app.c725df6990.js" defer></script>
 
 </html>
