@@ -9,5 +9,7 @@ rm -rf docs && cp -R dist docs && touch docs/.nojekyll
 git add -A
 git commit -qm "${1:-Обновление игры}" || true
 git push -q origin main
+find dist -type d -exec chmod 755 {} +
+find dist -type f -exec chmod 644 {} +
 COPYFILE_DISABLE=1 tar -C dist -cf - . | ssh vps2 "mkdir -p /var/www/legenda-polya/fb && tar -C /var/www/legenda-polya/fb -xf -"  # one connection: scp of many files gets cut off by the server
 curl -s -o /dev/null -w "server: %{http_code}\n" https://legendapolya.com/fb/
