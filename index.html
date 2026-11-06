@@ -1496,7 +1496,7 @@ function loadSlot(id){try{const raw=slotRaw(id);if(!raw)return false;if(G&&G.slo
 function deleteSlot(id){if(SV.job&&SV.job.id===id)SV.job=null;try{LS.removeItem(slotKey(id))}catch(e){}slotsSet(slotsGet().filter(x=>x.id!==id));if(G&&G.slot===id){G=null;RUN=null;MATCH=null;try{LS.removeItem(ACTIVE_KEY)}catch(e){}}}
 /* names corrected after release: old saves are renamed on load */
 const RENAMED={'Панселлиникос':'Пансерраикос','Тайвань':'Китайский Тайбэй','Льовен':'Лёвен','Гаис':'ГАИС','Реал Сосьедад B':'Реал Сосьедад Б','ЭНП':'Красава','Эносис':'Эносис Паралимни','Фортелеса':'Форталеса','Техутаун':'Текнико Университарио','Бизерта':'Бизертен','Киргизия':'Кыргызстан'}; // i18n:skip
-function migrate(g){if(g&&g.rng){RW=mkRng(g.rng.w);RPR=mkRng(g.rng.p)}if(g&&g.P){const P=g.P;[...(g.nations||[]),...(g.clubs||[]),...(g.leagues||[])].forEach(x=>{if(RENAMED[x.name])x.name=RENAMED[x.name]});if(!P.face)P.face=faceFor((g.nations[P.nat]||{}).name,hashStr(P.name||'x'));if(P.rep==null)P.rep=clamp(10+P.trophies.length*2+P.awards.length*3+P.tot.g/15,0,100);if(P.roleMod==null)P.roleMod=0;if(P.growMod==null)P.growMod=0}if(g&&g.clubs){if(!g.derby)g.derby=buildDerbies(g);if(!g.rec)g.rec=buildRecords();else{const f=buildRecords();Object.keys(f).forEach(k=>{if(!g.rec[k])g.rec[k]=f[k]})}}if(g&&g.P){const P=g.P;if(!P.at)P.at=makeAttrs(P.ovr,P.pos);if(!P.focus)P.focus='bal';if(!P.rel)P.rel=freshRel();if(!P.clubRel)P.clubRel={};if(!P.st)P.st={ucl:0,wc:0,euro:0,hat:0,clubG:{}};if(!P.recs)P.recs=[];if(!P.ms)P.ms=[];if(!P.best)P.best={};if(!P.perks)P.perks=[];if(P.num==null)P.num=NUM_BY_POS[P.pos]||9;if(P.fol==null)P.fol=r2(.003+Math.pow(P.rep/100,2)*12);if(P.gross==null)P.gross=r2(P.earn/1e6);if(P.spent==null)P.spent=0;if(!P.subs)P.subs={};if(!P.own)P.own={};if(!P.inv)P.inv=[];if(!P.posHist)P.posHist=[];if(P.pos0==null&&!P.posHist.length)P.pos0=P.pos}if(g&&g.set&&!g.set.rusMode)g.set.rusMode=g.set.russia?'on':'random';if(g&&g.C){const C0=g.C;if(C0.pot==null)C0.pot=clamp(Math.max(C0.skills.tac,C0.skills.mot)+4+hashStr(String(g.slot||C0.name))%11,50,95)}return g}
+function migrate(g){if(g&&g.rng){RW=mkRng(g.rng.w);RPR=mkRng(g.rng.p)}if(g&&g.P){const P=g.P;[...(g.nations||[]),...(g.clubs||[]),...(g.leagues||[])].forEach(x=>{if(RENAMED[x.name])x.name=RENAMED[x.name]});if(!P.face)P.face=faceFor((g.nations[P.nat]||{}).name,hashStr(P.name||'x'));if(P.rep==null)P.rep=clamp(10+P.trophies.length*2+P.awards.length*3+P.tot.g/15,0,100);if(P.roleMod==null)P.roleMod=0;if(P.growMod==null)P.growMod=0}if(g&&g.clubs){if(!g.derby)g.derby=buildDerbies(g);if(!g.rec)g.rec=buildRecords();else{const f=buildRecords();Object.keys(f).forEach(k=>{if(!g.rec[k])g.rec[k]=f[k]})}}if(g&&g.P){const P=g.P;if(!P.at)P.at=makeAttrs(P.ovr,P.pos);if(!P.focus)P.focus='bal';if(!P.rel)P.rel=freshRel();if(!P.clubRel)P.clubRel={};if(!P.st)P.st={ucl:0,wc:0,euro:0,hat:0,clubG:{}};if(!P.recs)P.recs=[];if(!P.ms)P.ms=[];if(!P.best)P.best={};if(!P.perks)P.perks=[];if(P.num==null)P.num=NUM_BY_POS[P.pos]||9;if(P.fol==null)P.fol=r2(.003+Math.pow(P.rep/100,2)*12);if(P.gross==null)P.gross=r2(P.earn/1e6);if(P.spent==null)P.spent=0;if(!P.subs)P.subs={};if(!P.own)P.own={};if(!P.inv)P.inv=[];if(!P.posHist)P.posHist=[];if(P.pos0==null&&!P.posHist.length)P.pos0=P.pos}if(g&&g.set&&!g.set.rusMode)g.set.rusMode=g.set.russia?'on':'random';if(g&&g.C){const C0=g.C;if(C0.pot==null)C0.pot=clamp(Math.max(C0.skills.tac,C0.skills.mot)+4+hashStr(String(g.slot||C0.name))%11,50,95)}if(g&&g.euro&&!g.room&&g.euroAccessVersion!==20261106){g.euro=euroEntrants(g);g.euroAccessVersion=20261106}return g}
 function load(){
   // one-time move of the old single save into the first slot
   try{const old=LS.getItem(SAVE);if(old&&!slotsGet().length){const g=JSON.parse(old);if(g&&g.P){const id=g.slot||Date.now().toString(36);g.slot=id;LS.setItem(slotKey(id),JSON.stringify(g));LS.setItem(ACTIVE_KEY,id);slotsSet([{id,upd:Date.now(),name:g.P.name,pos:g.P.pos,club:(g.clubs[g.P.clubId]||{}).name,age:g.P.age,ovr:Math.round(g.P.ovr),season:`${g.year}/${String(g.year+1).slice(2)}`,room:g.room?g.room.code:null,retired:g.phase==='retired'}])}}LS.removeItem(SAVE)}catch(e){}
@@ -1512,7 +1512,7 @@ const allowedNat=n=>!n.identityOnly&&(G.set.russia||n.name!=='Россия');
 const natByName=name=>G.nations.find(n=>n.name===name)||fbIdentityNation(name);
 
 function buildWorld(rusMode){const russia=rusMode==='on';
-  const W={balanceVersion:20261016,year:2026,clubs:[],leagues:[],nations:[],rivals:[],coef:{},won:{},tables:{},chron:[],seasons:[],pending:[],pendTotal:0,summer:[],set:{russia,rusMode},P:null,euro:null,moved:false};
+  const W={balanceVersion:20261016,euroAccessVersion:20261106,year:2026,clubs:[],leagues:[],nations:[],rivals:[],coef:{},won:{},tables:{},chron:[],seasons:[],pending:[],pendTotal:0,summer:[],set:{russia,rusMode},P:null,euro:null,moved:false};
   LEAGUE_DATA.forEach(([id,cc,name,tier,wealth,list])=>{
     const lg={id,cc,name,tier,wealth,ids:[],last:[]};
     list.split('|').forEach(s=>{const k=s.lastIndexOf(' '),str=+s.slice(k+1);const c={id:W.clubs.length,kind:'c',name:s.slice(0,k),str,base:str,init:str,lg:id,cc};W.clubs.push(c);lg.ids.push(c.id)});
@@ -2155,12 +2155,12 @@ function* runTournament(t){
 
 /* ================= europe entrants & coefficients ================= */
 const SLOTS=r=>r<4?[4,2,1]:r===4?[3,2,1]:r===5?[2,2,1]:r<10?[2,1,2]:r<15?[1,2,2]:[1,1,2];
-function coefRank(){return UEFA_CC.filter(cc=>G.coef[cc]&&(cc!=='RUS'||G.set.russia)).map(cc=>({cc,sum:G.coef[cc].reduce((a,b)=>a+b,0)})).sort((a,b)=>b.sum-a.sum)}
-function euroEntrants(){
-  const rank=coefRank(),ucl=[],uel=[],uecl=[],extra=[],used=new Set();
-  [G.won.ucl,G.won.uel].forEach(id=>{if(id!=null&&allowedClub(id)&&!used.has(id)){ucl.push({id,p:-1});used.add(id)}});
+function coefRank(world=G){return UEFA_CC.filter(cc=>world.coef[cc]&&(cc!=='RUS'||world.set.russia)).map(cc=>({cc,sum:world.coef[cc].reduce((a,b)=>a+b,0)})).sort((a,b)=>b.sum-a.sum)}
+function euroEntrants(world=G){
+  const rank=coefRank(world),ucl=[],uel=[],uecl=[],extra=[],used=new Set();
+  [world.won.ucl,world.won.uel].forEach(id=>{if(id!=null&&(world.set.russia||world.clubs[id].cc!=='RUS')&&!used.has(id)){ucl.push({id,p:-1});used.add(id)}});
   rank.forEach(({cc},r)=>{
-    const lg=topLeague(cc),s=SLOTS(r);let pos=0;
+    const lg=world.leagues.find(l=>l.cc===cc&&l.tier===1),s=SLOTS(r);let pos=0;
     const take=(arr,n)=>{while(n>0&&pos<lg.last.length){const id=lg.last[pos++];if(used.has(id))continue;arr.push({id,p:r*100+pos});used.add(id);n--}};
     take(ucl,s[0]);take(uel,s[1]);take(uecl,s[2]);
     for(let k=pos;k<Math.min(pos+3,lg.last.length);k++)extra.push({id:lg.last[k],p:r*100+k+1});
@@ -2168,7 +2168,16 @@ function euroEntrants(){
   const byP=(a,b)=>a.p-b.p;
   ucl.sort(byP);while(ucl.length>36)uel.push(ucl.pop());
   uel.sort(byP);while(uel.length>36)uecl.push(uel.pop());
-  uecl.sort(byP);while(uecl.length>36)uecl.pop();
+  // The simplified access list must retain a European route for every admitted
+  // association. Blind truncation used to remove all clubs from lower-ranked
+  // countries, even after winning their domestic league.
+  uecl.sort(byP);
+  const represented=new Set([...ucl,...uel].map(x=>world.clubs[x.id].cc)),access=[];
+  for(const x of uecl){const cc=world.clubs[x.id].cc;if(!represented.has(cc)){access.push(x);represented.add(cc)}}
+  const reserved=new Set(access.map(x=>x.id));
+  const conference=[...access,...uecl.filter(x=>!reserved.has(x.id))].slice(0,36).sort(byP);
+  uecl.splice(0,uecl.length,...conference);
+  used.clear();[...ucl,...uel,...uecl].forEach(x=>used.add(x.id));
   extra.sort(byP);for(const e of extra){if(uecl.length>=36)break;if(!used.has(e.id)){uecl.push(e);used.add(e.id)}}
   return {ucl:ucl.map(x=>x.id),uel:uel.map(x=>x.id),uecl:uecl.map(x=>x.id)};
 }
