@@ -3830,5 +3830,8 @@
   "Гражданство и страна клуба выбираются независимо. Найди лигу на карте или через континент и регион.": "Nationality and club country are chosen independently. Find a league on the map or by continent and region.",
   "Найти страну": "Find a country",
   "Без второго гражданства": "No second nationality",
-  "Страна не найдена.": "No country found."
+  "Страна не найдена.": "No country found.",
+  "Страна и лига": "Country and league",
+  "Найти лигу": "Find a league",
+  "Лига не найдена.": "No league found."
 }

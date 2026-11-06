@@ -5200,7 +5200,7 @@ function viewMulti(){
       <div class="row2">${natSelect('m-nat','Гражданство',f.nat,nats,{key:'nat',multi:true})}
         ${natSelect('m-nat2','Второе гражданство',f.nat2,nats.filter(n=>n.name!==f.nat),{key:'nat2',multi:true,allowNone:true,noneLabel:'нет'})}</div>
       <div class="field"><label for="m-pos">Позиция</label><select id="m-pos">${Object.entries(POS).map(([k,p])=>`<option value="${k}" ${k===f.pos?'selected':''}>${p.n}</option>`).join('')}</select></div>
-      <div class="row2"><div class="field"><label for="m-lg">Лига</label><select id="m-lg">${S_LEAGUES.map(l=>`<option value="${l.id}" ${l.id===f.lg?'selected':''}>${esc(l.name)} · ${COUNTRIES[l.cc][0]}</option>`).join('')}</select></div>
+      <div class="row2">${leagueButton('m-lg','Лига',f.lg,true)}
         <div class="field"><label for="m-club">Клуб (сила)</label><select id="m-club">${lg.clubs.map(c=>`<option value="${esc(c.name)}" ${c.name===f.club?'selected':''}>${esc(c.name)} · ${c.str}</option>`).join('')}</select></div></div>
       ${r&&r.host===MP.sess.pid?`<div class="field"><label for="m-rus">Россия в международном футболе (решает хост)</label><select id="m-rus">${[['random','Отстранена, может вернуться'],['off','Отстранена навсегда'],['on','Допущена']].map(([v,l])=>`<option value="${v}" ${r.rus===v?'selected':''}>${l}</option>`).join('')}</select></div>`:''}
       ${G&&G.P&&!mine?'<p class="small muted">Карьера в комнате будет в отдельном слоте, текущая сохранится во вкладке «Сохранения».</p>':''}
@@ -6331,6 +6331,25 @@ function natPickModal(){
   </div></div>`;
 }
 function refreshNatPick(){const el=document.getElementById('natList');if(el)el.innerHTML=natPickItems()}
+function leagueButton(id,label,value,multi=false){
+  const l=S_LEAGUES.find(x=>x.id===value);
+  return `<div class="field"><label for="${id}">${label}</label><button type="button" class="nat-btn lg-btn" id="${id}" data-a="leagueOpen" data-multi="${multi?'1':''}" aria-haspopup="dialog">${l?`${flagSvg(COUNTRIES[l.cc][0],'flag-i')}<b>${esc(l.name)}</b>`:'<span class="muted">—</span>'}<span class="nat-caret" aria-hidden="true">▾</span></button></div>`;
+}
+function leaguePickItems(){
+  const p=UI.lgPick,f=UI.form;if(!p)return'';
+  const q=(UI.lgQ||'').trim().toLowerCase();
+  const found=S_LEAGUES.filter(l=>!q||l.name.toLowerCase().includes(q)||COUNTRIES[l.cc][0].toLowerCase().includes(q)||l.id.toLowerCase().includes(q));
+  return found.map(l=>`<button type="button" class="nat-o" data-a="pickLeague" data-v="${esc(l.id)}" aria-pressed="${f.lg===l.id}">${flagSvg(COUNTRIES[l.cc][0],'flag-i')}<b>${esc(l.name)}</b><em>${esc(COUNTRIES[l.cc][0])} · ${l.tier}-й</em></button>`).join('')||'<p class="nat-empty small">Лига не найдена.</p>';
+}
+function leaguePickModal(){
+  const p=UI.lgPick;if(!p)return'';
+  return `<div class="modal" role="dialog" aria-modal="true" aria-labelledby="leaguePickT"><div class="modal-in nat-modal">
+    <div class="sec-h"><h2 id="leaguePickT">Страна и лига</h2><button class="btn ghost mini" data-a="leagueClose">Закрыть</button></div>
+    <div class="field"><label for="lg-q">Найти лигу</label><input id="lg-q" value="${esc(UI.lgQ||'')}" autocomplete="off" inputmode="search"></div>
+    <div class="nat-list" id="lgList">${leaguePickItems()}</div>
+  </div></div>`;
+}
+function refreshLeaguePick(){const el=document.getElementById('lgList');if(el)el.innerHTML=leaguePickItems()}
 const ccLeagues=cc=>S_LEAGUES.filter(l=>l.cc===cc).sort((a,b)=>a.tier-b.tier);
 const confCcs=cf=>[...new Set(S_LEAGUES.filter(l=>ccConf(l.cc)===cf).map(l=>l.cc))].sort((a,b)=>lgStars(ccLeagues(b)[0])-lgStars(ccLeagues(a)[0])||trText(COUNTRIES[a][0]).localeCompare(trText(COUNTRIES[b][0]),LANG));
 function setupLeague(f){
@@ -6345,9 +6364,8 @@ function setupLeague(f){
   const info=[f2.d||`${(lg.clubs.length-1)*2} туров, два круга`,pb?`Выход наверх: ${pb.d}`:'',pa?`Вылет: ${pa.down} ${plural(pa.down,'клуб','клуба','клубов')} напрямую`:'',lg.tier===1?CONT_PATH[conf]:''].filter(Boolean);
   const clubs=lg.clubs.slice().sort((a,b)=>b.str-a.str).map(c=>{const r=roleOf(58,c.str);return `<button type="button" class="clt ${c.name===f.club?'on':''}" data-a="pickClub" data-v="${esc(c.name)}" aria-pressed="${c.name===f.club}">
     <b>${esc(c.name)}</b><span class="clt-s"><i style="width:${clamp((c.str-50)*2.4,6,100)}%"></i></span><span class="clt-m"><span class="num">${c.str}</span><span class="r${r}">${ROLE[r]}</span></span></button>`}).join('');
-  return `<div class="field"><label for="f-lg">Страна и лига · ${new Set(S_LEAGUES.map(l=>l.cc)).size} стран, ${S_LEAGUES.length} лиг</label>
-    <select id="f-lg" data-choice="league">${S_LEAGUES.map(l=>`<option value="${l.id}" data-country="${esc(COUNTRIES[l.cc][0])}" data-tier="${l.tier}" data-teams="${l.clubs.length}" ${l.id===f.lg?'selected':''}>${esc(l.name)}</option>`).join('')}</select>
-    <p class="small muted" style="margin-top:8px">Гражданство и страна клуба выбираются независимо. Найди лигу на карте или через континент и регион.</p></div>
+  return `${leagueButton('f-lg',`Страна и лига · ${new Set(S_LEAGUES.map(l=>l.cc)).size} стран, ${S_LEAGUES.length} лиг`,f.lg)}
+    <p class="small muted" style="margin:-4px 0 0">Гражданство и страна клуба выбираются независимо. Найди лигу в списке, на карте или через континент и регион.</p>
     <div class="field"><span class="lbl">Дивизион · <b>${esc(COUNTRIES[lg.cc][0])}</b></span>
     <div class="lgg lgg-div">${tiles}</div>
     <div class="lgi"><div class="lgi-h">${flagSvg(COUNTRIES[lg.cc][0],'lg-flag')}<div><p class="eyebrow">${esc(COUNTRIES[lg.cc][0])}</p><h3 class="disp">${esc(lg.name)}</h3></div></div>
@@ -6704,7 +6722,7 @@ function render(){
   else if(UI.tab==='museum'&&isCoach())body=viewCoachMuseum();
   else body=viewCareer();
   const enter=UI.shown!==UI.tab;UI.shown=UI.tab;
-  app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}${siteFoot()}</main>${consentBanner()}`+(G&&(G.P||G.C)?shareModal():'')+natPickModal();
+  app.innerHTML=topbar()+`<main class="wrap${enter?' enter':''}">${UI.saveErr?`<p class="err" role="alert">Память браузера переполнена — прогресс не сохраняется. Удалите старые карьеры во вкладке «Сохранения».</p>`:''}${body}${siteFoot()}</main>${consentBanner()}`+(G&&(G.P||G.C)?shareModal():'')+natPickModal()+leaguePickModal();
   try{afterRender()}catch(e){console.error(e)}
   clubTheme();goatWatch();
   if(UI.news&&UI.nvid){if(!document.querySelector('.nvid'))nvidOpen()}
@@ -7150,6 +7168,9 @@ document.addEventListener('click',e=>{
   else if(a==='natOpen'){UI.natPick={key:b.dataset.target,allowNone:b.dataset.none==='1',multi:b.dataset.multi==='1'};UI.natQ='';render();setTimeout(()=>{const q=document.getElementById('nat-q');if(q)q.focus()},0)}
   else if(a==='natClose'){UI.natPick=null;UI.natQ='';render()}
   else if(a==='pickNat'){const p=UI.natPick,f=UI.form,v=b.dataset.v;if(p&&p.key){f[p.key]=v;if(p.key==='nat'){if(f.nat2===f.nat)f.nat2='';if(!f.faceMan)f.face=faceFor(f.nat,hashStr(f.name||'x'))}if(p.multi)mpPushSetupSoon()}UI.natPick=null;UI.natQ='';render()}
+  else if(a==='leagueOpen'){UI.lgPick={multi:b.dataset.multi==='1'};UI.lgQ='';render();setTimeout(()=>{const q=document.getElementById('lg-q');if(q)q.focus()},0)}
+  else if(a==='leagueClose'){UI.lgPick=null;UI.lgQ='';render()}
+  else if(a==='pickLeague'){const p=UI.lgPick,f=UI.form,l=S_LEAGUES.find(x=>x.id===b.dataset.v);if(l){f.lg=l.id;f.club=l.clubs[0].name;if(p&&p.multi)mpPushSetupSoon()}UI.lgPick=null;UI.lgQ='';render()}
   else if(a==='farewell'){if(!RUN&&G&&G.P&&!G.P.farewell){RUN=farewellGen();stepSeason()}}
   else if(a==='lang'){setLang(EN?'ru':'en')}
   else if(a==='consentAll'){consentSet('all')}
@@ -7218,6 +7239,7 @@ document.addEventListener('input',e=>{
   else if(id==='m-pub'){UI.mpPublic=e.target.checked}
   else if(id==='f-hard'){UI.form.hard=e.target.checked}
   else if(id==='nat-q'){UI.natQ=e.target.value;refreshNatPick()}
+  else if(id==='lg-q'){UI.lgQ=e.target.value;refreshLeaguePick()}
   else if(id==='lb-by'){UI.lbBy=e.target.value;if(UI.lbErr&&e.target.value.trim()){UI.lbErr=null;const er=document.querySelector('.lb-err');if(er)er.remove()}}
 });
 document.addEventListener('change',e=>{
