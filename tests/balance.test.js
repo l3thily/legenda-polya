@@ -31,3 +31,11 @@ run(`LS.setItem(GREAT_KEY,JSON.stringify([{id:'old',k:'p',pos:'ST',score:999},{i
 assert.equal(run(`goatMine().ST.length`),1);
 assert.equal(run(`goatMine().ST[0].id`),'new');
 console.log('Balance checks passed');
+// Goalkeepers compete in the main vote on saves, clean sheets and decisive games.
+run(`globalThis.striker={pos:'ST',ovr:95,apps:48,avg:8,g:42,a:14,cs:0,team:22,nat:8,big:6,fin:2,rep:95,lf:1};globalThis.keeper={pos:'GK',ovr:96,apps:50,avg:8.2,g:0,a:1,cs:32,sv:230,ga:25,team:22,nat:8,big:8,fin:2,rep:95,lf:1}`);
+assert.ok(run(`juryScore(keeper,0).sc>juryScore(striker,0).sc`),'exceptional goalkeeper can beat a leading forward');
+assert.ok(run(`juryScore({...keeper,cs:5,sv:50,ga:90,avg:6.7,big:0,fin:0},0).sc<juryScore(striker,0).sc`),'a poor keeper season receives no automatic award');
+assert.ok(run(`juryScore({...keeper,sv:260,ga:20},0).p.out>=juryScore({...keeper,sv:60,ga:80},0).p.out`));
+assert.ok(src.includes("'bdo','tro'"),'goalkeepers have the Ballon d’Or career record');
+assert.ok(src.includes("big:S.bigKeeper")||src.includes("big:P.pos==='GK'?S.bigKeeper"),'decisive keeper games reach the vote');
+console.log('Goalkeeper Ballon d’Or checks passed');

@@ -36,11 +36,14 @@ DONE_TTL = 2 * 24 * 3600
 ROOM_TTL = 14 * 24 * 3600
 CLEAN_EVERY = 30 * 60
 RUS_MODES = {"random", "off", "on"}
-GAMES = {"fb", "hk", "bb", "tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs"}  # rooms and boards of different games never mix; old clients mean football
+GAMES = {"fb", "hk", "bb", "tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs", "gl", "ck"}  # rooms and boards of different games never mix; old clients mean football
 HK_BV = 20261018
 HK_POS = ("C", "W", "D", "G", "K")
 # the newer games of the series: balance version and GOAT positions per game
-SERIES = {"hk": (HK_BV, HK_POS), "bb": (20261019, ("PG", "SG", "SF", "PF", "C", "K"))}
+SERIES = {"hk": (HK_BV, HK_POS), "bb": (20261019, ("PG", "SG", "SF", "PF", "C", "K")), "gl": (20261107, ("G", "K")), "ck": (20261107, ("B", "O", "A", "W", "K")),
+          "tn": (20261021, ("P", "K")), "f1": (20261022, ("D", "K")), "ufc": (20261023, ("M", "K")),
+          "cs": (20261023, ("P", "K")), "dota": (20261023, ("P", "K")), "lol": (20261023, ("P", "K")), "val": (20261023, ("P", "K")),
+          "fn": (20261023, ("P", "K")), "cr": (20261023, ("P", "K")), "bs": (20261023, ("P", "K"))}
 
 lock = threading.Lock()
 STATS_FILE = os.path.join(os.path.dirname(DATA), "stats.json")
@@ -50,7 +53,7 @@ online: dict = {}  # throwaway tab token -> last ping time, memory only, forgott
 ONLINE_TTL = 150
 online_game: dict = {}  # tab token -> game id, same lifetime as `online`
 STAT_GAMES = {"hub": "Главная", "fb": "Футбол", "hk": "Хоккей", "bb": "Баскетбол", "tn": "Теннис", "f1": "F1", "cs": "CS2",
-              "dota": "Dota 2", "lol": "LoL", "val": "Valorant", "fn": "Fortnite", "cr": "Clash Royale", "bs": "Brawl Stars", "ufc": "UFC"}
+              "dota": "Dota 2", "lol": "LoL", "val": "Valorant", "fn": "Fortnite", "cr": "Clash Royale", "bs": "Brawl Stars", "ufc": "UFC", "gl": "Гольф", "ck": "Крикет"}
 STAT_LANGS = ("ru", "en", "es", "fr", "ar", "hi", "it", "zh", "de")
 MILESTONES = {"first_visit", "career_start", "first_season", "return_d1", "return_d7"}
 STAT_REFS = {"google": "Google", "yandex": "Яндекс", "bing": "Bing", "telegram": "Telegram", "vk": "ВКонтакте", "reddit": "Reddit",
@@ -279,7 +282,7 @@ def goat_backfill():
 
 
 def board_ok(b):
-    g = b[:3] if b[:3] in ("hk-", "bb-") else None
+    g = b[:3] if b[:2] in SERIES and b[2:3] == "-" else None
     if g and (b == g + "all" or (b.startswith(g + "pos-") and b[7:] in SERIES[g[:2]][1])):
         return True
     if g and b.startswith(g + "sc-") and 6 < len(b) <= 24 and b[6:].isalnum():
@@ -548,8 +551,8 @@ def sport_sync(room, me, data):
     """Immutable stage submissions; a room advances only with every participating player."""
     year, phase = data.get("year"), data.get("phase")
     # tennis, F1 and esports disciplines sync small per-player snapshots step by step: "year" is the calendar window / race weekend / event
-    tennis = room.get("game") in ("tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs")
-    if room.get("game") not in ("hk", "bb", "tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs") or room["status"] != "started":
+    tennis = room.get("game") in ("tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs", "gl", "ck")
+    if room.get("game") not in ("hk", "bb", "tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "bs", "gl", "ck") or room["status"] != "started":
         raise ValueError("Синхронизация доступна в начатой спортивной комнате")
     # tennis: "year" is the two-week window (tick), every window has a pick and a done stage
     phases, first = (("pick", "done"), "pick") if tennis else (("pre", "regular", "playoffs"), "pre")
@@ -691,6 +694,21 @@ class Handler(BaseHTTPRequestHandler):
             b = q.get("board", "all")
             with lock:
                 return self.reply(200, {"board": b, "scores": scores.get(b, [])[:20]})
+        if parts == ["api", "hubbest"]:
+            # the hub's "best of the day / best of all time": athlete names only, no sender nicks
+            # football names its daily boards by the Moscow day, the series by UTC
+            today_msk = time.strftime("%Y%m%d", time.gmtime(time.time() + 3 * 3600))
+            today_utc = time.strftime("%Y%m%d", time.gmtime())
+            keep = ("name", "pos", "tier", "score", "tro", "bdo", "hard")
+            with lock:
+                out = {}
+                for g in GAMES:
+                    today = today_msk if g == "fb" else today_utc
+                    all_b, top_b = ("all", "top-" + today) if g == "fb" else (g + "-all", g + "-top-" + today)
+                    def clean(lst):
+                        return [{k: x.get(k) for k in keep} for x in lst]
+                    out[g] = {"all": clean(scores.get(all_b, [])[:5]), "today": clean(scores.get(top_b, [])[:5])}
+                return self.reply(200, {"games": out})
         if parts == ["api", "rooms"]:
             # open lobbies anyone can join: newest first
             q = dict(kv.split("=", 1) for kv in (self.path.split("?", 1)[1] if "?" in self.path else "").split("&") if "=" in kv)
@@ -778,7 +796,7 @@ class Handler(BaseHTTPRequestHandler):
                 board, sid = clip(data.get("board"), 24), clip(data.get("id"), 24)
                 if not board_ok(board) or not sid:
                     return self.reply(400, {"error": "неверная таблица"})
-                hk = board[:2] if board[:3] in ("hk-", "bb-") else None
+                hk = board[:2] if board[:2] in SERIES and board[2:3] == "-" else None
                 bv = SERIES[hk][0] if hk else BALANCE_VERSION
                 if data.get("balanceVersion") != bv:
                     return self.reply(409, {"error": "Новый рейтинг: начните карьеру после обновления баланса 16 октября."})
