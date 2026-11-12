@@ -40,7 +40,7 @@ GAMES = {"fb", "hk", "bb", "tn", "f1", "cs", "dota", "lol", "val", "fn", "cr", "
 HK_BV = 20261018
 HK_POS = ("C", "W", "D", "G", "K")
 # the newer games of the series: balance version and GOAT positions per game
-SERIES = {"hk": (HK_BV, HK_POS), "bb": (20261019, ("PG", "SG", "SF", "PF", "C", "K")), "gl": (20261107, ("G", "K")), "ck": (20261107, ("B", "O", "A", "W", "K")),
+SERIES = {"hk": (HK_BV, HK_POS), "bb": (20261019, ("PG", "SG", "SF", "PF", "C", "K")), "gl": (20261112, ("G", "K")), "ck": (20261112, ("B", "O", "A", "W", "K")),
           "tn": (20261021, ("P", "K")), "f1": (20261022, ("D", "K")), "ufc": (20261023, ("M", "K")),
           "cs": (20261023, ("P", "K")), "dota": (20261023, ("P", "K")), "lol": (20261023, ("P", "K")), "val": (20261023, ("P", "K")),
           "fn": (20261023, ("P", "K")), "cr": (20261023, ("P", "K")), "bs": (20261023, ("P", "K"))}
@@ -92,6 +92,16 @@ def load_scores():
             with open(archive, "x", encoding="utf-8") as f:
                 json.dump(scores, f, ensure_ascii=False)
         for b in competitive:
+            scores[b] = []
+        persist_scores()
+    # Keep pre-rebalance golf and cricket entries archived, not mixed with the new scores.
+    circuit = [b for b in scores if b.startswith(("gl-", "ck-"))]
+    if any(e.get("balanceVersion") != SERIES[b[:2]][0] for b in circuit for e in scores[b]):
+        archive = SCORES_FILE + ".before-circuit-balance-20261112.json"
+        if not os.path.exists(archive):
+            with open(archive, "x", encoding="utf-8") as f:
+                json.dump(scores, f, ensure_ascii=False)
+        for b in circuit:
             scores[b] = []
         persist_scores()
 

@@ -12,7 +12,7 @@ class CircuitGamesTest(unittest.TestCase):
   for game,positions in [('gl',['G','K']),('ck',['B','O','A','W','K'])]:
    for pos in positions:
     for board in [game+'-all',game+'-pos-'+pos]:
-     entry={'board':board,'id':game+pos,'name':'Athlete','pk':pos,'score':123,'balanceVersion':20261107}
+     entry={'board':board,'id':game+pos,'name':'Athlete','pk':pos,'score':123,'balanceVersion':20261112}
      self.assertGreaterEqual(self.request('/scores',entry)['rank'],1)
      with self.assertRaises(urllib.error.HTTPError) as err:self.request('/scores',{**entry,'balanceVersion':20261016})
      self.assertEqual(err.exception.code,409)

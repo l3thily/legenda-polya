@@ -17,7 +17,9 @@ class ScoreSeasonTest(unittest.TestCase):
     def test_reset_and_http_submission(self):
         with tempfile.TemporaryDirectory() as tmp:
             server.SCORES_FILE = str(pathlib.Path(tmp) / 'scores.json')
-            old = {'all': [{'id': 'old', 'score': 999}], 'pos-ST': [{'id': 'old', 'score': 999}], 'day-20261007': [{'id': 'historic'}]}
+            old = {'all': [{'id': 'old', 'score': 999}], 'pos-ST': [{'id': 'old', 'score': 999}], 'day-20261007': [{'id': 'historic'}],
+                   'gl-all': [{'id': 'old-golf', 'score': 999, 'balanceVersion': 20261107}],
+                   'ck-all': [{'id': 'old-cricket', 'score': 999, 'balanceVersion': 20261107}]}
             pathlib.Path(server.SCORES_FILE).write_text(json.dumps(old))
             server.load_scores()
             archive = pathlib.Path(server.SCORES_FILE + '.before-balance-20261016.json')
@@ -25,6 +27,10 @@ class ScoreSeasonTest(unittest.TestCase):
             self.assertTrue(all(server.scores['pos-' + p] == [] for p in server.POS_KEYS))
             self.assertEqual(server.scores['all'], [])
             self.assertEqual(server.scores['day-20261007'], old['day-20261007'])
+            circuit_archive = pathlib.Path(server.SCORES_FILE + '.before-circuit-balance-20261112.json')
+            self.assertEqual(json.loads(circuit_archive.read_text())['gl-all'], old['gl-all'])
+            self.assertEqual(server.scores['gl-all'], [])
+            self.assertEqual(server.scores['ck-all'], [])
             httpd = server.ThreadingHTTPServer(('127.0.0.1', 0), server.Handler)
             thread = threading.Thread(target=httpd.serve_forever, daemon=True)
             thread.start()
